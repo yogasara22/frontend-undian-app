@@ -5,6 +5,8 @@ export interface Participant {
   name: string;
   email?: string;
   department?: string;
+  shopName?: string;
+  ktpNumber?: string;
 }
 
 export interface Winner {
@@ -12,6 +14,8 @@ export interface Winner {
   name: string;
   email?: string;
   department?: string;
+  shopName?: string;
+  ktpNumber?: string;
 }
 
 export interface Prize {

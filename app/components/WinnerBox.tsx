@@ -112,28 +112,54 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex flex-col items-center gap-3 w-full"
+                  className="flex flex-col items-center gap-2 w-full"
                 >
                   <motion.p
                     variants={nameVariants}
                     animate="winner"
-                    className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-center uppercase bg-clip-text text-transparent bg-gradient-to-b from-[#e32924] to-[#991512] drop-shadow-sm"
+                    className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter text-center uppercase bg-clip-text text-transparent bg-gradient-to-b from-[#e32924] to-[#991512] drop-shadow-sm leading-tight"
                   >
                     {winner.name}
                   </motion.p>
                   
-                  {winner.department && (
+                  {winner.shopName && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5, duration: 0.4 }}
-                      className="mt-2"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.4, duration: 0.5 }}
+                      className="flex items-center gap-2"
                     >
-                      <span className="px-5 py-2 rounded-full bg-[#fca311]/10 border border-[#fca311] text-[#b06f02] text-sm md:text-base font-extrabold uppercase shadow-sm tracking-wide">
-                        {winner.department}
+                      <span className="text-xl md:text-2xl font-bold text-gray-700 uppercase tracking-widest">
+                        {winner.shopName}
                       </span>
                     </motion.div>
                   )}
+
+                  <div className="flex flex-wrap justify-center gap-3 mt-4">
+                    {winner.department && (
+                      <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.6, duration: 0.4 }}
+                      >
+                        <span className="px-4 py-1.5 rounded-lg bg-gray-100 border border-gray-200 text-gray-600 text-xs md:text-sm font-bold uppercase tracking-wider">
+                          {winner.department}
+                        </span>
+                      </motion.div>
+                    )}
+                    
+                    {winner.ktpNumber && (
+                      <motion.div
+                        initial={{ opacity: 0, x: 10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.7, duration: 0.4 }}
+                      >
+                        <span className="px-5 py-1.5 rounded-lg bg-[#fca311] text-white text-xs md:text-sm font-black uppercase shadow-md tracking-[0.2em]">
+                          {winner.ktpNumber}
+                        </span>
+                      </motion.div>
+                    )}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
