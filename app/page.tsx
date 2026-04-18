@@ -8,12 +8,21 @@ import { PrizeSection } from './components/PrizeSection';
 import { DrawButton } from './components/DrawButton';
 import { ErrorDisplay } from './components/ErrorDisplay';
 import { ParticipantCounter } from './components/ParticipantCounter';
+import { useDynamicBackground } from './hooks/useDynamicBackground';
 
 export default function Home() {
   const { isRolling, isLoading, winner, prize, error, currentDisplay, startDraw, reset } = useLottery();
+  const gradient = useDynamicBackground();
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-red-500 via-red-600 to-red-700 flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden font-sans">
+    <main 
+      className="min-h-screen dynamic-bg flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden font-sans"
+      style={{
+        '--bg-from': gradient.from,
+        '--bg-via': gradient.via,
+        '--bg-to': gradient.to,
+      } as React.CSSProperties}
+    >
       
       {/* Dynamic Background elements (Soft highlights) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">

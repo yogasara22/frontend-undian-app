@@ -14,6 +14,29 @@
   --white: #ffffff;
 }
 
+@property --bg-from {
+  syntax: '<color>';
+  initial-value: #e8192c;
+  inherits: true;
+}
+
+@property --bg-via {
+  syntax: '<color>';
+  initial-value: #c01020;
+  inherits: true;
+}
+
+@property --bg-to {
+  syntax: '<color>';
+  initial-value: #900a10;
+  inherits: true;
+}
+
+.dynamic-bg {
+  background-image: linear-gradient(to bottom right, var(--bg-from), var(--bg-via), var(--bg-to));
+  transition: --bg-from 2000ms ease-in-out, --bg-via 2000ms ease-in-out, --bg-to 2000ms ease-in-out;
+}
+
 * {
   box-sizing: border-box;
 }
