@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap');
+
+:root {
+  --red-primary: #e8192c;
+  --red-dark: #c01020;
+  --yellow-bright: #ffd700;
+  --yellow-light: #ffe566;
+  --blue-accent: #1a6bcc;
+  --blue-light: #4a9eff;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Marquee bulb animation */
+@keyframes bulb-blink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px 2px #ffe566, 0 0 16px 4px #ffd700; }
+  50% { opacity: 0.4; box-shadow: 0 0 4px 1px #ffe566; }
+}
+
+@keyframes bulb-blink-alt {
+  0%, 100% { opacity: 0.4; box-shadow: 0 0 4px 1px #ffe566; }
+  50% { opacity: 1; box-shadow: 0 0 8px 2px #ffe566, 0 0 16px 4px #ffd700; }
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes winner-glow {
+  0%, 100% { text-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700, 0 0 60px #ff8800; }
+  50% { text-shadow: 0 0 30px #ffd700, 0 0 60px #ffd700, 0 0 90px #ff8800; }
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(-3deg); }
+  50% { transform: translateY(-15px) rotate(3deg); }
+}
+
+.bulb { animation: bulb-blink 0.8s ease-in-out infinite; }
+.bulb-alt { animation: bulb-blink-alt 0.8s ease-in-out infinite; }
+.winner-glow { animation: winner-glow 1.5s ease-in-out infinite; }
+.bounce-slow { animation: bounce-slow 2s ease-in-out infinite; }
+.float-anim { animation: float 3s ease-in-out infinite; }
+
+/* Ticket border pattern */
+.ticket-border {
+  position: relative;
+  background: linear-gradient(135deg, #1a50cc, #1a6bcc);
+  border-radius: 16px;
+  padding: 4px;
+}
+
+.ticket-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffd700, #ff8800, #ffd700, #ff8800);
+  z-index: -1;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
