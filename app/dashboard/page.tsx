@@ -93,7 +93,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {stats.map((stat) => (
           <Link
             key={stat.label}
@@ -137,8 +137,9 @@ export default function DashboardPage() {
             Lihat Semua →
           </Link>
         </div>
-        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-          <table className="w-full text-sm">
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[600px] md:min-w-full">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/50">
                 <th className="text-left px-6 py-4 text-gray-500 font-bold">Nama</th>
@@ -169,6 +170,7 @@ export default function DashboardPage() {
               ))}
             </tbody>
           </table>
+        </div>
         </div>
       </div>
     </div>

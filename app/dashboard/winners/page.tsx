@@ -125,71 +125,73 @@ export default function WinnersPage() {
       )}
 
       {/* Winners Table */}
-      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50/50">
-              <th className="text-left px-6 py-4 text-gray-500 font-bold">#</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold">Pemenang</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold hidden md:table-cell">Departemen</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold">Hadiah</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold hidden sm:table-cell">Kategori</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold hidden lg:table-cell">Waktu</th>
-              <th className="text-right px-6 py-4 text-gray-500 font-bold">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="px-6 py-12 text-center text-gray-400 font-medium bg-gray-50/30">
-                  Tidak ada pemenang ditemukan
-                </td>
+      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[700px] md:min-w-full">
+            <thead>
+              <tr className="border-b border-gray-200 bg-gray-50/50">
+                <th className="text-left px-6 py-4 text-gray-500 font-bold">#</th>
+                <th className="text-left px-6 py-4 text-gray-500 font-bold">Pemenang</th>
+                <th className="text-left px-6 py-4 text-gray-500 font-bold hidden md:table-cell">Departemen</th>
+                <th className="text-left px-6 py-4 text-gray-500 font-bold">Hadiah</th>
+                <th className="text-left px-6 py-4 text-gray-500 font-bold hidden sm:table-cell">Kategori</th>
+                <th className="text-left px-6 py-4 text-gray-500 font-bold hidden lg:table-cell">Waktu</th>
+                <th className="text-right px-6 py-4 text-gray-500 font-bold">Aksi</th>
               </tr>
-            ) : (
-              filtered.map((w, i) => (
-                <tr key={w.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 border border-gray-200 font-bold text-gray-600">
-                      {i < 3 ? (
-                        <span className="text-lg leading-none">{['🥇', '🥈', '🥉'][i]}</span>
-                      ) : (
-                        <span className="text-sm">{i + 1}</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center text-orange-600 text-xs font-bold flex-shrink-0">
-                        {w.name.charAt(0)}
-                      </div>
-                      <span className="text-gray-900 font-bold">{w.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-500 font-medium hidden md:table-cell">{w.department}</td>
-                  <td className="px-6 py-4 text-orange-600 font-bold text-base">{w.prize}</td>
-                  <td className="px-6 py-4 hidden sm:table-cell">
-                    <span className="px-3 py-1.5 text-xs rounded-full bg-blue-50 text-blue-600 border border-blue-200 font-bold">
-                      {w.category}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-gray-400 font-medium text-xs hidden lg:table-cell">{w.drawnAt}</td>
-                  <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => handleDelete(w.id)}
-                      className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors inline-block"
-                      title="Batalkan pemenang"
-                    >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
+            </thead>
+            <tbody>
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-400 font-medium bg-gray-50/30">
+                    Tidak ada pemenang ditemukan
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filtered.map((w, i) => (
+                  <tr key={w.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 border border-gray-200 font-bold text-gray-600">
+                        {i < 3 ? (
+                          <span className="text-lg leading-none">{['🥇', '🥈', '🥉'][i]}</span>
+                        ) : (
+                          <span className="text-sm">{i + 1}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center text-orange-600 text-xs font-bold flex-shrink-0">
+                          {w.name.charAt(0)}
+                        </div>
+                        <span className="text-gray-900 font-bold">{w.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-gray-500 font-medium hidden md:table-cell">{w.department}</td>
+                    <td className="px-6 py-4 text-orange-600 font-bold text-base">{w.prize}</td>
+                    <td className="px-6 py-4 hidden sm:table-cell">
+                      <span className="px-3 py-1.5 text-xs rounded-full bg-blue-50 text-blue-600 border border-blue-200 font-bold">
+                        {w.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-gray-400 font-medium text-xs hidden lg:table-cell">{w.drawnAt}</td>
+                    <td className="px-6 py-4 text-right">
+                      <button
+                        onClick={() => handleDelete(w.id)}
+                        className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors inline-block"
+                        title="Batalkan pemenang"
+                      >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

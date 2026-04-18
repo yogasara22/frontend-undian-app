@@ -7,6 +7,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Aplikasi Undian',
   description: 'Aplikasi undian untuk acara Anda',
+  icons: {
+    icon: '/icon.png',
+  },
 };
 
 export default function RootLayout({

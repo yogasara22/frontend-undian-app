@@ -55,10 +55,10 @@ export function PrizeSection({ winner, prize }: PrizeSectionProps) {
               }}>
             UNDIAN BERHADIAH
           </h3>
-          <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mt-1 uppercase relative z-10 leading-none"
+          <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white mt-1 uppercase relative z-10 leading-tight md:leading-none px-4"
               style={{
                 textShadow: '-3px -3px 0 #0f54a8, 3px -3px 0 #0f54a8, -3px 3px 0 #0f54a8, 3px 3px 0 #0f54a8, 0px 8px 0px #0f54a8, 0px 15px 15px rgba(0,0,0,0.4)',
-                WebkitTextStroke: '2px #0f54a8'
+                WebkitTextStroke: '1px #0f54a8'
               }}>
             {prize.name}
           </h2>

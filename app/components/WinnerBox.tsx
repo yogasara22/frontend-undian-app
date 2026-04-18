@@ -127,9 +127,9 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.4, duration: 0.5 }}
-                      className="flex items-center gap-2"
+                      className="flex items-center justify-center gap-2 w-full"
                     >
-                      <span className="text-xl md:text-2xl font-bold text-gray-700 uppercase tracking-widest">
+                      <span className="text-xl md:text-2xl font-bold text-gray-700 uppercase tracking-widest text-center">
                         {winner.shopName}
                       </span>
                     </motion.div>

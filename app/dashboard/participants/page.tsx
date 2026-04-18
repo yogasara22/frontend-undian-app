@@ -117,8 +117,9 @@ export default function ParticipantsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-        <table className="w-full text-sm">
+      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[800px] md:min-w-full">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50/50">
               <th className="text-left px-6 py-4 text-gray-500 font-bold">#</th>
@@ -171,6 +172,7 @@ export default function ParticipantsPage() {
           </tbody>
         </table>
       </div>
+    </div>
 
       {/* Add Modal */}
       {showAddModal && (

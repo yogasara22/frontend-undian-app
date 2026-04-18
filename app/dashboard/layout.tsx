@@ -60,12 +60,25 @@ const navItems = [
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden text-gray-900">
+      {/* Mobile Backdrop */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-20 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`${sidebarOpen ? 'w-64' : 'w-16'} transition-all duration-300 flex-shrink-0 flex flex-col bg-white border-r border-gray-200 z-10`}
+        className={`
+          ${sidebarOpen ? 'w-64' : 'w-16'} 
+          ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          fixed md:relative transition-all duration-300 flex-shrink-0 flex flex-col bg-white border-r border-gray-200 z-30 h-full
+        `}
       >
         {/* Logo */}
         <div className="flex items-center gap-3 p-4 border-b border-gray-100 h-16">
@@ -74,7 +87,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3l14 9-14 9V3z" />
             </svg>
           </div>
-          {sidebarOpen && (
+          {(sidebarOpen || mobileMenuOpen) && (
             <div className="overflow-hidden">
               <p className="font-bold text-sm leading-tight text-gray-800">Undian Admin</p>
               <p className="text-gray-500 text-xs">Control Panel</p>
@@ -82,12 +95,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           )}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="ml-auto text-gray-400 hover:text-gray-600 transition-colors"
+            className="ml-auto text-gray-400 hover:text-gray-600 transition-colors hidden md:block"
             aria-label="Toggle sidebar"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d={sidebarOpen ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
+            </svg>
+          </button>
+          <button
+            onClick={() => setMobileMenuOpen(false)}
+            className="ml-auto text-gray-400 hover:text-gray-600 transition-colors md:hidden"
+            aria-label="Close menu"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
@@ -103,6 +125,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative ${
                   isActive
                     ? 'bg-orange-50 text-orange-600 font-semibold'
@@ -112,7 +135,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <span className={`flex-shrink-0 ${isActive ? 'text-orange-500' : 'text-gray-400 group-hover:text-gray-600 transition-colors'}`}>
                   {item.icon}
                 </span>
-                {sidebarOpen && (
+                {(sidebarOpen || mobileMenuOpen) && (
                   <span className="text-sm">{item.label}</span>
                 )}
               </Link>
@@ -130,7 +153,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            {sidebarOpen && <span className="text-sm">Buka Layar Undian</span>}
+            {(sidebarOpen || mobileMenuOpen) && <span className="text-sm">Buka Layar Undian</span>}
           </Link>
         </div>
       </aside>
@@ -138,8 +161,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden bg-gray-50 relative">
         {/* Top bar */}
-        <header className="h-16 flex items-center px-8 border-b border-gray-200 bg-white flex-shrink-0">
-          <div className="flex items-center gap-2">
+        <header className="h-16 flex items-center px-4 md:px-8 border-b border-gray-200 bg-white flex-shrink-0">
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="p-2 -ml-2 mr-2 text-gray-500 hover:text-gray-700 md:hidden transition-colors"
+            aria-label="Open menu"
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          </button>
+          
+          <div className="flex items-center gap-2 overflow-hidden">
             {navItems.map((item) => {
               const isActive =
                 item.href === '/dashboard'
@@ -147,26 +180,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   : pathname.startsWith(item.href);
               if (!isActive) return null;
               return (
-                <div key={item.href} className="flex items-center gap-2">
-                  <span className="text-orange-500">{item.icon}</span>
-                  <h1 className="text-gray-800 font-bold text-lg">{item.label}</h1>
+                <div key={item.href} className="flex items-center gap-2 whitespace-nowrap">
+                  <span className="text-orange-500 hidden sm:inline-block">{item.icon}</span>
+                  <h1 className="text-gray-800 font-bold text-base md:text-lg">{item.label}</h1>
                 </div>
               );
             })}
           </div>
-          <div className="ml-auto flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-semibold border border-green-200">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              Demo Mode
+          <div className="ml-auto flex items-center gap-3 md:gap-4">
+            <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1 bg-green-50 text-green-700 rounded-full text-[10px] md:text-xs font-semibold border border-green-200">
+              <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="hidden xs:inline">Demo Mode</span>
+              <span className="xs:hidden">Demo</span>
             </div>
-            <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-sm border border-orange-200">
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs md:text-sm border border-orange-200">
               AD
             </div>
           </div>
         </header>
 
         {/* Page content */}
-        <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>
