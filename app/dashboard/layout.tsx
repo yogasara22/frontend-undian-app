@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 const navItems = [
   {
@@ -59,8 +59,22 @@ const navItems = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Simulated Auth Check
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+    if (!isLoggedIn && pathname.startsWith('/dashboard')) {
+      router.push('/login');
+    }
+  }, [pathname, router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAdminLoggedIn');
+    router.push('/login');
+  };
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden text-gray-900">
@@ -143,8 +157,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           })}
         </nav>
 
-        {/* Footer link ke public screen */}
-        <div className="p-4 border-t border-gray-100">
+        {/* Footer links */}
+        <div className="p-4 border-t border-gray-100 space-y-1">
           <Link
             href="/"
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:text-orange-600 hover:bg-orange-50 transition-all duration-200 group font-medium"
@@ -155,6 +169,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </svg>
             {(sidebarOpen || mobileMenuOpen) && <span className="text-sm">Buka Layar Undian</span>}
           </Link>
+
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all duration-200 group font-medium"
+          >
+            <svg className="w-5 h-5 flex-shrink-0 text-gray-400 group-hover:text-red-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            {(sidebarOpen || mobileMenuOpen) && <span className="text-sm text-left">Keluar</span>}
+          </button>
         </div>
       </aside>
 
