@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { dummyPrizes } from '../../lib/dummy';
 import { dummyCategories } from '../../lib/dashboardDummy';
 import type { Prize } from '../../types';
@@ -12,6 +12,8 @@ export default function PrizesPage() {
   const [newName, setNewName] = useState('');
   const [newValue, setNewValue] = useState('');
   const [newDesc, setNewDesc] = useState('');
+  const [newImage, setNewImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filtered = prizes.filter(p =>
     !filterCategory || p.description === filterCategory
@@ -24,12 +26,22 @@ export default function PrizesPage() {
       name: newName.trim(),
       value: newValue.trim() || 'Rp 0',
       description: newDesc.trim() || filterCategory || dummyCategories[0].name,
+      imageUrl: newImage || undefined,
     };
     setPrizes([...prizes, newPrize]);
     setNewName('');
     setNewValue('');
     setNewDesc('');
+    setNewImage(null);
     setShowAddModal(false);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setNewImage(url);
+    }
   };
 
   const handleDelete = (id: string | number) => {
@@ -102,8 +114,12 @@ export default function PrizesPage() {
                 </svg>
               </button>
             </div>
-            <div className="w-16 h-16 flex items-center justify-center bg-gray-50 border border-gray-100 rounded-2xl text-4xl mb-5 group-hover:bg-orange-50 group-hover:border-orange-100 transition-colors">
-              {prizeIcons[i % prizeIcons.length]}
+            <div className="w-16 h-16 flex items-center justify-center bg-gray-50 border border-gray-100 rounded-2xl text-4xl mb-5 group-hover:bg-orange-50 group-hover:border-orange-100 transition-colors overflow-hidden">
+              {prize.imageUrl ? (
+                <img src={prize.imageUrl} alt={prize.name} className="w-full h-full object-cover" />
+              ) : (
+                prizeIcons[i % prizeIcons.length]
+              )}
             </div>
             <h3 className="text-gray-900 font-black text-lg mb-1">{prize.name}</h3>
             <p className="text-orange-600 font-bold text-xl mb-3">{prize.value}</p>
@@ -131,8 +147,8 @@ export default function PrizesPage() {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-gray-200 rounded-3xl p-8 w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative overflow-y-auto max-h-[90vh]">
             <div className="flex items-center justify-between mb-8">
               <h3 className="text-gray-900 font-black text-xl">Tambah Hadiah Baru</h3>
               <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 p-2 rounded-full transition-colors">
@@ -174,6 +190,38 @@ export default function PrizesPage() {
                     <option key={cat.id} value={cat.name}>{cat.name}</option>
                   ))}
                 </select>
+              </div>
+              <div>
+                <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Gambar Hadiah</label>
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="relative w-full aspect-video rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-orange-300 transition-all cursor-pointer overflow-hidden flex flex-col items-center justify-center gap-2 group"
+                >
+                  {newImage ? (
+                    <>
+                      <img src={newImage} alt="Preview" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span className="text-white text-xs font-bold bg-black/50 px-3 py-1.5 rounded-full">Ganti Gambar</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-orange-500 transition-colors">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Klik untuk upload</span>
+                    </>
+                  )}
+                </div>
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={handleImageChange} 
+                />
               </div>
             </div>
             <div className="flex gap-4 mt-8">

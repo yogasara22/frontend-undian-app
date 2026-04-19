@@ -172,8 +172,8 @@ export default function CategoriesPage() {
 
       {/* Add/Edit Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-gray-200 rounded-3xl p-8 w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative overflow-y-auto max-h-[90vh]">
             <div className="flex items-center justify-between mb-8">
               <h3 className="text-gray-900 font-black text-xl">
                 {editId !== null ? 'Edit Kategori' : 'Tambah Kategori'}

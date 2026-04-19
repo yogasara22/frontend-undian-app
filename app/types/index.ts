@@ -7,6 +7,8 @@ export interface Participant {
   department?: string;
   shopName?: string;
   ktpNumber?: string;
+  phoneNumber?: string;
+  address?: string;
 }
 
 export interface Winner {
@@ -16,6 +18,8 @@ export interface Winner {
   department?: string;
   shopName?: string;
   ktpNumber?: string;
+  phoneNumber?: string;
+  address?: string;
 }
 
 export interface Prize {

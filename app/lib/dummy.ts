@@ -1,11 +1,11 @@
 import type { Participant, Prize } from '../types';
 
 export const dummyParticipants: Participant[] = [
-  { id: 1, name: "Ahmad Fauzi", department: "Jakarta", shopName: "Toko Berkah Utama", ktpNumber: "3273**********12" },
-  { id: 2, name: "Siti Rahayu", department: "Bandung", shopName: "Sari Rasa Shop", ktpNumber: "3204**********45" },
-  { id: 3, name: "Budi Santoso", department: "Surabaya", shopName: "Budi Jaya Motor", ktpNumber: "3578**********89" },
-  { id: 4, name: "Dewi Lestari", department: "Jogja", shopName: "Dewi Fashion", ktpNumber: "3471**********23" },
-  { id: 5, name: "Eko Prasetyo", department: "Semarang", shopName: "Eko Elektronik", ktpNumber: "3374**********56" },
+  { id: 1, name: "Ahmad Fauzi", department: "Jakarta", shopName: "Toko Berkah Utama", ktpNumber: "3273**********12", phoneNumber: "0812-3456-7890", address: "Jl. Merdeka No. 12, Jakarta" },
+  { id: 2, name: "Siti Rahayu", department: "Bandung", shopName: "Sari Rasa Shop", ktpNumber: "3204**********45", phoneNumber: "0813-9876-5432", address: "Jl. Sudirman No. 45, Bandung" },
+  { id: 3, name: "Budi Santoso", department: "Surabaya", shopName: "Budi Jaya Motor", ktpNumber: "3578**********89", phoneNumber: "0811-2233-4455", address: "Jl. Gajah Mada No. 8, Surabaya" },
+  { id: 4, name: "Dewi Lestari", department: "Jogja", shopName: "Dewi Fashion", ktpNumber: "3471**********23", phoneNumber: "0819-0099-8877", address: "Jl. Malioboro No. 5, Jogja" },
+  { id: 5, name: "Eko Prasetyo", department: "Semarang", shopName: "Eko Elektronik", ktpNumber: "3374**********56", phoneNumber: "0812-1122-3344", address: "Jl. Pandanaran No. 10, Semarang" },
   { id: 6, name: "Fitri Handayani", department: "Medan", shopName: "Fitri Mart", ktpNumber: "1271**********78" },
   { id: 7, name: "Gunawan Wibowo", department: "Palembang", shopName: "Gunawan Cell", ktpNumber: "1671**********11" },
   { id: 8, name: "Hana Pertiwi", department: "Makassar", shopName: "Hana Boutique", ktpNumber: "7371**********22" },

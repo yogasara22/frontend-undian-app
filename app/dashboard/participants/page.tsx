@@ -12,6 +12,10 @@ export default function ParticipantsPage() {
   const [newName, setNewName] = useState('');
   const [newDept, setNewDept] = useState('');
   const [newEmail, setNewEmail] = useState('');
+  const [newShop, setNewShop] = useState('');
+  const [newKtp, setNewKtp] = useState('');
+  const [newPhone, setNewPhone] = useState('');
+  const [newAddress, setNewAddress] = useState('');
   const [importMsg, setImportMsg] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -19,7 +23,10 @@ export default function ParticipantsPage() {
 
   const filtered = participants.filter(p => {
     const matchSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
-      (p.email?.toLowerCase().includes(search.toLowerCase()) ?? false);
+      (p.email?.toLowerCase().includes(search.toLowerCase()) ?? false) ||
+      (p.phoneNumber?.includes(search) ?? false) ||
+      (p.ktpNumber?.includes(search) ?? false) ||
+      (p.shopName?.toLowerCase().includes(search.toLowerCase()) ?? false);
     const matchDept = !filterDept || p.department === filterDept;
     return matchSearch && matchDept;
   });
@@ -31,11 +38,19 @@ export default function ParticipantsPage() {
       name: newName.trim(),
       department: newDept.trim() || 'General',
       email: newEmail.trim() || undefined,
+      shopName: newShop.trim() || undefined,
+      ktpNumber: newKtp.trim() || undefined,
+      phoneNumber: newPhone.trim() || undefined,
+      address: newAddress.trim() || undefined,
     };
     setParticipants([...participants, newParticipant]);
     setNewName('');
     setNewDept('');
     setNewEmail('');
+    setNewShop('');
+    setNewKtp('');
+    setNewPhone('');
+    setNewAddress('');
     setShowAddModal(false);
   };
 
@@ -123,9 +138,12 @@ export default function ParticipantsPage() {
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50/50">
               <th className="text-left px-6 py-4 text-gray-500 font-bold">#</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold">Nama</th>
+              <th className="text-left px-6 py-4 text-gray-500 font-bold w-[250px]">Nama & Toko</th>
+              <th className="text-left px-6 py-4 text-gray-500 font-bold">NIK</th>
+              <th className="text-left px-6 py-4 text-gray-500 font-bold">No. HP</th>
               <th className="text-left px-6 py-4 text-gray-500 font-bold hidden md:table-cell">Email</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold hidden sm:table-cell">Departemen</th>
+              <th className="text-left px-6 py-4 text-gray-500 font-bold hidden lg:table-cell">Alamat</th>
+              <th className="text-left px-6 py-4 text-gray-500 font-bold hidden sm:table-cell">Kota</th>
               <th className="text-right px-6 py-4 text-gray-500 font-bold">Aksi</th>
             </tr>
           </thead>
@@ -142,15 +160,34 @@ export default function ParticipantsPage() {
                   <td className="px-6 py-4 text-gray-400 font-semibold">{i + 1}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 text-sm font-bold flex-shrink-0">
                         {p.name.charAt(0)}
                       </div>
-                      <span className="text-gray-900 font-bold">{p.name}</span>
+                      <div>
+                        <div className="text-gray-900 font-bold leading-tight">{p.name}</div>
+                        {p.shopName && (
+                          <div className="text-orange-600 text-xs font-bold uppercase mt-0.5 tracking-tight">{p.shopName}</div>
+                        )}
+                      </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-500 font-medium hidden md:table-cell">{p.email || '-'}</td>
+                  <td className="px-6 py-4 font-mono text-xs text-gray-400">
+                    {p.ktpNumber || '-'}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-50 text-green-700 border border-green-200 text-xs font-bold">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                      {p.phoneNumber || '-'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-gray-500 font-medium hidden md:table-cell truncate max-w-[150px]">{p.email || '-'}</td>
+                  <td className="px-6 py-4 text-gray-400 text-xs hidden lg:table-cell truncate max-w-[200px]" title={p.address}>
+                    {p.address || '-'}
+                  </td>
                   <td className="px-6 py-4 hidden sm:table-cell">
-                    <span className="px-3 py-1.5 text-xs rounded-full bg-gray-100 text-gray-700 border border-gray-200 font-semibold border-b-2">
+                    <span className="px-2.5 py-1 text-[10px] rounded-full bg-gray-100 text-gray-600 border border-gray-200 font-bold uppercase">
                       {p.department || 'General'}
                     </span>
                   </td>
@@ -176,8 +213,8 @@ export default function ParticipantsPage() {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-gray-200 rounded-3xl p-8 w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white border border-gray-200 rounded-3xl p-6 w-full max-w-xl shadow-2xl relative overflow-y-auto max-h-[90vh]">
             <div className="flex items-center justify-between mb-8">
               <h3 className="text-gray-900 font-black text-xl">Tambah Peserta</h3>
               <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 p-2 rounded-full transition-colors">
@@ -186,24 +223,44 @@ export default function ParticipantsPage() {
                 </svg>
               </button>
             </div>
-            <div className="space-y-5">
-              <div>
-                <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Nama *</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="md:col-span-2">
+                <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Nama Lengkap *</label>
                 <input
                   type="text"
-                  placeholder="Nama lengkap"
+                  placeholder="Contoh: Budi Santoso"
                   value={newName}
                   onChange={e => setNewName(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
                 />
               </div>
-              <div>
-                <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Departemen</label>
+              <div className="md:col-span-2">
+                <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Nama Toko</label>
                 <input
                   type="text"
-                  placeholder="Contoh: Engineering"
-                  value={newDept}
-                  onChange={e => setNewDept(e.target.value)}
+                  placeholder="Contoh: Toko Berkah Jaya"
+                  value={newShop}
+                  onChange={e => setNewShop(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                />
+              </div>
+              <div>
+                <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">NIK (KTP)</label>
+                <input
+                  type="text"
+                  placeholder="16 digit angka"
+                  value={newKtp}
+                  onChange={e => setNewKtp(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                />
+              </div>
+              <div>
+                <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">No. HP / WhatsApp</label>
+                <input
+                  type="text"
+                  placeholder="Contoh: 081234567890"
+                  value={newPhone}
+                  onChange={e => setNewPhone(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
                 />
               </div>
@@ -211,10 +268,30 @@ export default function ParticipantsPage() {
                 <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Email</label>
                 <input
                   type="email"
-                  placeholder="email@perusahaan.com"
+                  placeholder="admin@toko.com"
                   value={newEmail}
                   onChange={e => setNewEmail(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                />
+              </div>
+              <div>
+                <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Kota / Wilayah</label>
+                <input
+                  type="text"
+                  placeholder="Contoh: Jakarta"
+                  value={newDept}
+                  onChange={e => setNewDept(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Alamat Lengkap</label>
+                <textarea
+                  placeholder="Jl. Merdeka No. 123..."
+                  value={newAddress}
+                  onChange={e => setNewAddress(e.target.value)}
+                  rows={2}
+                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium resize-none"
                 />
               </div>
             </div>
