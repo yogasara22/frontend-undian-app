@@ -1,26 +1,36 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-const gradients = [
-  { from: '#e8192c', via: '#c01020', to: '#900a10' }, // Red
-  { from: '#1a5bcc', via: '#154aa3', to: '#0d327a' }, // Blue
-  { from: '#7c3aed', via: '#6d28d9', to: '#4c1d95' }, // Purple
-  { from: '#0d9488', via: '#0f766e', to: '#134e4a' }, // Teal
-  { from: '#4a3721', via: '#382a19', to: '#261c11' }, // Premium Brown
-  { from: '#be123c', via: '#9f1239', to: '#881337' }, // Rose
-];
+import { getBackgroundConfig, type BackgroundConfig } from '../lib/settings';
 
 export function useDynamicBackground() {
+  const [config, setConfig] = useState<BackgroundConfig>(getBackgroundConfig());
   const [index, setIndex] = useState(0);
 
+  // Sync with localStorage changes (if open in another tab/window)
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prevIndex) => (prevIndex + 1) % gradients.length);
-    }, 60000); // 1 minute
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'undian_bg_config') {
+        setConfig(getBackgroundConfig());
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    
+    // Initial fetch to be sure
+    setConfig(getBackgroundConfig());
 
-    return () => clearInterval(interval);
+    return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
-  return gradients[index];
+  useEffect(() => {
+    if (config.gradients.length === 0) return;
+
+    const interval = setInterval(() => {
+      setIndex((prevIndex) => (prevIndex + 1) % config.gradients.length);
+    }, config.duration);
+
+    return () => clearInterval(interval);
+  }, [config.duration, config.gradients.length]);
+
+  return config.gradients[index] || { from: '#e8192c', via: '#c01020', to: '#900a10' };
 }
