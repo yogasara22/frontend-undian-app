@@ -115,9 +115,9 @@ export default function WinnersPage() {
             const count = winners.filter(w => w.category === cat.name).length;
             if (count === 0) return null;
             return (
-              <div key={cat.id} className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-                <div className="text-3xl font-black text-gray-900 mb-1">{count}</div>
-                <div className="text-gray-500 text-xs font-bold uppercase tracking-wider">{cat.name}</div>
+              <div key={cat.id} className="bg-white border border-gray-200 rounded-xl p-3.5 shadow-sm">
+                <div className="text-2xl font-black text-gray-900 mb-0.5">{count}</div>
+                <div className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">{cat.name}</div>
               </div>
             );
           })}
@@ -130,13 +130,13 @@ export default function WinnersPage() {
           <table className="w-full text-sm min-w-[700px] md:min-w-full">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/50">
-                <th className="text-left px-6 py-4 text-gray-500 font-bold">#</th>
-                <th className="text-left px-6 py-4 text-gray-500 font-bold">Pemenang</th>
-                <th className="text-left px-6 py-4 text-gray-500 font-bold hidden md:table-cell">Departemen</th>
-                <th className="text-left px-6 py-4 text-gray-500 font-bold">Hadiah</th>
-                <th className="text-left px-6 py-4 text-gray-500 font-bold hidden sm:table-cell">Kategori</th>
-                <th className="text-left px-6 py-4 text-gray-500 font-bold hidden lg:table-cell">Waktu</th>
-                <th className="text-right px-6 py-4 text-gray-500 font-bold">Aksi</th>
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider">#</th>
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider">Pemenang</th>
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider hidden md:table-cell">Departemen</th>
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider">Hadiah</th>
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider hidden sm:table-cell">Kategori</th>
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider hidden lg:table-cell">Waktu</th>
+                <th className="text-right px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -149,32 +149,32 @@ export default function WinnersPage() {
               ) : (
                 filtered.map((w, i) => (
                   <tr key={w.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 border border-gray-200 font-bold text-gray-600">
+                    <td className="px-4 py-1.5">
+                      <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-100 font-bold text-gray-600">
                         {i < 3 ? (
-                          <span className="text-lg leading-none">{['🥇', '🥈', '🥉'][i]}</span>
+                          <span className="text-xs">{['🥇', '🥈', '🥉'][i]}</span>
                         ) : (
-                          <span className="text-sm">{i + 1}</span>
+                          <span className="text-[9px]">{i + 1}</span>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center text-orange-600 text-xs font-bold flex-shrink-0">
+                    <td className="px-4 py-1.5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 text-[9px] font-black flex-shrink-0">
                           {w.name.charAt(0)}
                         </div>
-                        <span className="text-gray-900 font-bold">{w.name}</span>
+                        <span className="text-gray-900 font-bold text-xs">{w.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-500 font-medium hidden md:table-cell">{w.department}</td>
-                    <td className="px-6 py-4 text-orange-600 font-bold text-base">{w.prize}</td>
-                    <td className="px-6 py-4 hidden sm:table-cell">
-                      <span className="px-3 py-1.5 text-xs rounded-full bg-blue-50 text-blue-600 border border-blue-200 font-bold">
+                    <td className="px-4 py-1.5 text-gray-400 font-medium text-[10px] hidden md:table-cell">{w.department}</td>
+                    <td className="px-4 py-1.5 text-orange-600 font-bold text-xs tracking-tight">{w.prize}</td>
+                    <td className="px-4 py-1.5 hidden sm:table-cell">
+                      <span className="text-[10px] font-bold text-blue-500 uppercase tracking-tight">
                         {w.category}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-gray-400 font-medium text-xs hidden lg:table-cell">{w.drawnAt}</td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-4 py-1.5 text-gray-400 font-medium text-[9px] hidden lg:table-cell">{w.drawnAt}</td>
+                    <td className="px-4 py-1.5 text-right">
                       <button
                         onClick={() => handleDelete(w.id)}
                         className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors inline-block"

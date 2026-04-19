@@ -173,8 +173,8 @@ export default function CategoriesPage() {
       {/* Add/Edit Modal */}
       {showAddModal && (
         <div className="fixed inset-0 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white border border-gray-200 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative overflow-y-auto max-h-[90vh]">
-            <div className="flex items-center justify-between mb-8">
+          <div className="bg-white border border-gray-200 rounded-3xl p-4 w-full max-w-sm shadow-2xl relative overflow-y-auto max-h-[90vh]">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="text-gray-900 font-black text-xl">
                 {editId !== null ? 'Edit Kategori' : 'Tambah Kategori'}
               </h3>
@@ -184,7 +184,7 @@ export default function CategoriesPage() {
                 </svg>
               </button>
             </div>
-            <div className="space-y-5">
+            <div className="space-y-2.5">
               <div>
                 <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Nama Kategori *</label>
                 <input
@@ -192,7 +192,7 @@ export default function CategoriesPage() {
                   placeholder="Contoh: Hadiah Utama"
                   value={newName}
                   onChange={e => setNewName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
                 />
               </div>
               <div>
@@ -202,7 +202,7 @@ export default function CategoriesPage() {
                   value={newDesc}
                   onChange={e => setNewDesc(e.target.value)}
                   rows={2}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium resize-none"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium resize-none"
                 />
               </div>
               <div>
@@ -224,17 +224,17 @@ export default function CategoriesPage() {
                 </div>
               </div>
             </div>
-            <div className="flex gap-4 mt-8">
+            <div className="flex gap-4 mt-5">
               <button
                 onClick={() => setShowAddModal(false)}
-                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm font-bold shadow-sm"
+                className="flex-1 px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm font-bold shadow-sm"
               >
                 Batal
               </button>
               <button
                 onClick={handleAdd}
                 disabled={!newName.trim()}
-                className="flex-1 px-4 py-3 rounded-xl bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-all text-sm font-bold shadow-sm shadow-orange-600/30"
+                className="flex-1 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-all text-sm font-bold shadow-sm shadow-orange-600/30"
               >
                 {editId !== null ? 'Simpan' : 'Tambah'}
               </button>

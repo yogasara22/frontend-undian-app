@@ -100,7 +100,7 @@ export default function ParticipantsPage() {
       </div>
 
       {importMsg && (
-        <div className="px-5 py-4 rounded-xl bg-green-50 border border-green-200 text-green-700 font-semibold shadow-sm text-sm">
+        <div className="px-3 py-1.5 rounded-lg bg-green-50 border border-green-200 text-green-700 text-xs font-bold whitespace-nowrap inline-flex items-center gap-1.5 shadow-sm">
           {importMsg}
         </div>
       )}
@@ -135,87 +135,85 @@ export default function ParticipantsPage() {
       <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[800px] md:min-w-full">
-          <thead>
-            <tr className="border-b border-gray-200 bg-gray-50/50">
-              <th className="text-left px-6 py-4 text-gray-500 font-bold">#</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold w-[250px]">Nama & Toko</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold">NIK</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold">No. HP</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold hidden md:table-cell">Email</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold hidden lg:table-cell">Alamat</th>
-              <th className="text-left px-6 py-4 text-gray-500 font-bold hidden sm:table-cell">Kota</th>
-              <th className="text-right px-6 py-4 text-gray-500 font-bold">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-gray-400 font-medium bg-gray-50/30">
-                  Tidak ada peserta ditemukan
-                </td>
+            <thead>
+              <tr className="border-b border-gray-200 bg-gray-50/50">
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider">#</th>
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider w-[220px]">Nama & Toko</th>
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider">NIK</th>
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider">No. HP</th>
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider hidden lg:table-cell">Alamat</th>
+                <th className="text-left px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider hidden sm:table-cell">Kota</th>
+                <th className="text-right px-4 py-2 text-gray-400 font-bold text-[11px] uppercase tracking-wider">Aksi</th>
               </tr>
-            ) : (
-              filtered.map((p, i) => (
-                <tr key={p.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 text-gray-400 font-semibold">{i + 1}</td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 text-sm font-bold flex-shrink-0">
-                        {p.name.charAt(0)}
-                      </div>
-                      <div>
-                        <div className="text-gray-900 font-bold leading-tight">{p.name}</div>
-                        {p.shopName && (
-                          <div className="text-orange-600 text-xs font-bold uppercase mt-0.5 tracking-tight">{p.shopName}</div>
-                        )}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 font-mono text-xs text-gray-400">
-                    {p.ktpNumber || '-'}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-50 text-green-700 border border-green-200 text-xs font-bold">
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                      </svg>
-                      {p.phoneNumber || '-'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-gray-500 font-medium hidden md:table-cell truncate max-w-[150px]">{p.email || '-'}</td>
-                  <td className="px-6 py-4 text-gray-400 text-xs hidden lg:table-cell truncate max-w-[200px]" title={p.address}>
-                    {p.address || '-'}
-                  </td>
-                  <td className="px-6 py-4 hidden sm:table-cell">
-                    <span className="px-2.5 py-1 text-[10px] rounded-full bg-gray-100 text-gray-600 border border-gray-200 font-bold uppercase">
-                      {p.department || 'General'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => handleDelete(p.id)}
-                      className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors inline-block"
-                      title="Hapus peserta"
-                    >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
+            </thead>
+            <tbody>
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-6 py-12 text-center text-gray-400 font-medium bg-gray-50/30">
+                    Tidak ada peserta ditemukan
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filtered.map((p, i) => (
+                  <tr key={p.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-1.5 text-gray-400 font-semibold text-[11px]">{i + 1}</td>
+                    <td className="px-4 py-1.5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 text-[9px] font-black flex-shrink-0">
+                          {p.name.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="text-gray-900 font-bold leading-tight text-xs">{p.name}</div>
+                          {p.shopName && (
+                            <div className="text-orange-600 text-[9px] font-bold uppercase tracking-tight">{p.shopName}</div>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-1.5 font-mono text-[10px] text-gray-400">
+                      {p.ktpNumber || '-'}
+                    </td>
+                    <td className="px-4 py-1.5 whitespace-nowrap">
+                      <span className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded bg-green-50 text-green-700 border border-green-100 text-[9px] font-bold">
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                        {p.phoneNumber || '-'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-1.5 text-gray-400 text-[10px] font-medium hidden lg:table-cell truncate max-w-[180px]" title={p.address}>
+                      {p.address || '-'}
+                    </td>
+                    <td className="px-4 py-1.5 hidden sm:table-cell">
+                      <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                        {p.department || 'General'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-1.5 text-right">
+                      <button
+                        onClick={() => handleDelete(p.id)}
+                        className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors inline-block"
+                        title="Hapus peserta"
+                      >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
       {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white border border-gray-200 rounded-3xl p-6 w-full max-w-xl shadow-2xl relative overflow-y-auto max-h-[90vh]">
-            <div className="flex items-center justify-between mb-8">
+          <div className="bg-white border border-gray-200 rounded-3xl p-4 w-full max-w-xl shadow-2xl relative overflow-y-auto max-h-[90vh]">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="text-gray-900 font-black text-xl">Tambah Peserta</h3>
               <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 p-2 rounded-full transition-colors">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -223,7 +221,7 @@ export default function ParticipantsPage() {
                 </svg>
               </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-2">
               <div className="md:col-span-2">
                 <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Nama Lengkap *</label>
                 <input
@@ -231,7 +229,7 @@ export default function ParticipantsPage() {
                   placeholder="Contoh: Budi Santoso"
                   value={newName}
                   onChange={e => setNewName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
                 />
               </div>
               <div className="md:col-span-2">
@@ -241,7 +239,7 @@ export default function ParticipantsPage() {
                   placeholder="Contoh: Toko Berkah Jaya"
                   value={newShop}
                   onChange={e => setNewShop(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
                 />
               </div>
               <div>
@@ -251,7 +249,7 @@ export default function ParticipantsPage() {
                   placeholder="16 digit angka"
                   value={newKtp}
                   onChange={e => setNewKtp(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
                 />
               </div>
               <div>
@@ -261,7 +259,7 @@ export default function ParticipantsPage() {
                   placeholder="Contoh: 081234567890"
                   value={newPhone}
                   onChange={e => setNewPhone(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
                 />
               </div>
               <div>
@@ -271,7 +269,7 @@ export default function ParticipantsPage() {
                   placeholder="admin@toko.com"
                   value={newEmail}
                   onChange={e => setNewEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
                 />
               </div>
               <div>
@@ -281,7 +279,7 @@ export default function ParticipantsPage() {
                   placeholder="Contoh: Jakarta"
                   value={newDept}
                   onChange={e => setNewDept(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
                 />
               </div>
               <div className="md:col-span-2">
@@ -291,21 +289,21 @@ export default function ParticipantsPage() {
                   value={newAddress}
                   onChange={e => setNewAddress(e.target.value)}
                   rows={2}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium resize-none"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium resize-none"
                 />
               </div>
             </div>
-            <div className="flex gap-4 mt-8">
+            <div className="flex gap-4 mt-4">
               <button
                 onClick={() => setShowAddModal(false)}
-                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm font-bold shadow-sm"
+                className="flex-1 px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm font-bold shadow-sm"
               >
                 Batal
               </button>
               <button
                 onClick={handleAdd}
                 disabled={!newName.trim()}
-                className="flex-1 px-4 py-3 rounded-xl bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-all text-sm font-bold shadow-sm shadow-orange-600/30"
+                className="flex-1 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-all text-sm font-bold shadow-sm shadow-orange-600/30"
               >
                 Simpan
               </button>

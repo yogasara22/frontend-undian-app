@@ -148,8 +148,8 @@ export default function PrizesPage() {
       {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white border border-gray-200 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative overflow-y-auto max-h-[90vh]">
-            <div className="flex items-center justify-between mb-8">
+          <div className="bg-white border border-gray-200 rounded-3xl p-4 w-full max-w-sm shadow-2xl relative overflow-y-auto max-h-[90vh]">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="text-gray-900 font-black text-xl">Tambah Hadiah Baru</h3>
               <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 p-2 rounded-full transition-colors">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -157,7 +157,7 @@ export default function PrizesPage() {
                 </svg>
               </button>
             </div>
-            <div className="space-y-5">
+            <div className="space-y-2.5">
               <div>
                 <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Nama Hadiah *</label>
                 <input
@@ -165,7 +165,7 @@ export default function PrizesPage() {
                   placeholder="Contoh: Laptop Gaming"
                   value={newName}
                   onChange={e => setNewName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
                 />
               </div>
               <div>
@@ -175,7 +175,7 @@ export default function PrizesPage() {
                   placeholder="Contoh: Rp 5.000.000"
                   value={newValue}
                   onChange={e => setNewValue(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
+                  className="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-medium"
                 />
               </div>
               <div>
@@ -195,7 +195,7 @@ export default function PrizesPage() {
                 <label className="text-gray-700 text-xs font-bold uppercase tracking-wider mb-2 block">Gambar Hadiah</label>
                 <div 
                   onClick={() => fileInputRef.current?.click()}
-                  className="relative w-full aspect-video rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-orange-300 transition-all cursor-pointer overflow-hidden flex flex-col items-center justify-center gap-2 group"
+                  className="relative w-full h-24 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-orange-300 transition-all cursor-pointer overflow-hidden flex flex-col items-center justify-center gap-1 group"
                 >
                   {newImage ? (
                     <>
@@ -224,17 +224,17 @@ export default function PrizesPage() {
                 />
               </div>
             </div>
-            <div className="flex gap-4 mt-8">
+            <div className="flex gap-4 mt-5">
               <button
                 onClick={() => setShowAddModal(false)}
-                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm font-bold shadow-sm"
+                className="flex-1 px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all text-sm font-bold shadow-sm"
               >
                 Batal
               </button>
               <button
                 onClick={handleAdd}
                 disabled={!newName.trim()}
-                className="flex-1 px-4 py-3 rounded-xl bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-all text-sm font-bold shadow-sm shadow-orange-600/30"
+                className="flex-1 px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-all text-sm font-bold shadow-sm shadow-orange-600/30"
               >
                 Tambah
               </button>
