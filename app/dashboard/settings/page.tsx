@@ -1,17 +1,39 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getBackgroundConfig, saveBackgroundConfig, type GradientEntry, type BackgroundConfig } from '../../lib/settings';
+import { getBackgroundConfig, saveBackgroundConfig, type GradientEntry, type BackgroundConfig, type TypographyConfig } from '../../lib/settings';
+
+const FONTS = [
+  { name: 'Inter (Sans)', value: 'var(--font-inter)' },
+  { name: 'Montserrat (Modern)', value: 'var(--font-montserrat)' },
+  { name: 'Poppins (Soft)', value: 'var(--font-poppins)' },
+  { name: 'Bebas Neue (Display)', value: 'var(--font-bebas)' },
+];
+
+const FONT_WEIGHTS = [
+  { name: 'Regular', value: '400' },
+  { name: 'Semi Bold', value: '600' },
+  { name: 'Bold', value: '700' },
+  { name: 'Black', value: '900' },
+];
 
 export default function SettingsPage() {
   const [config, setConfig] = useState<BackgroundConfig | null>(null);
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     setConfig(getBackgroundConfig());
   }, []);
 
   if (!config) return null;
+
+  const handleSave = () => {
+    if (config) {
+      saveBackgroundConfig(config);
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 3000);
+    }
+  };
 
   const handleDurationChange = (val: string) => {
     const num = parseInt(val) || 0;
@@ -27,7 +49,7 @@ export default function SettingsPage() {
   const addGradient = () => {
     setConfig({
       ...config,
-      gradients: [...config.gradients, { from: '#ffffff', via: '#cccccc', to: '#999999' }]
+      gradients: [...config.gradients, { from: '#3b82f6', via: '#2563eb', to: '#1d4ed8' }]
     });
   };
 
@@ -37,42 +59,51 @@ export default function SettingsPage() {
     setConfig({ ...config, gradients: newGradients });
   };
 
-  const handleSave = () => {
-    setSaveStatus('saving');
-    saveBackgroundConfig(config);
-    setTimeout(() => {
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus('idle'), 2000);
-    }, 500);
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Ukuran file terlalu besar (Maksimal 2MB)');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setConfig({ ...config, backgroundImage: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const updateTitleStyle = (key: keyof TypographyConfig, value: any) => {
+    setConfig({
+      ...config,
+      titleStyle: { ...config.titleStyle, [key]: value }
+    });
+  };
+
+  const updatePrizeStyle = (key: keyof TypographyConfig, value: any) => {
+    setConfig({
+      ...config,
+      prizeStyle: { ...config.prizeStyle, [key]: value }
+    });
   };
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-8 pb-32">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-black text-gray-900 mb-1">Konfigurasi Desain</h2>
-          <p className="text-gray-500 text-sm font-medium">Atur durasi rotasi dan palet warna background utama.</p>
+          <p className="text-gray-500 text-sm">Sesuaikan tampilan layar undian agar lebih premium</p>
         </div>
         <button
           onClick={handleSave}
-          disabled={saveStatus !== 'idle'}
-          className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm flex items-center gap-2 ${
-            saveStatus === 'saved' 
-              ? 'bg-green-500 text-white' 
-              : 'bg-orange-600 hover:bg-orange-700 text-white hover:shadow-lg active:scale-95 disabled:opacity-50'
+          className={`px-8 py-3 rounded-xl font-bold transition-all shadow-lg flex items-center gap-2 ${
+            isSaved ? 'bg-green-500 text-white' : 'bg-gray-900 text-white hover:bg-black hover:scale-105 active:scale-95'
           }`}
         >
-          {saveStatus === 'saving' ? (
+          {isSaved ? (
             <>
-              <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Menyimpan...
-            </>
-          ) : saveStatus === 'saved' ? (
-            <>
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
               </svg>
               Tersimpan!
@@ -83,9 +114,8 @@ export default function SettingsPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Duration Settings */}
-        <div className="lg:col-span-1 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="space-y-8">
           <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
             <h3 className="text-gray-900 font-bold mb-4 flex items-center gap-2">
               <span className="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
@@ -95,47 +125,177 @@ export default function SettingsPage() {
               </span>
               Waktu Rotasi
             </h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                  Interval Pergantian (Detik)
-                </label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={config.duration / 1000}
-                    onChange={(e) => handleDurationChange(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all font-bold text-gray-800"
-                    placeholder="Contoh: 60"
-                  />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold bg-white px-2 py-1 rounded-md border border-gray-100 italic">
-                    Detik
-                  </div>
-                </div>
-                <p className="mt-2 text-xs text-gray-500 leading-relaxed">
-                  Layar akan otomatis berganti pallet warna setiap interval waktu di atas habis.
-                </p>
+            <div>
+              <div className="flex justify-between items-end mb-2">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Interval Transisi</label>
+                <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{config.duration / 1000} Detik</span>
               </div>
+              <input
+                type="range"
+                min="5000"
+                max="300000"
+                step="5000"
+                value={config.duration}
+                onChange={(e) => setConfig({ ...config, duration: parseInt(e.target.value) })}
+                className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              />
             </div>
           </section>
 
           <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm overflow-hidden relative">
-             <h3 className="text-gray-900 font-bold mb-4">Preview Aktif</h3>
+             <h3 className="text-gray-900 font-bold mb-4">Preview Atas</h3>
              <div 
-               className="w-full h-40 rounded-xl shadow-inner flex items-center justify-center text-white font-black text-lg text-center p-4"
+               className="w-full h-48 md:h-56 rounded-xl shadow-inner flex items-center justify-center text-center p-4 relative overflow-hidden"
                style={{
-                 background: `linear-gradient(135deg, ${config.gradients[0]?.from}, ${config.gradients[0]?.via}, ${config.gradients[0]?.to})`
+                 background: config.useImageBackground && config.backgroundImage
+                   ? `url(${config.backgroundImage}) center/cover no-repeat`
+                   : `linear-gradient(135deg, ${config.gradients[0]?.from}, ${config.gradients[0]?.via}, ${config.gradients[0]?.to})`
                }}
              >
-                <div className="drop-shadow-md">LIVE PREVIEW</div>
+                <div className="relative z-10 drop-shadow-lg">
+                  <div 
+                    className="uppercase tracking-widest mb-1"
+                    style={{
+                      fontFamily: config.titleStyle.fontFamily,
+                      fontSize: `${Math.max(10, config.titleStyle.fontSize / 3.5)}px`,
+                      color: config.titleStyle.color,
+                      fontWeight: config.titleStyle.fontWeight,
+                      letterSpacing: `${config.titleStyle.letterSpacing / 3}px`,
+                      textShadow: config.titleStyle.textShadow ? '0 2px 4px rgba(0,0,0,0.5)' : 'none'
+                    }}
+                  >
+                    {config.customTitle || 'UNDIAN BERHADIAH'}
+                  </div>
+                  <div 
+                    className="uppercase leading-none"
+                    style={{
+                      fontFamily: config.prizeStyle.fontFamily,
+                      fontSize: `${Math.max(14, config.prizeStyle.fontSize / 3.5)}px`,
+                      color: config.prizeStyle.color,
+                      fontWeight: config.prizeStyle.fontWeight,
+                      letterSpacing: `${config.prizeStyle.letterSpacing / 3}px`,
+                      textShadow: config.prizeStyle.textShadow ? '0 4px 8px rgba(0,0,0,0.5)' : 'none'
+                    }}
+                  >
+                    HADIAH UTAMA
+                  </div>
+                </div>
+                <div className="absolute inset-0 bg-black/20 z-0" />
              </div>
-             <p className="mt-3 text-[10px] text-gray-400 text-center uppercase font-bold tracking-widest">Contoh Tampilan Background Utama</p>
+             <p className="mt-3 text-[10px] text-gray-400 text-center uppercase font-bold tracking-widest">Preview Tampilan Layar Undian</p>
+          </section>
+          <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="text-gray-900 font-bold mb-4 flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                </svg>
+              </span>
+              Mode Tampilan
+            </h3>
+            <div className="space-y-4">
+              <div className="flex p-1 bg-gray-100 rounded-xl">
+                <button
+                  onClick={() => setConfig({ ...config, useImageBackground: false })}
+                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${!config.useImageBackground ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                  Warna Gradient
+                </button>
+                <button
+                  onClick={() => setConfig({ ...config, useImageBackground: true })}
+                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${config.useImageBackground ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                >
+                  Custom Image
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Isi Judul Hadiah</label>
+                <input
+                  type="text"
+                  value={config.customTitle}
+                  onChange={(e) => setConfig({ ...config, customTitle: e.target.value })}
+                  placeholder="Contoh: UNDIAN BERHADIAH MINGGUAN"
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-bold text-gray-800 text-sm"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-8">
+            <h3 className="text-gray-900 font-bold flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </span>
+              Desain Teks
+            </h3>
+
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2">Gaya Judul Atas</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase">Font Family</label>
+                  <select 
+                    value={config.titleStyle.fontFamily}
+                    onChange={(e) => updateTitleStyle('fontFamily', e.target.value)}
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:ring-1 focus:ring-blue-500"
+                  >
+                    {FONTS.map((f) => <option key={f.value} value={f.value}>{f.name}</option>)}
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase">Warna Teks</label>
+                  <div className="flex items-center gap-2">
+                    <input type="color" value={config.titleStyle.color} onChange={(e) => updateTitleStyle('color', e.target.value)} className="w-8 h-8 rounded-lg border-0 bg-transparent cursor-pointer" />
+                    <input type="text" value={config.titleStyle.color} onChange={(e) => updateTitleStyle('color', e.target.value)} className="flex-1 min-w-0 px-2 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-[10px] font-mono uppercase" />
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase">Ukuran Font</label>
+                  <span className="text-[10px] font-black text-blue-600">{config.titleStyle.fontSize}px</span>
+                </div>
+                <input type="range" min="12" max="64" step="1" value={config.titleStyle.fontSize} onChange={(e) => updateTitleStyle('fontSize', parseInt(e.target.value))} className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-blue-600" />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2">Gaya Nama Hadiah Utama</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase">Font Family</label>
+                  <select 
+                    value={config.prizeStyle.fontFamily}
+                    onChange={(e) => updatePrizeStyle('fontFamily', e.target.value)}
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:ring-1 focus:ring-blue-500"
+                  >
+                    {FONTS.map((f) => <option key={f.value} value={f.value}>{f.name}</option>)}
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase">Warna Teks</label>
+                  <div className="flex items-center gap-2">
+                    <input type="color" value={config.prizeStyle.color} onChange={(e) => updatePrizeStyle('color', e.target.value)} className="w-8 h-8 rounded-lg border-0 bg-transparent cursor-pointer" />
+                    <input type="text" value={config.prizeStyle.color} onChange={(e) => updatePrizeStyle('color', e.target.value)} className="flex-1 min-w-0 px-2 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-[10px] font-mono uppercase" />
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase">Ukuran Font</label>
+                  <span className="text-[10px] font-black text-blue-600">{config.prizeStyle.fontSize}px</span>
+                </div>
+                <input type="range" min="32" max="160" step="2" value={config.prizeStyle.fontSize} onChange={(e) => updatePrizeStyle('fontSize', parseInt(e.target.value))} className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-blue-600" />
+              </div>
+            </div>
           </section>
         </div>
 
-        {/* Right Column: Gradient Editor */}
         <div className="lg:col-span-2">
-          <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm h-full">
+          <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-gray-900 font-bold flex items-center gap-2">
                 <span className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
@@ -143,20 +303,80 @@ export default function SettingsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </span>
-                Koleksi Pallet Warna (Gradients)
+                {config.useImageBackground ? 'Konfigurasi Background Gambar' : 'Koleksi Pallet Warna (Gradients)'}
               </h3>
-              <button
-                onClick={addGradient}
-                className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                </svg>
-                Tambah Gradient
-              </button>
+              {!config.useImageBackground && (
+                <button
+                  onClick={addGradient}
+                  className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Tambah Gradient
+                </button>
+              )}
             </div>
 
-            <div className="space-y-4">
+            {config.useImageBackground ? (
+              <div className="space-y-6">
+                <div className="p-6 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center bg-gray-50/50 hover:bg-white hover:border-blue-300 transition-all group min-h-[300px] relative">
+                   {config.backgroundImage ? (
+                     <div className="relative w-full h-[250px] md:h-[400px] rounded-xl overflow-hidden shadow-lg mb-4">
+                        <img src={config.backgroundImage} className="w-full h-full object-cover" alt="Background Preview" />
+                        <button 
+                          onClick={() => setConfig({ ...config, backgroundImage: '' })}
+                          className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full shadow-lg hover:scale-110 transition-transform z-10"
+                        >
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                     </div>
+                   ) : (
+                     <div className="text-center py-12">
+                        <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-400 group-hover:text-blue-500 transition-colors shadow-inner">
+                           <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                           </svg>
+                        </div>
+                        <p className="text-base font-bold text-gray-600">Pilih atau Seret Gambar ke Sini</p>
+                        <p className="text-sm text-gray-400 mt-2">Format: JPG, PNG, WebP (Rasio 16:9 disarankan)</p>
+                     </div>
+                   )}
+                   <input
+                     type="file"
+                     accept="image/*"
+                     onChange={handleImageUpload}
+                     className="absolute inset-0 opacity-0 cursor-pointer z-0"
+                     title=""
+                   />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   <div className="space-y-1.5">
+                      <label className="text-[10px] font-black text-gray-400 uppercase ml-1">Atau Gunakan URL Gambar</label>
+                      <input
+                        type="text"
+                        value={config.backgroundImage.startsWith('data:') ? '' : config.backgroundImage}
+                        onChange={(e) => setConfig({ ...config, backgroundImage: e.target.value })}
+                        className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all text-sm font-medium"
+                        placeholder="https://example.com/bg-undian.jpg"
+                      />
+                   </div>
+                   <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 flex items-start gap-3">
+                      <svg className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-[11px] text-orange-700 font-medium leading-relaxed">
+                        Jika menggunakan file lokal (Base64), pastikan ukurannya di bawah 2MB agar aplikasi tetap lancar.
+                      </p>
+                   </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="space-y-4">
               {config.gradients.map((grad, idx) => (
                 <div 
                   key={idx} 
@@ -247,10 +467,14 @@ export default function SettingsPage() {
                 </svg>
               </span>
               <p className="text-xs text-blue-700 font-medium leading-relaxed">
-                Background akan berotasi secara berurutan sesuai daftar di atas. Gunakan kombinasi warna yang kontras dengan teks putih layar undian untuk keterbacaan maksimal.
+                {config.useImageBackground 
+                  ? "Mode gambar aktif. Gunakan gambar dengan resolusi tinggi (FHD) untuk hasil visual terbaik di layar panggung."
+                  : "Background akan berotasi secara berurutan sesuai daftar di atas. Gunakan kombinasi warna yang kontras dengan teks putih layar undian untuk keterbacaan maksimal."}
               </p>
             </div>
-          </section>
+          </>
+        )}
+      </section>
         </div>
       </div>
     </div>

@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Montserrat, Poppins, Bebas_Neue } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' });
+const poppins = Poppins({ weight: ['400', '700', '900'], subsets: ['latin'], variable: '--font-poppins' });
+const bebasNeue = Bebas_Neue({ weight: '400', subsets: ['latin'], variable: '--font-bebas' });
 
 export const metadata: Metadata = {
   title: 'Aplikasi Undian',
@@ -19,7 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.variable} ${montserrat.variable} ${poppins.variable} ${bebasNeue.variable} font-sans`}>
+        {children}
+      </body>
     </html>
   );
 }

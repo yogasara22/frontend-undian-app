@@ -6,10 +6,42 @@ export interface GradientEntry {
   to: string;
 }
 
+export interface TypographyConfig {
+  fontSize: number;
+  color: string;
+  fontWeight: string;
+  fontFamily: string;
+  letterSpacing: number;
+  textShadow: boolean;
+}
+
 export interface BackgroundConfig {
   duration: number; // in milliseconds
   gradients: GradientEntry[];
+  useImageBackground: boolean;
+  backgroundImage: string;
+  customTitle: string;
+  titleStyle: TypographyConfig;
+  prizeStyle: TypographyConfig;
 }
+
+const DEFAULT_TITLE_STYLE: TypographyConfig = {
+  fontSize: 32,
+  color: '#FFFFFF',
+  fontWeight: '800',
+  fontFamily: 'Inter',
+  letterSpacing: 4,
+  textShadow: true
+};
+
+const DEFAULT_PRIZE_STYLE: TypographyConfig = {
+  fontSize: 80,
+  color: '#FFFFFF',
+  fontWeight: '900',
+  fontFamily: 'Inter',
+  letterSpacing: 0,
+  textShadow: true
+};
 
 const DEFAULT_GRADIENTS: GradientEntry[] = [
   { from: '#e8192c', via: '#c01020', to: '#900a10' }, // Red
@@ -23,20 +55,35 @@ const DEFAULT_GRADIENTS: GradientEntry[] = [
 const STORAGE_KEY = 'undian_bg_config';
 
 export const getBackgroundConfig = (): BackgroundConfig => {
-  if (typeof window === 'undefined') {
-    return { duration: 60000, gradients: DEFAULT_GRADIENTS };
-  }
+  const defaults: BackgroundConfig = { 
+    duration: 60000, 
+    gradients: DEFAULT_GRADIENTS,
+    useImageBackground: false,
+    backgroundImage: '',
+    customTitle: 'UNDIAN BERHADIAH',
+    titleStyle: DEFAULT_TITLE_STYLE,
+    prizeStyle: DEFAULT_PRIZE_STYLE
+  };
+
+  if (typeof window === 'undefined') return defaults;
 
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
     try {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      // Deep merge to ensure nested style objects are complete
+      return {
+        ...defaults,
+        ...parsed,
+        titleStyle: parsed.titleStyle ? { ...defaults.titleStyle, ...parsed.titleStyle } : defaults.titleStyle,
+        prizeStyle: parsed.prizeStyle ? { ...defaults.prizeStyle, ...parsed.prizeStyle } : defaults.prizeStyle
+      };
     } catch (e) {
       console.error('Failed to parse background config', e);
     }
   }
 
-  return { duration: 60000, gradients: DEFAULT_GRADIENTS };
+  return defaults;
 };
 
 export const saveBackgroundConfig = (config: BackgroundConfig) => {

@@ -32,5 +32,14 @@ export function useDynamicBackground() {
     return () => clearInterval(interval);
   }, [config.duration, config.gradients.length]);
 
-  return config.gradients[index] || { from: '#e8192c', via: '#c01020', to: '#900a10' };
+  const currentGradient = config.gradients[index] || { from: '#e8192c', via: '#c01020', to: '#900a10' };
+
+  return {
+    ...currentGradient,
+    useImageBackground: config.useImageBackground,
+    backgroundImage: config.backgroundImage,
+    customTitle: config.customTitle,
+    titleStyle: config.titleStyle,
+    prizeStyle: config.prizeStyle
+  };
 }

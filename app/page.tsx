@@ -10,22 +10,41 @@ import { ErrorDisplay } from './components/ErrorDisplay';
 import { ParticipantCounter } from './components/ParticipantCounter';
 import { useDynamicBackground } from './hooks/useDynamicBackground';
 
+import { useState, useEffect } from 'react';
+
 export default function Home() {
+  const [hasMounted, setHasMounted] = useState(false);
   const { isRolling, isLoading, winner, prize, error, currentDisplay, startDraw, reset } = useLottery();
-  const gradient = useDynamicBackground();
+  const bgConfig = useDynamicBackground();
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  // Use values that match SSR during hydration
+  const useImage = hasMounted ? bgConfig.useImageBackground : false;
+  const activeTitle = hasMounted ? bgConfig.customTitle : 'UNDIAN BERHADIAH';
+  const activeTitleStyle = hasMounted ? bgConfig.titleStyle : undefined;
+  const activePrizeStyle = hasMounted ? bgConfig.prizeStyle : undefined;
 
   return (
     <main 
-      className="min-h-screen dynamic-bg flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden font-sans"
+      className={`min-h-screen ${useImage ? '' : 'dynamic-bg'} flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden font-sans`}
       style={{
-        '--bg-from': gradient.from,
-        '--bg-via': gradient.via,
-        '--bg-to': gradient.to,
+        '--bg-from': bgConfig.from,
+        '--bg-via': bgConfig.via,
+        '--bg-to': bgConfig.to,
+        ...(useImage && bgConfig.backgroundImage ? {
+          backgroundImage: `url(${bgConfig.backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        } : {})
       } as React.CSSProperties}
     >
       
-      {/* Dynamic Background elements (Soft highlights) */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {/* Dynamic Background elements (Soft highlights) - only show if not using image background or as an overlay */}
+      <div className={`absolute inset-0 overflow-hidden pointer-events-none z-0 ${useImage ? 'opacity-30' : ''}`}>
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-white/40 blur-[120px]" />
         <div className="absolute top-[40%] right-[-10%] w-[60%] h-[60%] rounded-full bg-orange-200/50 blur-[120px]" />
         {/* Subtle noise texture */}
@@ -58,7 +77,13 @@ export default function Home() {
             winner={winner}
             currentDisplay={currentDisplay}
           />
-          <PrizeSection winner={winner} prize={prize} />
+          <PrizeSection 
+            winner={winner} 
+            prize={prize} 
+            customTitle={activeTitle}
+            titleStyle={activeTitleStyle}
+            prizeStyle={activePrizeStyle}
+          />
           <ErrorDisplay error={error} />
         </div>
 

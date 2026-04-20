@@ -4,9 +4,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { Winner, Prize } from '../types';
 import Image from 'next/image';
 
+import { type TypographyConfig } from '../lib/settings';
+
 interface PrizeSectionProps {
   winner: Winner | null;
   prize: Prize | null;
+  customTitle?: string;
+  titleStyle?: TypographyConfig;
+  prizeStyle?: TypographyConfig;
 }
 
 // Map prize name to emoji icons as fallback
@@ -22,7 +27,13 @@ function getPrizeIcon(prizeName: string): string {
   return '🎁';
 }
 
-export function PrizeSection({ winner, prize }: PrizeSectionProps) {
+export function PrizeSection({ 
+  winner, 
+  prize, 
+  customTitle = 'UNDIAN BERHADIAH',
+  titleStyle,
+  prizeStyle
+}: PrizeSectionProps) {
   if (!prize) return null;
 
   return (
@@ -37,40 +48,70 @@ export function PrizeSection({ winner, prize }: PrizeSectionProps) {
         {/* Text Area */}
         <div className="flex flex-col items-center mb-8 relative z-20 text-center w-full">
           {/* Decorative Thunderbolt Left */}
-          <div className="absolute left-[10%] md:left-[20%] top-0 hidden sm:block">
-            <svg width="40" height="50" viewBox="0 0 24 24" fill="white" className="drop-shadow-md pb-2 -rotate-12">
+          <div className="absolute left-[5%] md:left-[10%] top-[-10px] hidden sm:block">
+            <svg width="45" height="55" viewBox="0 0 24 24" fill="white" className="drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] pb-2 -rotate-12">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
             </svg>
           </div>
           {/* Decorative Thunderbolt Right */}
-          <div className="absolute right-[10%] md:right-[20%] bottom-0 hidden sm:block">
-            <svg width="30" height="40" viewBox="0 0 24 24" fill="white" className="drop-shadow-md rotate-12">
+          <div className="absolute right-[5%] md:right-[10%] bottom-[-10px] hidden sm:block">
+            <svg width="35" height="45" viewBox="0 0 24 24" fill="white" className="drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] rotate-12">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
             </svg>
           </div>
           
-          <h3 className="text-2xl md:text-3xl font-extrabold text-white tracking-widest uppercase relative z-10"
+          {customTitle && (
+            <h3 className="uppercase relative z-10"
+                style={{
+                  fontFamily: titleStyle?.fontFamily || 'inherit',
+                  fontSize: `${titleStyle?.fontSize ? titleStyle.fontSize * 0.75 : 24}px`, // Slight scale for desktop
+                  color: titleStyle?.color || '#FFFFFF',
+                  fontWeight: titleStyle?.fontWeight || '800',
+                  letterSpacing: `${titleStyle?.letterSpacing || 4}px`,
+                  fontVariant: 'all-small-caps',
+                  textShadow: titleStyle?.textShadow 
+                    ? `
+                      -1px -1px 0 #0f54a8,  
+                       1px -1px 0 #0f54a8,
+                      -1px  1px 0 #0f54a8,
+                       1px  1px 0 #0f54a8,
+                       0px  2px 4px rgba(0,0,0,0.5)
+                    ` 
+                    : 'none'
+                }}>
+              {customTitle}
+            </h3>
+          )}
+          <h2 className="uppercase relative z-10 leading-tight md:leading-none px-4"
               style={{
-                textShadow: '-2px -2px 0 #0f54a8, 2px -2px 0 #0f54a8, -2px 2px 0 #0f54a8, 2px 2px 0 #0f54a8, 0px 4px 6px rgba(0,0,0,0.5)'
-              }}>
-            UNDIAN BERHADIAH
-          </h3>
-          <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white mt-1 uppercase relative z-10 leading-tight md:leading-none px-4"
-              style={{
-                textShadow: '-3px -3px 0 #0f54a8, 3px -3px 0 #0f54a8, -3px 3px 0 #0f54a8, 3px 3px 0 #0f54a8, 0px 8px 0px #0f54a8, 0px 15px 15px rgba(0,0,0,0.4)',
-                WebkitTextStroke: '1px #0f54a8'
+                fontFamily: prizeStyle?.fontFamily || 'inherit',
+                fontSize: `${prizeStyle?.fontSize || 80}px`,
+                color: prizeStyle?.color || '#FFFFFF',
+                fontWeight: prizeStyle?.fontWeight || '900',
+                letterSpacing: `${prizeStyle?.letterSpacing || 0}px`,
+                textShadow: prizeStyle?.textShadow 
+                  ? `
+                    -2px -2px 0 #0f54a8,  
+                     2px -2px 0 #0f54a8,
+                    -2px  2px 0 #0f54a8,
+                     2px  2px 0 #0f54a8,
+                     0px  4px 0px #0c4bb0,
+                     0px  8px 0px #093582,
+                     0px 12px 20px rgba(0,0,0,0.4)
+                  `
+                  : 'none'
               }}>
             {prize.name}
           </h2>
         </div>
 
         {/* Podium & Prize Area */}
-        <div className="relative w-64 md:w-96 flex flex-col items-center mt-4">
+        <div className="relative w-80 md:w-[450px] flex flex-col items-center mt-4">
           
           {/* Light Beams from behind */}
           <div className="absolute -inset-20 z-0 flex justify-center pointer-events-none">
-            <div className="w-[100px] h-[300px] bg-white/20 blur-2xl rotate-45 transform origin-bottom -translate-x-20"></div>
-            <div className="w-[100px] h-[300px] bg-white/20 blur-2xl -rotate-45 transform origin-bottom translate-x-20"></div>
+            <div className="w-[150px] h-[400px] bg-white/20 blur-3xl rotate-45 transform origin-bottom -translate-x-32"></div>
+            <div className="w-[150px] h-[400px] bg-white/20 blur-3xl -rotate-45 transform origin-bottom translate-x-32"></div>
           </div>
 
           {/* Prize Image */}
@@ -78,7 +119,7 @@ export function PrizeSection({ winner, prize }: PrizeSectionProps) {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 100, delay: 0.4 }}
-            className="z-30 w-64 h-64 md:w-80 md:h-80 mb-[-30px] md:mb-[-40px] drop-shadow-[0_25px_25px_rgba(0,0,0,0.5)] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none"
+            className="z-30 w-72 h-72 md:w-[500px] md:h-[500px] mb-[-50px] md:mb-[-105px] drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none"
           >
             {prize.imageUrl ? (
               <Image
@@ -89,12 +130,12 @@ export function PrizeSection({ winner, prize }: PrizeSectionProps) {
                 priority
               />
             ) : (
-              <span className="text-[120px] md:text-[150px] leading-none mb-4 md:mb-6">{getPrizeIcon(prize.name)}</span>
+              <span className="text-[150px] md:text-[240px] leading-none mb-6 md:mb-10">{getPrizeIcon(prize.name)}</span>
             )}
           </motion.div>
 
           {/* 3D CSS Podium Stage */}
-          <div className="relative w-[120%] h-[120px] md:h-[150px] z-10">
+          <div className="relative w-[130%] h-[140px] md:h-[180px] z-10">
             {/* Bottom Level (White) */}
             <div className="absolute bottom-0 w-full h-[60px] md:h-[80px]">
               {/* White cylinder top */}
