@@ -15,6 +15,14 @@ export interface TypographyConfig {
   textShadow: boolean;
 }
 
+export interface ScheduledWinner {
+  id: string;
+  name: string;
+  nik: string;
+  prizeId: string | number;
+  prizeName: string;
+}
+
 export interface BackgroundConfig {
   duration: number; // in milliseconds
   gradients: GradientEntry[];
@@ -23,6 +31,7 @@ export interface BackgroundConfig {
   customTitle: string;
   titleStyle: TypographyConfig;
   prizeStyle: TypographyConfig;
+  scheduledWinners: ScheduledWinner[];
 }
 
 const DEFAULT_TITLE_STYLE: TypographyConfig = {
@@ -62,7 +71,8 @@ export const getBackgroundConfig = (): BackgroundConfig => {
     backgroundImage: '',
     customTitle: 'UNDIAN BERHADIAH',
     titleStyle: DEFAULT_TITLE_STYLE,
-    prizeStyle: DEFAULT_PRIZE_STYLE
+    prizeStyle: DEFAULT_PRIZE_STYLE,
+    scheduledWinners: []
   };
 
   if (typeof window === 'undefined') return defaults;
@@ -76,7 +86,8 @@ export const getBackgroundConfig = (): BackgroundConfig => {
         ...defaults,
         ...parsed,
         titleStyle: parsed.titleStyle ? { ...defaults.titleStyle, ...parsed.titleStyle } : defaults.titleStyle,
-        prizeStyle: parsed.prizeStyle ? { ...defaults.prizeStyle, ...parsed.prizeStyle } : defaults.prizeStyle
+        prizeStyle: parsed.prizeStyle ? { ...defaults.prizeStyle, ...parsed.prizeStyle } : defaults.prizeStyle,
+        scheduledWinners: parsed.scheduledWinners || []
       };
     } catch (e) {
       console.error('Failed to parse background config', e);

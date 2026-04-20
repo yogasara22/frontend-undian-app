@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getBackgroundConfig, saveBackgroundConfig, type GradientEntry, type BackgroundConfig, type TypographyConfig } from '../../lib/settings';
+import { getBackgroundConfig, saveBackgroundConfig, type GradientEntry, type BackgroundConfig, type TypographyConfig, type ScheduledWinner } from '../../lib/settings';
+import { dummyPrizes } from '../../lib/dummy';
 
 const FONTS = [
   { name: 'Inter (Sans)', value: 'var(--font-inter)' },
@@ -20,6 +21,7 @@ const FONT_WEIGHTS = [
 export default function SettingsPage() {
   const [config, setConfig] = useState<BackgroundConfig | null>(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [newWinner, setNewWinner] = useState({ name: '', nik: '', prizeId: '' });
 
   useEffect(() => {
     setConfig(getBackgroundConfig());
@@ -33,6 +35,44 @@ export default function SettingsPage() {
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 3000);
     }
+  };
+
+  const addScheduledWinner = () => {
+    if (!newWinner.name || !newWinner.nik || !newWinner.prizeId) {
+      alert('Harap isi Nama, NIK, dan Pilih Hadiah');
+      return;
+    }
+    
+    const selectedPrize = dummyPrizes.find(p => p.id.toString() === newWinner.prizeId);
+    if (!selectedPrize) return;
+
+    const winner: ScheduledWinner = {
+      id: Math.random().toString(36).substring(2, 9),
+      name: newWinner.name,
+      nik: newWinner.nik,
+      prizeId: selectedPrize.id,
+      prizeName: selectedPrize.name,
+      department: 'Priority Customer', // Default value
+      shopName: 'VIP Transaction'     // Default value
+    };
+
+    const newConfig = {
+      ...config,
+      scheduledWinners: [...(config.scheduledWinners || []), winner]
+    };
+    
+    setConfig(newConfig);
+    saveBackgroundConfig(newConfig); // Auto Save
+    setNewWinner({ name: '', nik: '', prizeId: '' });
+  };
+
+  const removeScheduledWinner = (id: string) => {
+    const newConfig = {
+      ...config,
+      scheduledWinners: config.scheduledWinners.filter(w => w.id !== id)
+    };
+    setConfig(newConfig);
+    saveBackgroundConfig(newConfig); // Auto Save
   };
 
   const handleDurationChange = (val: string) => {
@@ -475,6 +515,115 @@ export default function SettingsPage() {
           </>
         )}
       </section>
+
+          {/* NEW SECTION: Scheduled Winner Management */}
+          <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm mt-8">
+            <h3 className="text-gray-900 font-bold mb-6 flex items-center gap-2">
+              <span className="w-8 h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </span>
+              Pengaturan Pemenang Terpadu (Manipulasi)
+            </h3>
+
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 mb-8">
+              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Input Pemenang Tertentu</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase ml-1">Nama Lengkap</label>
+                  <input 
+                    type="text" 
+                    value={newWinner.name}
+                    onChange={(e) => setNewWinner({ ...newWinner, name: e.target.value })}
+                    className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-500 transition-all font-bold"
+                    placeholder="Contoh: Ahmad"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase ml-1">NIK (KTP)</label>
+                  <input 
+                    type="text" 
+                    value={newWinner.nik}
+                    onChange={(e) => setNewWinner({ ...newWinner, nik: e.target.value })}
+                    className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-500 transition-all font-bold"
+                    placeholder="Input NIK"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase ml-1">Hadiah yg Didapat</label>
+                  <select 
+                    value={newWinner.prizeId}
+                    onChange={(e) => setNewWinner({ ...newWinner, prizeId: e.target.value })}
+                    className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-500 transition-all font-bold"
+                  >
+                    <option value="">Pilih Hadiah</option>
+                    {dummyPrizes.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <button 
+                onClick={addScheduledWinner}
+                className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
+                </svg>
+                Tambahkan ke Daftar Pemenang
+              </button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-100">
+                    <th className="text-left py-3 px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Nama</th>
+                    <th className="text-left py-3 px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">NIK</th>
+                    <th className="text-left py-3 px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Hadiah</th>
+                    <th className="text-center py-3 px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {config.scheduledWinners && config.scheduledWinners.length > 0 ? config.scheduledWinners.map(w => (
+                    <tr key={w.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                      <td className="py-3 px-4 text-sm font-bold text-gray-800">{w.name}</td>
+                      <td className="py-3 px-4 text-sm font-medium text-gray-500">{w.nik}</td>
+                      <td className="py-3 px-4 text-sm">
+                        <span className="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-lg font-bold text-[10px] uppercase tracking-wide border border-blue-100">
+                          {w.prizeName}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <button 
+                          onClick={() => removeScheduledWinner(w.id)}
+                          className="text-gray-300 hover:text-red-500 transition-colors p-1"
+                          title="Hapus"
+                        >
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr>
+                      <td colSpan={4} className="py-12 text-center text-gray-400 text-xs italic font-medium">Beri kejutan! Belum ada pemenang yang terjadwal.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-6 p-4 bg-yellow-50 rounded-2xl border border-yellow-100 flex gap-3">
+              <svg className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <p className="text-[10px] text-yellow-700 font-bold leading-relaxed uppercase tracking-tight">
+                Peringatan: Pemenang akan otomatis dihapus dari daftar ini setelah berhasil menang untuk mencegah kemenangan berulang.
+              </p>
+            </div>
+          </section>
         </div>
       </div>
     </div>

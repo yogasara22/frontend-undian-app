@@ -1,5 +1,6 @@
 import type { AppMode, DrawResult, ApiResponse } from '../types';
 import { dummyParticipants, dummyPrizes } from './dummy';
+import { getBackgroundConfig, saveBackgroundConfig } from './settings';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -40,11 +41,49 @@ export async function drawLottery(): Promise<DrawResult> {
 }
 
 function drawFromDummy(): DrawResult {
-  const winner = dummyParticipants[
-    Math.floor(Math.random() * dummyParticipants.length)
-  ];
-  const prize = dummyPrizes[
-    Math.floor(Math.random() * dummyPrizes.length)
-  ];
+  const config = getBackgroundConfig();
+  console.log('Lottery Config:', config);
+  
+  let prize;
+  let winner;
+
+  // Cek apakah ada jadwal pemenang yang mengantri
+  if (config.scheduledWinners && config.scheduledWinners.length > 0) {
+    // Ambil pemenang pertama yang dijadwalkan (FIFO)
+    const sw = config.scheduledWinners[0];
+    
+    // Cari objek Prize yang sesuai di dummyPrizes berdasarkan Nama
+    const matchedPrize = dummyPrizes.find(
+      p => p.name.toLowerCase() === sw.prizeName.toLowerCase()
+    );
+
+    // Jika hadiah ditemukan, gunakan hadiah tersebut
+    prize = matchedPrize || dummyPrizes[Math.floor(Math.random() * dummyPrizes.length)];
+    
+    winner = {
+      id: `fixed-${Date.now()}-${sw.id}`,
+      name: sw.name,
+      ktpNumber: sw.nik,
+      department: (sw as any).department || 'VVIP',
+      shopName: (sw as any).shopName || 'Pemenang Tertentu',
+      address: 'Pusat'
+    };
+
+    console.log('Scheduled winner triggered:', winner.name, 'for', prize.name);
+
+    // Otomatis hapus dari daftar setelah menang
+    const newScheduled = config.scheduledWinners.slice(1);
+    saveBackgroundConfig({ ...config, scheduledWinners: newScheduled });
+  } else {
+    // Jalani undian acak normal
+    prize = dummyPrizes[
+      Math.floor(Math.random() * dummyPrizes.length)
+    ];
+    winner = dummyParticipants[
+      Math.floor(Math.random() * dummyParticipants.length)
+    ];
+    console.log('Normal random draw:', winner.name, 'for', prize.name);
+  }
+
   return { winner, prize };
 }
