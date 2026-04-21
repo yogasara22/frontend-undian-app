@@ -64,8 +64,8 @@ function drawFromDummy(): DrawResult {
       id: `fixed-${Date.now()}-${sw.id}`,
       name: sw.name,
       ktpNumber: sw.nik,
-      department: (sw as any).department || 'VVIP',
-      shopName: (sw as any).shopName || 'Pemenang Tertentu',
+      department: sw.department || 'VVIP',
+      shopName: sw.shopName || 'Pemenang Tertentu',
       address: 'Pusat'
     };
 

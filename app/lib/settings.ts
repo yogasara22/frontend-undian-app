@@ -21,6 +21,8 @@ export interface ScheduledWinner {
   nik: string;
   prizeId: string | number;
   prizeName: string;
+  department?: string;
+  shopName?: string;
 }
 
 export interface BackgroundConfig {
