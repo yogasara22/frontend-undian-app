@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { dummyCategories, type Category } from '../../lib/dashboardDummy';
+import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { fetchAPI } from '../../lib/api';
+import type { Category } from '../../lib/dashboardDummy';
 
 const colorMap: Record<string, { badge: string; dot: string; border: string }> = {
   amber: {
@@ -27,8 +29,10 @@ const colorMap: Record<string, { badge: string; dot: string; border: string }> =
 };
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>(dummyCategories);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const [newName, setNewName] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [newColor, setNewColor] = useState('violet');
@@ -42,27 +46,55 @@ export default function CategoriesPage() {
     emerald: 'Hijau',
   };
 
-  const handleAdd = () => {
-    if (!newName.trim()) return;
-    if (editId !== null) {
-      setCategories(categories.map(c =>
-        c.id === editId ? { ...c, name: newName.trim(), description: newDesc.trim(), color: newColor } : c
-      ));
-      setEditId(null);
-    } else {
-      const newCat: Category = {
-        id: categories.length + 1,
-        name: newName.trim(),
-        description: newDesc.trim(),
-        color: newColor,
-        prizeCount: 0,
-      };
-      setCategories([...categories, newCat]);
+  const fetchCategories = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetchAPI('/api/categories');
+      setCategories(res?.data || []);
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    } finally {
+      setIsLoading(false);
     }
-    setNewName('');
-    setNewDesc('');
-    setNewColor('violet');
-    setShowAddModal(false);
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const handleAdd = async () => {
+    if (!newName.trim()) return;
+    try {
+      const payload = {
+        name: newName.trim(),
+        description: newDesc.trim() || undefined,
+        color: newColor,
+      };
+
+      if (editId !== null) {
+        await fetchAPI(`/api/categories/${editId}`, {
+          method: 'PUT',
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await fetchAPI('/api/categories', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+      }
+
+      await fetchCategories();
+
+      setNewName('');
+      setNewDesc('');
+      setNewColor('violet');
+      setEditId(null);
+      setShowAddModal(false);
+      setToastMessage(editId !== null ? 'Kategori berhasil diperbarui.' : 'Kategori berhasil ditambahkan.');
+      setTimeout(() => setToastMessage(''), 3000);
+    } catch (err: any) {
+      alert(err.message || 'Gagal menyimpan kategori');
+    }
   };
 
   const handleEdit = (cat: Category) => {
@@ -73,12 +105,45 @@ export default function CategoriesPage() {
     setShowAddModal(true);
   };
 
-  const handleDelete = (id: number) => {
-    setCategories(categories.filter(c => c.id !== id));
+  const handleDelete = async (id: number) => {
+    if (!confirm('Hapus kategori ini?')) return;
+    try {
+      await fetchAPI(`/api/categories/${id}`, { method: 'DELETE' });
+      setCategories(categories.filter(c => c.id !== id));
+    } catch (err: any) {
+      alert(err.message || 'Gagal menghapus kategori');
+    }
   };
 
   return (
     <div className="space-y-6 pb-10">
+      {/* Toast Message */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-3 px-5 py-3.5 bg-white border border-green-200 rounded-2xl shadow-xl shadow-green-900/5"
+          >
+            <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-green-100 text-green-600">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <p className="text-sm font-bold text-gray-800 pr-2">{toastMessage}</p>
+            <button
+              onClick={() => setToastMessage('')}
+              className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -104,7 +169,21 @@ export default function CategoriesPage() {
 
       {/* Category Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {categories.map(cat => {
+        {isLoading ? (
+          <div className="col-span-1 md:col-span-2 py-12 text-center text-gray-400 font-medium">
+            <div className="flex justify-center mb-2">
+              <svg className="w-6 h-6 animate-spin text-orange-500" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </div>
+            Memuat data...
+          </div>
+        ) : categories.length === 0 ? (
+          <div className="col-span-1 md:col-span-2 py-12 text-center text-gray-400 font-medium bg-white rounded-2xl border border-gray-200">
+            Tidak ada kategori
+          </div>
+        ) : categories.map(cat => {
           const colors2 = colorMap[cat.color] ?? colorMap.violet;
           return (
             <div

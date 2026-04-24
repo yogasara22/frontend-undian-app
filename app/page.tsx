@@ -31,9 +31,9 @@ export default function Home() {
     <main 
       className={`min-h-screen ${useImage ? '' : 'dynamic-bg'} flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden font-sans`}
       style={{
-        '--bg-from': bgConfig.from,
-        '--bg-via': bgConfig.via,
-        '--bg-to': bgConfig.to,
+        '--bg-from': hasMounted ? bgConfig.from : '#e8192c',
+        '--bg-via': hasMounted ? bgConfig.via : '#c01020',
+        '--bg-to': hasMounted ? bgConfig.to : '#900a10',
         ...(useImage && bgConfig.backgroundImage ? {
           backgroundImage: `url(${bgConfig.backgroundImage})`,
           backgroundSize: 'cover',

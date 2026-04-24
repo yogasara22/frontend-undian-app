@@ -1,9 +1,33 @@
 'use client';
 
-import { dummyParticipants } from '../lib/dummy';
+import { useState, useEffect } from 'react';
+import { fetchAPI } from '../lib/api';
 
 export function ParticipantCounter() {
-  const count = dummyParticipants.length;
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetchAPI('/api/dashboard/stats');
+        if (res?.data) {
+          setCount(res.data.remainingParticipants ?? res.data.totalParticipants ?? 0);
+        }
+      } catch (err) {
+        console.error('Error fetching participant count:', err);
+      }
+    };
+
+    fetchStats();
+    
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'REMOTE_DRAW_SUCCESS' && e.newValue) {
+        fetchStats();
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
 
   return (
     <div className="flex items-center gap-3">

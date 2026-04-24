@@ -28,6 +28,8 @@ export interface Prize {
   description?: string;
   imageUrl?: string;
   value?: string;
+  qty?: number;
+  remainingQty?: number;
 }
 
 export interface DrawResult {

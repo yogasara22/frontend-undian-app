@@ -132,6 +132,14 @@ export function PrizeSection({
             ) : (
               <span className="text-[150px] md:text-[240px] leading-none mb-6 md:mb-10">{getPrizeIcon(prize.name)}</span>
             )}
+
+            {/* Remaining Quantity Badge */}
+            {prize.remainingQty !== undefined && (
+              <div className="absolute top-10 right-10 md:top-20 md:right-20 bg-black/70 backdrop-blur-md text-white font-bold px-4 py-2 rounded-full text-sm border border-white/20 shadow-lg flex items-center gap-2">
+                <span className={`w-2.5 h-2.5 rounded-full ${prize.remainingQty > 0 ? 'bg-green-400 animate-pulse' : 'bg-red-500'}`}></span>
+                Sisa: {prize.remainingQty} unit
+              </div>
+            )}
           </motion.div>
 
           {/* 3D CSS Podium Stage */}

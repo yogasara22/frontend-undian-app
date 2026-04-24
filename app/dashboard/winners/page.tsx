@@ -1,31 +1,123 @@
 'use client';
 
-import { useState } from 'react';
-import { dummyWinners, dummyCategories } from '../../lib/dashboardDummy';
-import type { DashboardWinner } from '../../lib/dashboardDummy';
+import { useState, useEffect } from 'react';
+import { fetchAPI } from '../../lib/api';
 import Link from 'next/link';
 
 export default function WinnersPage() {
-  const [winners, setWinners] = useState<DashboardWinner[]>(dummyWinners);
+  const [winners, setWinners] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [filterCategory, setFilterCategory] = useState('');
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [isDrawing, setIsDrawing] = useState(false);
   const [drawMsg, setDrawMsg] = useState('');
+  const [isLoadingWinners, setIsLoadingWinners] = useState(true);
 
-  const filtered = winners.filter(w => {
-    const matchSearch = w.name.toLowerCase().includes(search.toLowerCase()) ||
-      w.prize.toLowerCase().includes(search.toLowerCase());
-    const matchCat = !filterCategory || w.category === filterCategory;
-    return matchSearch && matchCat;
-  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [perPage] = useState(10);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+      setCurrentPage(1);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterCategory]);
+
+  const fetchWinners = async () => {
+    setIsLoadingWinners(true);
+    try {
+      const queryParams = new URLSearchParams({
+        page: currentPage.toString(),
+        per_page: perPage.toString(),
+      });
+      if (debouncedSearch) queryParams.append('search', debouncedSearch);
+      if (filterCategory) queryParams.append('category', filterCategory);
+
+      const res = await fetchAPI(`/api/dashboard/recent-winners?${queryParams.toString()}`);
+      if (res?.data) {
+        const mapped = res.data.map((w: any) => ({
+          id: w.id,
+          name: w.participant?.name || 'Unknown',
+          department: w.participant?.department || '-',
+          prize: w.prize?.name || 'Unknown Prize',
+          category: w.prize?.category?.name || '-',
+          drawnAt: w.drawnAt ? new Date(w.drawnAt).toLocaleString('id-ID', {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+          }) : '-',
+        }));
+        setWinners(mapped);
+        
+        if (res.meta) {
+          setCurrentPage(res.meta.current_page);
+          setTotalPages(res.meta.last_page);
+          setTotalItems(res.meta.total);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to fetch winners', e);
+    } finally {
+      setIsLoadingWinners(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetchAPI('/api/categories');
+      if (res?.data) {
+        setCategories(res.data);
+      }
+    } catch (e) {
+      console.error('Failed to fetch categories', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchWinners();
+  }, [currentPage, debouncedSearch, filterCategory]);
+
+  useEffect(() => {
+    fetchCategories();
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'REMOTE_DRAW_SUCCESS' && e.newValue) {
+        setIsDrawing(false);
+        setDrawMsg('✅ Undian berhasil! Pemenang telah direkam.');
+        fetchWinners();
+        setTimeout(() => setDrawMsg(''), 5000);
+      }
+    };
+    
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
 
   const handleDraw = async () => {
     setIsDrawing(true);
-    setDrawMsg('');
-    await new Promise(r => setTimeout(r, 1500));
-    setIsDrawing(false);
-    setDrawMsg('✅ Undian berhasil! Buka layar undian untuk melihat hasilnya.');
-    setTimeout(() => setDrawMsg(''), 4000);
+    setDrawMsg('Meminta layar undian untuk mengundi...');
+    
+    // Trigger Layar Undian via cross-tab communication
+    localStorage.setItem('REMOTE_DRAW_TRIGGER', Date.now().toString());
+    
+    // Fallback if no Layar Undian is open
+    setTimeout(() => {
+      setIsDrawing(prev => {
+        if (prev) {
+          setDrawMsg('⚠️ Layar undian tidak merespons. Pastikan tab Layar Undian terbuka.');
+          setTimeout(() => setDrawMsg(''), 5000);
+          return false;
+        }
+        return prev;
+      });
+    }, 10000);
   };
 
   const handleDelete = (id: number) => {
@@ -102,7 +194,7 @@ export default function WinnersPage() {
           className="px-5 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all shadow-sm font-medium appearance-none"
         >
           <option value="">Semua Kategori</option>
-          {dummyCategories.map(c => (
+          {categories.map(c => (
             <option key={c.id} value={c.name}>{c.name}</option>
           ))}
         </select>
@@ -111,7 +203,7 @@ export default function WinnersPage() {
       {/* Summary Stats */}
       {winners.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {dummyCategories.map(cat => {
+          {categories.map(cat => {
             const count = winners.filter(w => w.category === cat.name).length;
             if (count === 0) return null;
             return (
@@ -140,21 +232,33 @@ export default function WinnersPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
+              {isLoadingWinners ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-16 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <svg className="w-8 h-8 animate-spin text-orange-500" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span className="text-gray-400 font-medium text-sm">Memuat data pemenang...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : winners.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center text-gray-400 font-medium bg-gray-50/30">
                     Tidak ada pemenang ditemukan
                   </td>
                 </tr>
               ) : (
-                filtered.map((w, i) => (
+                winners.map((w, i) => (
                   <tr key={w.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-1.5">
                       <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 border border-gray-100 font-bold text-gray-600">
-                        {i < 3 ? (
+                        {(currentPage === 1 && i < 3) ? (
                           <span className="text-xs">{['🥇', '🥈', '🥉'][i]}</span>
                         ) : (
-                          <span className="text-[9px]">{i + 1}</span>
+                          <span className="text-[9px]">{(currentPage - 1) * perPage + i + 1}</span>
                         )}
                       </div>
                     </td>
@@ -193,6 +297,46 @@ export default function WinnersPage() {
           </table>
         </div>
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between bg-white px-4 py-3 border border-gray-200 rounded-2xl shadow-sm mt-4">
+          <div className="flex-1 flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-700">
+                Menampilkan <span className="font-medium">{(currentPage - 1) * perPage + 1}</span> hingga <span className="font-medium">{Math.min(currentPage * perPage, totalItems)}</span> dari <span className="font-medium">{totalItems}</span> hasil
+              </p>
+            </div>
+            <div>
+              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="sr-only">Previous</span>
+                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                  Halaman {currentPage} dari {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="sr-only">Next</span>
+                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

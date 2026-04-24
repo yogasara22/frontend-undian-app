@@ -1,0 +1,136 @@
+---
+title: "Dokumentasi Frontend Undian"
+description: "Panduan komprehensif untuk membangun Backend API menggunakan Laravel dan database MySQL."
+date: "2026-04-21"
+---
+
+# Dokumentasi Frontend Undian - Panduan Backend Laravel & MySQL
+
+Dokumen ini disusun berdasarkan analisis _source code_ frontend mockup aplikasi undian. Tujuannya adalah menjadi panduan komprehensif bagi Anda dalam membangun Backend API menggunakan **Laravel** dan database **MySQL** agar terintegrasi dengan mulus ke Frontend yang sudah ada.
+
+## 1. Analisis Model dan Entitas (Desain Skema MySQL)
+
+Berdasarkan `app/types/index.ts` dan antarmuka lainnya, berikut adalah rancangan tabel MySQL yang diperlukan beserta relasinya.
+
+### Tabel `participants` (Peserta Undian)
+Menyimpan data peserta yang memenuhi syarat untuk diundi.
+* `id` (PK, BigInt, Auto Increment)
+* `name` (String/Varchar 255)
+* `ktp_number` / `nik` (String 16, Unique, Index)
+* `email` (String, Nullable)
+* `phone_number` (String, Nullable)
+* `department` (String, Nullable - Area/Wilayah/Cabang)
+* `shop_name` (String, Nullable - Nama Toko/Outlet)
+* `address` (Text, Nullable)
+* `created_at`, `updated_at`
+
+### Tabel `categories` (Kategori Undian)
+Menyimpan kategori pengundian (misal: Hadiah Utama, Hiburan).
+* `id` (PK, BigInt, Auto Increment)
+* `name` (String)
+* `description` (Text, Nullable)
+* `color` (String, Nullable - misal: 'amber', 'violet')
+* `created_at`, `updated_at`
+
+### Tabel `prizes` (Datar Hadiah)
+Menyimpan hadiah-hadiah yang akan diundi.
+* `id` (PK, BigInt, Auto Increment)
+* `category_id` (FK ke `categories.id`, Nullable)
+* `name` (String)
+* `description` (Text, Nullable)
+* `value` (String/Decimal, Nullable - Tipe Hadiah/Nominal)
+* `image_url` (String, Nullable - Format path `/storage/prizes/...`)
+* `qty` (Integer - Opsional, jika satu hadiah bisa untuk beberapa orang)
+* `created_at`, `updated_at`
+
+### Tabel `winners` (Riwayat Pemenang)
+Log hasil undian. Ketika API Undian di-hit, data akan dicatat di sini.
+* `id` (PK, BigInt, Auto Increment)
+* `participant_id` (FK ke `participants.id`)
+* `prize_id` (FK ke `prizes.id`)
+* `drawn_at` (Timestamp)
+* `created_at`, `updated_at`
+
+_Catatan: Di frontend (`DashboardWinner`), pemenang memuat referensi denormalisasi (seperti nama departemen, kategori, dll). Di backend, ini dapat dilayani melalui Join/Eager Loading (via Eloquent Relationships)._
+
+### Tabel `scheduled_winners` (Pemenang Terjadwal/Settingan)
+Menyimpan skenario pemenang "pasti menang" yang sudah diatur oleh Admin. Di frontend mockup, ini disimpan dalam *localStorage*, namun versi produksi disarankan disimpan di database.
+* `id` (PK, BigInt, Auto Increment)
+* `nik` (String - NIK/KTP yang diset menang)
+* `name` (String)
+* `prize_id` (FK ke `prizes.id`)
+* `priority` (Integer, Nullable - untuk urutan menang)
+* `is_used` (Boolean, Default: false - Ditandai *true* jika sudah menang)
+* `created_at`, `updated_at`
+
+### Tabel `settings` / `configs` (Tabel Key-Value untuk Pengaturan Tema)
+Untuk memindahkan `localStorage` background & typography ke sisi server.
+* `params_key` (String, Unique PK/Index - misal: `'app_appearance'`)
+* `params_value` (JSON/LongText - Menyimpan *Gradients*, *Duration*, *Typography Config*)
+
+---
+
+## 2. Kebutuhan Endpoint API (RESTFUL)
+
+Semua *endpoint* URL disarankan memiliki prefix `/api/v1/` atau `/api/`. (Pada `api.ts` base API-nya mengarah ke `/api/lottery/draw` ketika live).
+
+### A. Endpoint Undian (Core Feature)
+Di frontend, pengundian ini dilakukan di endpoint `/api/lottery/draw` (berdasarkan `api.ts`).
+* **POST `/api/lottery/draw`**
+  **Logic yang diharapkan:**
+  1. Cek tabel `scheduled_winners` di mana `is_used = false`.
+  2. Jika ada, ambil data pertama, set statusnya menjadi menang (ubah `is_used = true`). Relasikan dengan Hadiah yang diset (`prize_id`).
+  3. Jika kosong, lakukan undian acak (*RAND()*) ke tabel `participants` yang *belum pernah menang*. Acak juga `prizes` (jika hadiah tidak dispesifikasi oleh sistem).
+  4. Simpan hasilnya di tabel `winners`.
+  5. **Response Frontend (Wajib sesuai *interface* mockup):**
+     ```json
+     {
+       "success": true,
+       "data": {
+         "winner": {
+           "id": 1,
+           "name": "Budi Santoso",
+           "ktpNumber": "3578xxxxxxxxxx",
+           "department": "Surabaya",
+           "shopName": "Budi Jaya Motor"
+         },
+         "prize": {
+           "id": 1,
+           "name": "Motor",
+           "imageUrl": "/storage/dorprize-1.png",
+           "value": "Kendaraan"
+         }
+       }
+     }
+     ```
+
+### B. Endpoint Modul Admin (CRUD)
+
+1. **Dashboard & Laporan**
+   * **GET `/api/dashboard/stats`**: Output statistik total peserta, sisa hadiah, dsb.
+   * **GET `/api/dashboard/recent-winners`**: Mengembalikan *mapping* struktur `DashboardWinner` untuk log pemenang terakhir.
+
+2. **Management Peserta (`/participants` di frontend)**
+   * **GET `/api/participants`**: List semua peserta (dengan pagination & search).
+   * **POST `/api/participants`**: Input/Import peserta.
+   * **PUT `/api/participants/{id}`**: Edit data peserta.
+   * **DELETE `/api/participants/{id}`**: Hapus peserta.
+
+3. **Management Hadiah & Kategori (`/prizes` & `/categories`)**
+   * **GET `/api/categories`**: Mendapatkan List kategori (`id`, `name`, `color`, `prizeCount`).
+   * **GET `/api/prizes`**: Mendapatkan List hadiah yang tersedia.
+   * Bisa dilengkapi dengan fungsi upload image *(Storage/Public)* untuk logo hadiah.
+
+4. **Pengaturan (*Settings*)**
+   Meskipun saat ini di-mock via `localStorage` dengan interface `BackgroundConfig`, untuk Laravel + MySQL bisa dibuat API pengaturannya, yaitu:
+   * **GET `/api/settings`** : Mengambil Konfigurasi
+   * **PUT `/api/settings`** : Save Konfigurasi (Warna, Judul, Font)
+   * **GET `/api/scheduled-winners`** : Mengambil daftar antrian pemenang khusus.
+   * **POST `/api/scheduled-winners`** : Menambah seseorang ke dalam antrian *Fixed Winner*.
+
+## 3. Catatan Implementasi Penting!
+
+1. **Cors Configuration**: Pastikan file `config/cors.php` di Laravel Anda sudah mengizinkan Origin dari domain frontend Anda (misalnya port `3000` atau `domain-undian.com`).
+2. **Environment URL**: Di Next.js pada file `.env.local`, pastikan environment `NEXT_PUBLIC_API_URL` diarahkan ke base URL Laravel Anda, contoh: `NEXT_PUBLIC_API_URL=http://localhost:8000`. Jika terisi, Frontend secara otomatis berpindah dari `Mode Demo` ke `Mode Live`.
+3. **Logic *Scheduled Winner***: Di *mockup* (`api.ts`), apabila ada `scheduledWinners` dalam config, sistem akan menggunakan konsep FIFO (*First In First Out*) lalu otomatis menghapusnya dari _state_ saat menang. Di backend Laravel, gunakan konsep `WHERE is_used = 0 ORDER BY priority ASC LIMIT 1`, lalu _update_ `is_used = 1`.
+4. **Soft Deletes**: Seringkali panitia salah input peserta, gunakan `SoftDeletes` pada tabel `participants` di Laravel agar data tidak hilang secara permanen (untuk keperluan audit pengundian).

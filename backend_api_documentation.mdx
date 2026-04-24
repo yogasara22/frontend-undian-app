@@ -1,0 +1,354 @@
+---
+title: "Dokumentasi API Backend Undian"
+description: "Panduan integrasi API Frontend (Next.js) ke Backend (Laravel + MySQL)."
+date: "2026-04-23"
+---
+
+# Dokumentasi API Backend Undian
+
+Dokumen ini berisi panduan teknis integrasi API dari Backend (Laravel) ke Frontend (Next.js). Semua *response* menggunakan format JSON standar.
+
+## Konfigurasi Base URL
+
+Secara *default*, *base URL* API backend di *local environment* adalah:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+Pastikan variabel ini di-*load* dengan benar di Next.js agar *fetch request* mengarah ke: `http://localhost:8000/api`
+
+---
+
+## 1. Undian (Core Feature)
+
+### Melakukan Pengundian
+- **URL**: `/api/lottery/draw`
+- **Method**: `POST`
+- **Deskripsi**: Melakukan pengundian. Sistem akan mengecek apakah ada antrian *Scheduled Winner* terlebih dahulu. Jika kosong, sistem akan melakukan pengacakan *random* dari peserta yang belum pernah menang.
+
+**Response Success (200 OK)**
+```json
+{
+  "success": true,
+  "data": {
+    "winner": {
+      "id": 97,
+      "name": "Marilie Bode",
+      "ktpNumber": "5689679968893195",
+      "department": "Surabaya",
+      "shopName": "Koch-Hessel"
+    },
+    "prize": {
+      "id": 1,
+      "name": "Mobil SUV",
+      "imageUrl": "http://localhost:8000/storage/prizes/...",
+      "value": "Kendaraan"
+    }
+  }
+}
+```
+
+**Response Error (422 Unprocessable Entity)** - *Contoh: Hadiah habis atau peserta habis*
+```json
+{
+  "success": false,
+  "message": "Semua peserta sudah pernah menang. Tidak ada peserta tersisa."
+}
+```
+
+---
+
+## 2. Dashboard & Laporan
+
+### Statistik Dashboard
+- **URL**: `/api/dashboard/stats`
+- **Method**: `GET`
+- **Deskripsi**: Mendapatkan ringkasan statistik aplikasi.
+
+**Response (200 OK)**
+```json
+{
+  "success": true,
+  "data": {
+    "totalParticipants": 100,
+    "totalWinners": 5,
+    "remainingParticipants": 95,
+    "totalPrizes": 43,
+    "prizesClaimed": 5,
+    "remainingPrizes": 38
+  }
+}
+```
+
+### Riwayat Pemenang Terakhir
+- **URL**: `/api/dashboard/recent-winners`
+- **Method**: `GET`
+- **Deskripsi**: Mendapatkan 20 daftar pemenang terakhir (beserta data relasinya).
+
+**Response (200 OK)**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "drawnAt": "2026-04-23T07:16:05+00:00",
+      "participant": {
+        "id": 97,
+        "name": "Marilie Bode",
+        "ktpNumber": "5689679968893195",
+        "department": "Surabaya",
+        "shopName": "Koch-Hessel"
+      },
+      "prize": {
+        "id": 1,
+        "name": "Mobil SUV",
+        "value": "Kendaraan",
+        "imageUrl": null,
+        "category": {
+          "id": 1,
+          "name": "Hadiah Utama",
+          "color": "amber"
+        }
+      }
+    }
+  ]
+}
+```
+
+---
+
+## 3. Peserta (Participants)
+
+### List Peserta (dengan pagination & search)
+- **URL**: `/api/participants`
+- **Method**: `GET`
+- **Query Params**:
+  - `page` (optional) - Halaman data.
+  - `per_page` (optional) - Jumlah data per halaman (default 15).
+  - `search` (optional) - Pencarian berdasarkan nama, nik, department, email, shop_name.
+
+**Response (200 OK)**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Budi",
+      "nik": "1234567890123456",
+      "email": "budi@mail.com",
+      "department": "IT",
+      "shop_name": "Toko A",
+      "phone_number": "08123",
+      "address": "Jl. Mawar"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "last_page": 5,
+    "per_page": 15,
+    "total": 75
+  }
+}
+```
+
+### Tambah Peserta Baru
+- **URL**: `/api/participants`
+- **Method**: `POST`
+- **Body JSON**:
+  ```json
+  {
+    "name": "Budi",
+    "nik": "1234567890123456", 
+    "email": "budi@mail.com",
+    "phone_number": "08123456789",
+    "department": "Surabaya",
+    "shop_name": "Toko Budi",
+    "address": "Jl. Mawar No 1"
+  }
+  ```
+*(Catatan: `name` dan `nik` adalah wajib).*
+
+### Update Peserta
+- **URL**: `/api/participants/{id}`
+- **Method**: `PUT`
+- **Body JSON**: Sama seperti Tambah Peserta.
+
+### Hapus Peserta (Soft Delete)
+- **URL**: `/api/participants/{id}`
+- **Method**: `DELETE`
+
+---
+
+## 4. Kategori Hadiah (Categories)
+
+### List Kategori
+- **URL**: `/api/categories`
+- **Method**: `GET`
+
+**Response (200 OK)**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Hadiah Utama",
+      "description": "Hadiah prestisius",
+      "color": "amber",
+      "prizeCount": 5
+    }
+  ]
+}
+```
+
+### Tambah / Update / Delete Kategori
+- **Tambah (POST)**: `/api/categories`
+- **Update (PUT)**: `/api/categories/{id}`
+- **Hapus (DELETE)**: `/api/categories/{id}`
+- **Payload Input**: `name` (required), `description`, `color`.
+
+---
+
+## 5. Daftar Hadiah (Prizes)
+
+### List Hadiah
+- **URL**: `/api/prizes`
+- **Method**: `GET`
+- **Query Params**:
+  - `category_id` (optional) - Filter berdasarkan kategori.
+  - `available` (optional, boolean) - Set `1` atau `true` untuk memfilter hadiah yang qty > 0.
+
+**Response (200 OK)**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Mobil SUV",
+      "description": "Warna Hitam",
+      "value": "Kendaraan",
+      "qty": 2,
+      "imageUrl": "http://localhost:8000/storage/prizes/xxxx.jpg",
+      "categoryId": 1,
+      "category": {
+         "id": 1,
+         "name": "Hadiah Utama",
+         "color": "amber"
+      }
+    }
+  ]
+}
+```
+
+### Tambah Hadiah (Support Upload Image)
+- **URL**: `/api/prizes`
+- **Method**: `POST`
+- **Format Data**: `multipart/form-data` (Karena ada upload file)
+- **Payload**:
+  - `name` (String, Required)
+  - `qty` (Integer, Required)
+  - `category_id` (Integer, Optional)
+  - `description`, `value` (String, Optional)
+  - `image` (File Image, Optional)
+
+### Update Hadiah (Dengan Upload Gambar)
+- **URL**: `/api/prizes/{id}`
+- **Method**: `POST` 
+- **Catatan PENTING**: Jika mengirim file gambar (`multipart/form-data`) untuk update, PHP tidak bisa membaca method PUT murni. Gunakan method `POST` dan tambahkan parameter `_method` dengan value `PUT` di dalam `FormData`.
+
+---
+
+## 6. Pemenang Terjadwal (Scheduled Winners)
+
+### List Antrian
+- **URL**: `/api/scheduled-winners`
+- **Method**: `GET`
+
+**Response (200 OK)**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "nik": "1234567890123456",
+      "name": "Bapak CEO",
+      "priority": 1,
+      "isUsed": false,
+      "prize": {
+        "id": 1,
+        "name": "Mobil SUV"
+      },
+      "createdAt": "2026-04-23T10:00:00Z"
+    }
+  ]
+}
+```
+
+### Tambah ke Antrian
+- **URL**: `/api/scheduled-winners`
+- **Method**: `POST`
+- **Payload JSON**:
+  ```json
+  {
+    "nik": "1234567890123456",
+    "name": "Bapak CEO",
+    "prize_id": 1,
+    "priority": 1
+  }
+  ```
+
+### Hapus dari Antrian
+- **URL**: `/api/scheduled-winners/{id}`
+- **Method**: `DELETE`
+
+---
+
+## 7. Pengaturan Tema Aplikasi (Settings)
+
+### Mendapatkan Semua Konfigurasi
+- **URL**: `/api/settings`
+- **Method**: `GET`
+
+**Response (200 OK)**
+```json
+{
+  "success": true,
+  "data": {
+    "app_appearance": {
+      "title": "UNDIAN BERHADIAH 2026",
+      "subtitle": "Selamat kepada pemenang!",
+      "duration": 5000,
+      "gradients": [
+        { "from": "#1a1a2e", "to": "#16213e" },
+        { "from": "#0f3460", "to": "#533483" }
+      ],
+      "typography": {
+        "font": "Inter",
+        "titleSize": "4xl",
+        "bodySize": "lg"
+      }
+    }
+  }
+}
+```
+
+### Menyimpan / Update Konfigurasi
+- **URL**: `/api/settings`
+- **Method**: `PUT`
+- **Deskripsi**: Payload bebas sesuai bentuk Key-Value. Berguna jika ingin menyimpan banyak pengaturan sekaligus.
+- **Payload JSON**:
+  ```json
+  {
+    "app_appearance": {
+      "title": "Judul Baru",
+      "subtitle": "Subtitle Baru",
+      "duration": 5000,
+      "typography": {
+        "font": "Roboto"
+      }
+    }
+  }
+  ```

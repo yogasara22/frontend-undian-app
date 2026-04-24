@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { fetchAPI } from '../../lib/api';
 import { getBackgroundConfig, saveBackgroundConfig, type GradientEntry, type BackgroundConfig, type TypographyConfig, type ScheduledWinner } from '../../lib/settings';
-import { dummyPrizes } from '../../lib/dummy';
 
 const FONTS = [
   { name: 'Inter (Sans)', value: 'var(--font-inter)' },
@@ -20,59 +21,135 @@ const FONT_WEIGHTS = [
 
 export default function SettingsPage() {
   const [config, setConfig] = useState<BackgroundConfig | null>(null);
+  const [prizes, setPrizes] = useState<any[]>([]);
   const [isSaved, setIsSaved] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const [newWinner, setNewWinner] = useState({ name: '', nik: '', prizeId: '' });
+  
+  const [participants, setParticipants] = useState<any[]>([]);
+  const [participantSearch, setParticipantSearch] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isAddingWinner, setIsAddingWinner] = useState(false);
 
   useEffect(() => {
-    setConfig(getBackgroundConfig());
+    const handler = setTimeout(async () => {
+      // Hanya cari jika panjang >= 2 dan belum ada peserta yang dipilih valid (newWinner.nik)
+      if (participantSearch.length >= 2 && !newWinner.nik) {
+        setIsSearching(true);
+        try {
+          const res = await fetchAPI(`/api/participants?search=${participantSearch}&per_page=10`);
+          setParticipants(res?.data || []);
+          setShowDropdown(true);
+        } catch (e) {
+          console.error('Failed to search participants', e);
+        } finally {
+          setIsSearching(false);
+        }
+      } else if (!newWinner.nik) {
+        setParticipants([]);
+        setShowDropdown(false);
+      }
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [participantSearch, newWinner.nik]);
+
+  const fetchSettings = async () => {
+    try {
+      const [settingsRes, scheduledRes, prizesRes] = await Promise.all([
+        fetchAPI('/api/settings'),
+        fetchAPI('/api/scheduled-winners'),
+        fetchAPI('/api/prizes')
+      ]);
+
+      const defaults = getBackgroundConfig();
+      const appAppearance = settingsRes?.data?.app_appearance || {};
+      
+      const newConfig: BackgroundConfig = {
+        ...defaults,
+        ...appAppearance,
+        titleStyle: appAppearance.titleStyle || defaults.titleStyle,
+        prizeStyle: appAppearance.prizeStyle || defaults.prizeStyle,
+        scheduledWinners: scheduledRes?.data || []
+      };
+      
+      setConfig(newConfig);
+      setPrizes(prizesRes?.data || []);
+      // Sync to local storage for hooks that still rely on it
+      saveBackgroundConfig(newConfig);
+    } catch (err) {
+      console.error('Error fetching settings:', err);
+      setConfig(getBackgroundConfig()); // fallback
+    }
+  };
+
+  useEffect(() => {
+    fetchSettings();
   }, []);
 
   if (!config) return null;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (config) {
-      saveBackgroundConfig(config);
-      setIsSaved(true);
-      setTimeout(() => setIsSaved(false), 3000);
+      try {
+        const { scheduledWinners, ...app_appearance } = config;
+        await fetchAPI('/api/settings', {
+          method: 'PUT',
+          body: JSON.stringify({ app_appearance })
+        });
+        
+        saveBackgroundConfig(config);
+        setIsSaved(true);
+        setTimeout(() => setIsSaved(false), 3000);
+        setToastMessage('Konfigurasi berhasil disimpan.');
+        setTimeout(() => setToastMessage(''), 3000);
+      } catch (err: any) {
+        alert(err.message || 'Gagal menyimpan konfigurasi');
+      }
     }
   };
 
-  const addScheduledWinner = () => {
+  const addScheduledWinner = async () => {
     if (!newWinner.name || !newWinner.nik || !newWinner.prizeId) {
-      alert('Harap isi Nama, NIK, dan Pilih Hadiah');
+      alert('Harap pilih Peserta dan Hadiah');
       return;
     }
     
-    const selectedPrize = dummyPrizes.find(p => p.id.toString() === newWinner.prizeId);
-    if (!selectedPrize) return;
-
-    const winner: ScheduledWinner = {
-      id: Math.random().toString(36).substring(2, 9),
-      name: newWinner.name,
-      nik: newWinner.nik,
-      prizeId: selectedPrize.id,
-      prizeName: selectedPrize.name,
-      department: 'Priority Customer', // Default value
-      shopName: 'VIP Transaction'     // Default value
-    };
-
-    const newConfig = {
-      ...config,
-      scheduledWinners: [...(config.scheduledWinners || []), winner]
-    };
-    
-    setConfig(newConfig);
-    saveBackgroundConfig(newConfig); // Auto Save
-    setNewWinner({ name: '', nik: '', prizeId: '' });
+    setIsAddingWinner(true);
+    try {
+      await fetchAPI('/api/scheduled-winners', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: newWinner.name,
+          nik: newWinner.nik,
+          prize_id: newWinner.prizeId,
+          priority: 1
+        })
+      });
+      // Only refresh scheduled winners list (lighter than full fetchSettings)
+      const scheduledRes = await fetchAPI('/api/scheduled-winners');
+      if (config) {
+        setConfig({ ...config, scheduledWinners: scheduledRes?.data || [] });
+      }
+      setNewWinner({ name: '', nik: '', prizeId: '' });
+      setParticipantSearch('');
+      setToastMessage('Pemenang terjadwal berhasil ditambahkan.');
+      setTimeout(() => setToastMessage(''), 3000);
+    } catch (err: any) {
+      alert(err.message || 'Gagal menambahkan pemenang terjadwal');
+    } finally {
+      setIsAddingWinner(false);
+    }
   };
 
-  const removeScheduledWinner = (id: string) => {
-    const newConfig = {
-      ...config,
-      scheduledWinners: config.scheduledWinners.filter(w => w.id !== id)
-    };
-    setConfig(newConfig);
-    saveBackgroundConfig(newConfig); // Auto Save
+  const removeScheduledWinner = async (id: string) => {
+    if (!confirm('Hapus antrian ini?')) return;
+    try {
+      await fetchAPI(`/api/scheduled-winners/${id}`, { method: 'DELETE' });
+      await fetchSettings();
+    } catch (err: any) {
+      alert(err.message || 'Gagal menghapus antrian');
+    }
   };
 
   const handleDurationChange = (val: string) => {
@@ -130,6 +207,33 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-8 pb-32">
+      {/* Toast Message */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-3 px-5 py-3.5 bg-white border border-green-200 rounded-2xl shadow-xl shadow-green-900/5"
+          >
+            <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-green-100 text-green-600">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <p className="text-sm font-bold text-gray-800 pr-2">{toastMessage}</p>
+            <button
+              onClick={() => setToastMessage('')}
+              className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-black text-gray-900 mb-1">Konfigurasi Desain</h2>
@@ -530,25 +634,51 @@ export default function SettingsPage() {
             <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 mb-8">
               <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Input Pemenang Tertentu</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase ml-1">Nama Lengkap</label>
+                <div className="space-y-1.5 md:col-span-2 relative">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase ml-1">Cari Peserta Terdaftar (Nama / NIK)</label>
                   <input 
                     type="text" 
-                    value={newWinner.name}
-                    onChange={(e) => setNewWinner({ ...newWinner, name: e.target.value })}
+                    value={participantSearch}
+                    onChange={(e) => {
+                      setParticipantSearch(e.target.value);
+                      if (newWinner.nik) setNewWinner({ ...newWinner, name: '', nik: '' });
+                    }}
+                    onFocus={() => { if (participants.length > 0 && !newWinner.nik) setShowDropdown(true); }}
+                    onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                     className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-500 transition-all font-bold"
-                    placeholder="Contoh: Ahmad"
+                    placeholder="Ketik nama atau NIK peserta..."
                   />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase ml-1">NIK (KTP)</label>
-                  <input 
-                    type="text" 
-                    value={newWinner.nik}
-                    onChange={(e) => setNewWinner({ ...newWinner, nik: e.target.value })}
-                    className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-500 transition-all font-bold"
-                    placeholder="Input NIK"
-                  />
+                  {newWinner.nik && (
+                    <div className="absolute top-[28px] right-2 px-2 py-1 bg-green-100 text-green-700 text-[10px] rounded-md font-bold flex items-center gap-1 shadow-sm">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                      {newWinner.nik}
+                    </div>
+                  )}
+
+                  {showDropdown && (
+                    <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-xl max-h-48 overflow-y-auto">
+                      {isSearching ? (
+                        <div className="p-3 text-sm text-gray-500 text-center font-medium">Mencari...</div>
+                      ) : participants.length > 0 ? (
+                        participants.map((p) => (
+                          <div 
+                            key={p.id} 
+                            className="p-3 hover:bg-green-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors"
+                            onClick={() => {
+                              setNewWinner({ ...newWinner, name: p.name, nik: p.nik });
+                              setParticipantSearch(p.name);
+                              setShowDropdown(false);
+                            }}
+                          >
+                            <div className="font-bold text-sm text-gray-900">{p.name}</div>
+                            <div className="text-xs text-gray-500 font-medium">{p.nik} <span className="text-gray-300 mx-1">•</span> {p.department || p.shop_name || 'Umum'}</div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-3 text-sm text-gray-500 text-center font-medium">Tidak ada peserta cocok</div>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-500 uppercase ml-1">Hadiah yg Didapat</label>
@@ -558,20 +688,35 @@ export default function SettingsPage() {
                     className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-500 transition-all font-bold"
                   >
                     <option value="">Pilih Hadiah</option>
-                    {dummyPrizes.map(p => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
+                    {prizes.map(p => (
+                      <option key={p.id} value={p.id} disabled={p.qty <= 0}>
+                        {p.name} {p.qty !== undefined ? `(Sisa: ${p.qty})` : ''}
+                      </option>
                     ))}
                   </select>
                 </div>
               </div>
               <button 
                 onClick={addScheduledWinner}
-                className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
+                disabled={isAddingWinner}
+                className="mt-4 w-full bg-green-600 hover:bg-green-700 disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                </svg>
-                Tambahkan ke Daftar Pemenang
+                {isAddingWinner ? (
+                  <>
+                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Menyimpan...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Tambahkan ke Daftar Pemenang
+                  </>
+                )}
               </button>
             </div>
 
@@ -586,13 +731,13 @@ export default function SettingsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {config.scheduledWinners && config.scheduledWinners.length > 0 ? config.scheduledWinners.map(w => (
+                  {config.scheduledWinners && config.scheduledWinners.length > 0 ? config.scheduledWinners.map((w: any) => (
                     <tr key={w.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
                       <td className="py-3 px-4 text-sm font-bold text-gray-800">{w.name}</td>
                       <td className="py-3 px-4 text-sm font-medium text-gray-500">{w.nik}</td>
                       <td className="py-3 px-4 text-sm">
                         <span className="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-lg font-bold text-[10px] uppercase tracking-wide border border-blue-100">
-                          {w.prizeName}
+                          {w.prize?.name || w.prizeName || 'Hadiah Default'}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-center">

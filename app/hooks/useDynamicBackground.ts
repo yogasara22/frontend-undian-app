@@ -1,14 +1,39 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getBackgroundConfig, type BackgroundConfig } from '../lib/settings';
+import { fetchAPI } from '../lib/api';
+import { getBackgroundConfig, saveBackgroundConfig, type BackgroundConfig } from '../lib/settings';
 
 export function useDynamicBackground() {
   const [config, setConfig] = useState<BackgroundConfig>(getBackgroundConfig());
   const [index, setIndex] = useState(0);
 
-  // Sync with localStorage changes (if open in another tab/window)
+  // Sync with backend API and localStorage changes
   useEffect(() => {
+    const fetchRemoteConfig = async () => {
+      try {
+        const res = await fetchAPI('/api/settings');
+        if (res?.data?.app_appearance) {
+          const remoteConfig = res.data.app_appearance;
+          const defaults = getBackgroundConfig();
+          
+          const newConfig = {
+            ...defaults,
+            ...remoteConfig,
+            titleStyle: remoteConfig.titleStyle ? { ...defaults.titleStyle, ...remoteConfig.titleStyle } : defaults.titleStyle,
+            prizeStyle: remoteConfig.prizeStyle ? { ...defaults.prizeStyle, ...remoteConfig.prizeStyle } : defaults.prizeStyle,
+          };
+          
+          setConfig(newConfig);
+          saveBackgroundConfig(newConfig);
+        }
+      } catch (err) {
+        console.error('Failed to fetch remote config, using local', err);
+      }
+    };
+
+    fetchRemoteConfig();
+
     const handleStorage = (e: StorageEvent) => {
       if (e.key === 'undian_bg_config') {
         setConfig(getBackgroundConfig());
@@ -16,9 +41,6 @@ export function useDynamicBackground() {
     };
     window.addEventListener('storage', handleStorage);
     
-    // Initial fetch to be sure
-    setConfig(getBackgroundConfig());
-
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
