@@ -15,17 +15,20 @@ export function useDynamicBackground() {
         const res = await fetchAPI('/api/settings');
         if (res?.data?.app_appearance) {
           const remoteConfig = res.data.app_appearance;
-          const defaults = getBackgroundConfig();
+          const currentLocal = getBackgroundConfig();
           
           const newConfig = {
-            ...defaults,
+            ...currentLocal,
             ...remoteConfig,
-            titleStyle: remoteConfig.titleStyle ? { ...defaults.titleStyle, ...remoteConfig.titleStyle } : defaults.titleStyle,
-            prizeStyle: remoteConfig.prizeStyle ? { ...defaults.prizeStyle, ...remoteConfig.prizeStyle } : defaults.prizeStyle,
+            titleStyle: remoteConfig.titleStyle ? { ...currentLocal.titleStyle, ...remoteConfig.titleStyle } : currentLocal.titleStyle,
+            prizeStyle: remoteConfig.prizeStyle ? { ...currentLocal.prizeStyle, ...remoteConfig.prizeStyle } : currentLocal.prizeStyle,
           };
           
-          setConfig(newConfig);
-          saveBackgroundConfig(newConfig);
+          // Only update and save if there's actually a change to avoid unnecessary re-renders
+          if (JSON.stringify(newConfig) !== JSON.stringify(currentLocal)) {
+            setConfig(newConfig);
+            saveBackgroundConfig(newConfig);
+          }
         }
       } catch (err) {
         console.error('Failed to fetch remote config, using local', err);

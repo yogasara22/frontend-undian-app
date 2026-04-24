@@ -21,11 +21,12 @@ export default function Home() {
     setHasMounted(true);
   }, []);
 
-  // Use values directly to avoid flicker, with suppressHydrationWarning to handle SSR mismatch
+  // Use values directly for background to avoid flicker, but use hasMounted for text/styles
+  // to avoid hydration mismatch in components like PrizeSection
   const useImage = bgConfig.useImageBackground;
-  const activeTitle = bgConfig.customTitle || 'UNDIAN BERHADIAH';
-  const activeTitleStyle = bgConfig.titleStyle;
-  const activePrizeStyle = bgConfig.prizeStyle;
+  const activeTitle = hasMounted ? (bgConfig.customTitle || 'UNDIAN BERHADIAH') : 'UNDIAN BERHADIAH';
+  const activeTitleStyle = hasMounted ? bgConfig.titleStyle : undefined;
+  const activePrizeStyle = hasMounted ? bgConfig.prizeStyle : undefined;
 
   return (
     <main 
@@ -45,7 +46,7 @@ export default function Home() {
     >
       
       {/* Dynamic Background elements (Soft highlights) - only show if not using image background or as an overlay */}
-      <div className={`absolute inset-0 overflow-hidden pointer-events-none z-0 ${useImage ? 'opacity-30' : ''}`}>
+      <div suppressHydrationWarning className={`absolute inset-0 overflow-hidden pointer-events-none z-0 ${useImage ? 'opacity-30' : ''}`}>
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-white/40 blur-[120px]" />
         <div className="absolute top-[40%] right-[-10%] w-[60%] h-[60%] rounded-full bg-orange-200/50 blur-[120px]" />
         {/* Subtle noise texture */}
