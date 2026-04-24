@@ -21,19 +21,20 @@ export default function Home() {
     setHasMounted(true);
   }, []);
 
-  // Use values that match SSR during hydration
-  const useImage = hasMounted ? bgConfig.useImageBackground : false;
-  const activeTitle = hasMounted ? bgConfig.customTitle : 'UNDIAN BERHADIAH';
-  const activeTitleStyle = hasMounted ? bgConfig.titleStyle : undefined;
-  const activePrizeStyle = hasMounted ? bgConfig.prizeStyle : undefined;
+  // Use values directly to avoid flicker, with suppressHydrationWarning to handle SSR mismatch
+  const useImage = bgConfig.useImageBackground;
+  const activeTitle = bgConfig.customTitle || 'UNDIAN BERHADIAH';
+  const activeTitleStyle = bgConfig.titleStyle;
+  const activePrizeStyle = bgConfig.prizeStyle;
 
   return (
     <main 
-      className={`min-h-screen ${useImage ? '' : 'dynamic-bg'} flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden font-sans`}
+      suppressHydrationWarning
+      className={`min-h-screen ${useImage ? '' : 'dynamic-bg'} flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden font-sans bg-[#0a0a0a]`}
       style={{
-        '--bg-from': hasMounted ? bgConfig.from : '#e8192c',
-        '--bg-via': hasMounted ? bgConfig.via : '#c01020',
-        '--bg-to': hasMounted ? bgConfig.to : '#900a10',
+        '--bg-from': bgConfig.from,
+        '--bg-via': bgConfig.via,
+        '--bg-to': bgConfig.to,
         ...(useImage && bgConfig.backgroundImage ? {
           backgroundImage: `url(${bgConfig.backgroundImage})`,
           backgroundSize: 'cover',
