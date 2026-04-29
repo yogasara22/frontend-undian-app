@@ -27,9 +27,9 @@ function getPrizeIcon(prizeName: string): string {
   return '🎁';
 }
 
-export function PrizeSection({ 
-  winner, 
-  prize, 
+export function PrizeSection({
+  winner,
+  prize,
   customTitle = 'UNDIAN BERHADIAH',
   titleStyle,
   prizeStyle
@@ -39,129 +39,151 @@ export function PrizeSection({
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20 }}
-        transition={{ duration: 0.7, delay: 0.2 }}
-        className="w-full relative mt-8 flex flex-col items-center z-10"
+        exit={{ opacity: 0, y: 5 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="w-full relative mt-0.5 flex flex-col items-center z-10"
       >
         {/* Text Area */}
-        <div className="flex flex-col items-center mb-8 relative z-20 text-center w-full">
+        <div className="flex flex-col items-center mb-0.5 relative z-20 text-center w-full">
           {/* Decorative Thunderbolt Left */}
-          <div className="absolute left-[5%] md:left-[10%] top-[-10px] hidden sm:block">
-            <svg width="45" height="55" viewBox="0 0 24 24" fill="white" className="drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] pb-2 -rotate-12">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          <div className="absolute left-[5%] md:left-[20%] top-[-1px] hidden sm:block">
+            <svg width="18" height="24" viewBox="0 0 24 24" fill="white" className="drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] pb-1 -rotate-12">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
             </svg>
           </div>
           {/* Decorative Thunderbolt Right */}
-          <div className="absolute right-[5%] md:right-[10%] bottom-[-10px] hidden sm:block">
-            <svg width="35" height="45" viewBox="0 0 24 24" fill="white" className="drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] rotate-12">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          <div className="absolute right-[5%] md:right-[20%] bottom-[-1px] hidden sm:block">
+            <svg width="16" height="22" viewBox="0 0 24 24" fill="white" className="drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] rotate-12">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
             </svg>
           </div>
-          
+
           {customTitle && (
             <h3 className="uppercase relative z-10"
-                style={{
-                  fontFamily: titleStyle?.fontFamily || 'inherit',
-                  fontSize: `${titleStyle?.fontSize ? titleStyle.fontSize * 0.75 : 24}px`, // Slight scale for desktop
-                  color: titleStyle?.color || '#FFFFFF',
-                  fontWeight: titleStyle?.fontWeight || '800',
-                  letterSpacing: `${titleStyle?.letterSpacing || 4}px`,
-                  fontVariant: 'all-small-caps',
-                  textShadow: titleStyle?.textShadow 
-                    ? `
+              style={{
+                fontFamily: titleStyle?.fontFamily || 'inherit',
+                fontSize: `${titleStyle?.fontSize ? titleStyle.fontSize * 0.3 : 10}px`, // Scaled down further
+                color: titleStyle?.color || '#FFFFFF',
+                fontWeight: titleStyle?.fontWeight || '800',
+                letterSpacing: `${titleStyle?.letterSpacing || 1.5}px`,
+                fontVariant: 'all-small-caps',
+                textShadow: titleStyle?.textShadow
+                  ? `
                       -1px -1px 0 #0f54a8,  
                        1px -1px 0 #0f54a8,
                       -1px  1px 0 #0f54a8,
                        1px  1px 0 #0f54a8,
-                       0px  2px 4px rgba(0,0,0,0.5)
-                    ` 
-                    : 'none'
-                }}>
+                       0px  1px 2px rgba(0,0,0,0.5)
+                    `
+                  : 'none'
+              }}>
               {customTitle}
             </h3>
           )}
           <h2 className="uppercase relative z-10 leading-tight md:leading-none px-4"
-              style={{
-                fontFamily: prizeStyle?.fontFamily || 'inherit',
-                fontSize: `${prizeStyle?.fontSize || 80}px`,
-                color: prizeStyle?.color || '#FFFFFF',
-                fontWeight: prizeStyle?.fontWeight || '900',
-                letterSpacing: `${prizeStyle?.letterSpacing || 0}px`,
-                textShadow: prizeStyle?.textShadow 
-                  ? `
-                    -2px -2px 0 #0f54a8,  
-                     2px -2px 0 #0f54a8,
-                    -2px  2px 0 #0f54a8,
-                     2px  2px 0 #0f54a8,
-                     0px  4px 0px #0c4bb0,
-                     0px  8px 0px #093582,
-                     0px 12px 20px rgba(0,0,0,0.4)
+            style={{
+              fontFamily: prizeStyle?.fontFamily || 'inherit',
+              fontSize: `${prizeStyle?.fontSize ? prizeStyle.fontSize * 0.4 : 28}px`, // Scaled down further
+              color: prizeStyle?.color || '#FFFFFF',
+              fontWeight: prizeStyle?.fontWeight || '900',
+              letterSpacing: `${prizeStyle?.letterSpacing || 0}px`,
+              textShadow: prizeStyle?.textShadow
+                ? `
+                    -1.5px -1.5px 0 #0f54a8,  
+                     1.5px -1.5px 0 #0f54a8,
+                    -1.5px  1.5px 0 #0f54a8,
+                     1.5px  1.5px 0 #0f54a8,
+                     0px  2px 0px #0c4bb0,
+                     0px  4px 0px #093582,
+                     0px 8px 12px rgba(0,0,0,0.4)
                   `
-                  : 'none'
-              }}>
+                : 'none'
+            }}>
             {prize.name}
           </h2>
         </div>
 
         {/* Podium & Prize Area */}
-        <div className="relative w-80 md:w-[450px] flex flex-col items-center mt-4">
-          
+        <div className="relative w-full max-w-[180px] md:max-w-[240px] flex flex-col items-center">
+
           {/* Light Beams from behind */}
-          <div className="absolute -inset-20 z-0 flex justify-center pointer-events-none">
-            <div className="w-[150px] h-[400px] bg-white/20 blur-3xl rotate-45 transform origin-bottom -translate-x-32"></div>
-            <div className="w-[150px] h-[400px] bg-white/20 blur-3xl -rotate-45 transform origin-bottom translate-x-32"></div>
+          <div className="absolute -inset-2 z-0 flex justify-center pointer-events-none">
+            <div className="w-[30px] h-[80px] bg-white/10 blur-3xl rotate-45 transform origin-bottom -translate-x-6"></div>
+            <div className="w-[30px] h-[80px] bg-white/10 blur-3xl -rotate-45 transform origin-bottom translate-x-6"></div>
           </div>
 
           {/* Prize Image */}
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 100, delay: 0.4 }}
-            className="z-30 w-72 h-72 md:w-[500px] md:h-[500px] mb-[-50px] md:mb-[-105px] drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none"
+            className="z-30 w-32 h-32 md:w-[200px] md:h-[200px] mb-[-28px] md:mb-[-35px] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
           >
+            {/* Real-time Contact Shadow */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="absolute bottom-[2%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[8px] md:blur-[12px] rounded-[50%] z-10"
+            />
+
+            {/* Subtle Reflection */}
+            {prize.imageUrl && (
+              <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[30%] opacity-[0.1] blur-[2px] z-0 scale-y-[-0.5] pointer-events-none overflow-hidden">
+                <Image
+                  src={prize.imageUrl}
+                  alt=""
+                  fill
+                  className="object-contain object-top"
+                />
+              </div>
+            )}
+
             {prize.imageUrl ? (
-              <Image
-                src={prize.imageUrl}
-                alt={prize.name}
-                fill
-                className="object-contain object-bottom"
-                priority
-              />
+              <div className="relative z-20 w-full h-full flex items-end justify-center drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                <Image
+                  src={prize.imageUrl}
+                  alt={prize.name}
+                  fill
+                  className="object-contain object-bottom"
+                  priority
+                />
+              </div>
             ) : (
-              <span className="text-[150px] md:text-[240px] leading-none mb-6 md:mb-10">{getPrizeIcon(prize.name)}</span>
+              <span className="text-[35px] md:text-[50px] leading-none mb-1 md:mb-2 z-20 drop-shadow-lg">{getPrizeIcon(prize.name)}</span>
             )}
 
             {/* Remaining Quantity Badge */}
             {prize.remainingQty !== undefined && (
-              <div className="absolute top-10 right-10 md:top-20 md:right-20 bg-black/70 backdrop-blur-md text-white font-bold px-4 py-2 rounded-full text-sm border border-white/20 shadow-lg flex items-center gap-2">
-                <span className={`w-2.5 h-2.5 rounded-full ${prize.remainingQty > 0 ? 'bg-green-400 animate-pulse' : 'bg-red-500'}`}></span>
-                Sisa: {prize.remainingQty} unit
+              <div className="absolute top-0 right-0 md:top-1 md:right-1 bg-black/70 backdrop-blur-md text-white font-bold px-1 py-0.5 rounded-full text-[6px] border border-white/20 shadow-lg flex items-center gap-0.5 z-40">
+                <span className={`w-1 h-1 rounded-full ${prize.remainingQty > 0 ? 'bg-green-400 animate-pulse' : 'bg-red-500'}`}></span>
+                {prize.remainingQty}
               </div>
             )}
           </motion.div>
 
           {/* 3D CSS Podium Stage */}
-          <div className="relative w-[130%] h-[140px] md:h-[180px] z-10">
+          <div className="relative w-[130%] h-[40px] md:h-[50px] z-10">
             {/* Bottom Level (White) */}
-            <div className="absolute bottom-0 w-full h-[60px] md:h-[80px]">
+            <div className="absolute bottom-0 w-full h-[12px] md:h-[18px]">
               {/* White cylinder top */}
-              <div className="absolute top-0 w-full h-[30px] md:h-[40px] bg-[#f8f9fa] rounded-[50%] z-10"></div>
+              <div className="absolute top-0 w-full h-[6px] md:h-[9px] bg-[#f8f9fa] rounded-[50%] z-10"></div>
               {/* White cylinder body */}
-              <div className="absolute top-[15px] md:top-[20px] w-full h-[30px] md:h-[40px] bg-[#e9ecef]"></div>
+              <div className="absolute top-[3px] md:top-[4.5px] w-full h-[6px] md:h-[9px] bg-[#e9ecef]"></div>
               {/* White cylinder bottom */}
-              <div className="absolute bottom-0 w-full h-[30px] md:h-[40px] bg-[#e9ecef] rounded-[50%] shadow-[0_25px_40px_rgba(0,0,0,0.5)]"></div>
+              <div className="absolute bottom-0 w-full h-[8px] md:h-[11px] bg-[#e9ecef] rounded-[50%] shadow-[0_5px_8px_rgba(0,0,0,0.4)]"></div>
             </div>
 
             {/* Top Level (Blue) */}
-            <div className="absolute bottom-[48px] md:bottom-[60px] w-[86%] left-[7%] h-[50px] md:h-[70px] z-20">
+            <div className="absolute bottom-[12px] md:bottom-[15px] w-[86%] left-[7%] h-[12px] md:h-[15px] z-20">
               {/* Blue cylinder top */}
-              <div className="absolute top-0 w-full h-[25px] md:h-[35px] bg-[#0f62d1] rounded-[50%] z-10 border border-blue-400 shadow-[inset_0_-4px_10px_rgba(0,0,0,0.2)]"></div>
+              <div className="absolute top-0 w-full h-[6px] md:h-[8px] bg-[#0f62d1] rounded-[50%] z-10 border border-blue-400 shadow-[inset_0_-1px_2px_rgba(0,0,0,0.2)]"></div>
               {/* Blue cylinder body */}
-              <div className="absolute top-[12.5px] md:top-[17.5px] w-full h-[25px] md:h-[35px] bg-[#0c4bb0]"></div>
+              <div className="absolute top-[3px] md:top-[4px] w-full h-[6px] md:h-[8px] bg-[#0c4bb0]"></div>
               {/* Blue cylinder bottom */}
-              <div className="absolute bottom-0 w-full h-[25px] md:h-[35px] bg-[#093582] rounded-[50%] shadow-[0_10px_15px_rgba(0,0,0,0.3)]"></div>
+              <div className="absolute bottom-0 w-full h-[6px] md:h-[8px] bg-[#093582] rounded-[50%] shadow-[0_3px_5px_rgba(0,0,0,0.25)]"></div>
             </div>
           </div>
         </div>

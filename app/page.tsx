@@ -21,17 +21,15 @@ export default function Home() {
     setHasMounted(true);
   }, []);
 
-  // Use values directly for background to avoid flicker, but use hasMounted for text/styles
-  // to avoid hydration mismatch in components like PrizeSection
   const useImage = bgConfig.useImageBackground;
   const activeTitle = hasMounted ? (bgConfig.customTitle || 'UNDIAN BERHADIAH') : 'UNDIAN BERHADIAH';
   const activeTitleStyle = hasMounted ? bgConfig.titleStyle : undefined;
   const activePrizeStyle = hasMounted ? bgConfig.prizeStyle : undefined;
 
   return (
-    <main 
+    <main
       suppressHydrationWarning
-      className={`min-h-screen ${useImage ? '' : 'dynamic-bg'} flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden font-sans bg-[#0a0a0a]`}
+      className={`h-screen min-h-[600px] ${useImage ? '' : 'dynamic-bg'} flex flex-col items-center p-2 md:p-3 relative overflow-hidden font-sans bg-[#0a0a0a]`}
       style={{
         '--bg-from': bgConfig.from,
         '--bg-via': bgConfig.via,
@@ -44,53 +42,53 @@ export default function Home() {
         } : {})
       } as React.CSSProperties}
     >
-      
-      {/* Dynamic Background elements (Soft highlights) - only show if not using image background or as an overlay */}
+
+      {/* Dynamic Background elements */}
       <div suppressHydrationWarning className={`absolute inset-0 overflow-hidden pointer-events-none z-0 ${useImage ? 'opacity-30' : ''}`}>
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-white/40 blur-[120px]" />
         <div className="absolute top-[40%] right-[-10%] w-[60%] h-[60%] rounded-full bg-orange-200/50 blur-[120px]" />
-        {/* Subtle noise texture */}
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
       </div>
 
-      {/* Main Content Wrapper - Centers Everything with consistent gap */}
-      <div className="w-full max-w-4xl flex flex-col justify-center gap-6 md:gap-10 relative z-10 min-h-fit py-4">
+      <div className="w-full max-w-2xl h-full flex flex-col relative z-10 py-1">
         
-        {/* Header containing Logo and Indicators */}
-        <div className="w-full flex items-center justify-between bg-white/20 backdrop-blur-md px-5 py-3 md:px-6 md:py-4 rounded-[20px] md:rounded-[24px] border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.08)] shrink-0">
-          <div className="flex gap-3 items-center">
-             <div className="relative h-8 w-40 md:h-10 md:w-56 drop-shadow-sm">
-               <Image 
-                 src="/logo-clipan-finance.png" 
-                 alt="Clipan Finance Logo" 
-                 fill 
-                 className="object-contain object-left"
-                 priority
-               />
-             </div>
+        {/* Header - Compact */}
+        <div className="w-full flex items-center justify-between bg-white/10 backdrop-blur-md px-3 py-1 rounded-[10px] border border-white/20 shadow-sm shrink-0 z-50">
+          <div className="flex gap-2 items-center">
+            <div className="relative h-4 w-24 md:h-5 md:w-28 drop-shadow-sm">
+              <Image
+                src="/logo-clipan-finance.png"
+                alt="Clipan Finance Logo"
+                fill
+                className="object-contain object-left"
+                priority
+              />
+            </div>
           </div>
           <ModeIndicator />
         </div>
 
-        {/* Center Canvas: Marquee Winner Box & Podium Area */}
-        <div className="w-full flex flex-col items-center justify-center shrink-0">
-          <WinnerBox
-            isRolling={isRolling}
-            winner={winner}
-            currentDisplay={currentDisplay}
-          />
-          <PrizeSection 
-            winner={winner} 
-            prize={prize} 
-            customTitle={activeTitle}
-            titleStyle={activeTitleStyle}
-            prizeStyle={activePrizeStyle}
-          />
-          <ErrorDisplay error={error} />
+        {/* Center Content - Absolutely centered with zero extra padding */}
+        <div className="w-full flex-grow flex flex-col items-center justify-center overflow-hidden z-0">
+          <div className="w-full flex flex-col items-center justify-center space-y-0">
+            <WinnerBox
+              isRolling={isRolling}
+              winner={winner}
+              currentDisplay={currentDisplay}
+            />
+            <PrizeSection
+              winner={winner}
+              prize={prize}
+              customTitle={activeTitle}
+              titleStyle={activeTitleStyle}
+              prizeStyle={activePrizeStyle}
+            />
+            <ErrorDisplay error={error} />
+          </div>
         </div>
 
-        {/* Actions Layout (Bottom Bar) */}
-        <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/20 backdrop-blur-md px-5 py-4 rounded-[20px] md:rounded-[24px] border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.08)] shrink-0">
+        {/* Footer - Compact */}
+        <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-1.5 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-[10px] border border-white/20 shadow-sm shrink-0 z-50">
           <div>
             <ParticipantCounter />
           </div>
@@ -102,9 +100,8 @@ export default function Home() {
             onReset={reset}
           />
         </div>
-        
+
       </div>
-      
     </main>
   );
 }

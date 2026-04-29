@@ -13,18 +13,24 @@ export function useDynamicBackground() {
     const fetchRemoteConfig = async () => {
       try {
         const res = await fetchAPI('/api/settings');
-        if (res?.data?.app_appearance) {
+          if (res?.data?.app_appearance) {
           const remoteConfig = res.data.app_appearance;
           const currentLocal = getBackgroundConfig();
           
-          const newConfig = {
+          // Helper to check if a value is effectively "set"
+          const isSet = (val: any) => val !== undefined && val !== null && val !== '';
+
+          const newConfig: BackgroundConfig = {
             ...currentLocal,
             ...remoteConfig,
+            // Only overwrite with remote values if they are explicitly set or if we want to sync a 'false' state
+            useImageBackground: remoteConfig.useImageBackground !== undefined ? remoteConfig.useImageBackground : currentLocal.useImageBackground,
+            backgroundImage: isSet(remoteConfig.backgroundImage) ? remoteConfig.backgroundImage : currentLocal.backgroundImage,
             titleStyle: remoteConfig.titleStyle ? { ...currentLocal.titleStyle, ...remoteConfig.titleStyle } : currentLocal.titleStyle,
             prizeStyle: remoteConfig.prizeStyle ? { ...currentLocal.prizeStyle, ...remoteConfig.prizeStyle } : currentLocal.prizeStyle,
           };
           
-          // Only update and save if there's actually a change to avoid unnecessary re-renders
+          // Only update if there's an actual change to avoid unnecessary re-renders
           if (JSON.stringify(newConfig) !== JSON.stringify(currentLocal)) {
             setConfig(newConfig);
             saveBackgroundConfig(newConfig);

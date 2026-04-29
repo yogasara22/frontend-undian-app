@@ -31,6 +31,7 @@ export default function SettingsPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isAddingWinner, setIsAddingWinner] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   useEffect(() => {
     const handler = setTimeout(async () => {
@@ -63,19 +64,21 @@ export default function SettingsPage() {
       ]);
 
       const defaults = getBackgroundConfig();
+      const currentLocal = getBackgroundConfig(); // get current local state before overwriting
       const appAppearance = settingsRes?.data?.app_appearance || {};
       
       const newConfig: BackgroundConfig = {
         ...defaults,
+        ...currentLocal, // prioritize local if server is missing keys
         ...appAppearance,
-        titleStyle: appAppearance.titleStyle || defaults.titleStyle,
-        prizeStyle: appAppearance.prizeStyle || defaults.prizeStyle,
+        titleStyle: appAppearance.titleStyle ? { ...defaults.titleStyle, ...appAppearance.titleStyle } : (currentLocal.titleStyle || defaults.titleStyle),
+        prizeStyle: appAppearance.prizeStyle ? { ...defaults.prizeStyle, ...appAppearance.prizeStyle } : (currentLocal.prizeStyle || defaults.prizeStyle),
         scheduledWinners: scheduledRes?.data || []
       };
       
       setConfig(newConfig);
       setPrizes(prizesRes?.data || []);
-      // Sync to local storage for hooks that still rely on it
+      // Sync to local storage
       saveBackgroundConfig(newConfig);
     } catch (err) {
       console.error('Error fetching settings:', err);
@@ -85,6 +88,14 @@ export default function SettingsPage() {
 
   useEffect(() => {
     fetchSettings();
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'REMOTE_DRAW_SUCCESS' && e.newValue) {
+        fetchSettings();
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
   if (!config) return null;
@@ -92,7 +103,13 @@ export default function SettingsPage() {
   const handleSave = async () => {
     if (config) {
       try {
-        const { scheduledWinners, ...app_appearance } = config;
+        const { scheduledWinners, backgroundImage, ...rest } = config;
+        // backgroundImage is managed separately via file upload API,
+        // so we only send backgroundImage if it's a URL (not Base64)
+        const app_appearance = {
+          ...rest,
+          backgroundImage: backgroundImage && !backgroundImage.startsWith('data:') ? backgroundImage : (config.backgroundImage || ''),
+        };
         await fetchAPI('/api/settings', {
           method: 'PUT',
           body: JSON.stringify({ app_appearance })
@@ -176,18 +193,49 @@ export default function SettingsPage() {
     setConfig({ ...config, gradients: newGradients });
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert('Ukuran file terlalu besar (Maksimal 2MB)');
-        return;
+    if (!file) return;
+    
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran file terlalu besar (Maksimal 5MB)');
+      return;
+    }
+
+    setIsUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const res = await fetchAPI('/api/settings/background-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res?.data?.backgroundImage) {
+        setConfig({ ...config, backgroundImage: res.data.backgroundImage, useImageBackground: true });
+        saveBackgroundConfig({ ...config, backgroundImage: res.data.backgroundImage, useImageBackground: true });
+        setToastMessage('Background image berhasil diupload.');
+        setTimeout(() => setToastMessage(''), 3000);
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setConfig({ ...config, backgroundImage: reader.result as string });
-      };
-      reader.readAsDataURL(file);
+    } catch (err: any) {
+      alert(err.message || 'Gagal mengupload gambar');
+    } finally {
+      setIsUploadingImage(false);
+      // Reset file input
+      e.target.value = '';
+    }
+  };
+
+  const handleRemoveImage = async () => {
+    try {
+      await fetchAPI('/api/settings/background-image', { method: 'DELETE' });
+      setConfig({ ...config, backgroundImage: '', useImageBackground: false });
+      saveBackgroundConfig({ ...config, backgroundImage: '', useImageBackground: false });
+      setToastMessage('Background image berhasil dihapus.');
+      setTimeout(() => setToastMessage(''), 3000);
+    } catch (err: any) {
+      alert(err.message || 'Gagal menghapus gambar');
     }
   };
 
@@ -469,7 +517,7 @@ export default function SettingsPage() {
                      <div className="relative w-full h-[250px] md:h-[400px] rounded-xl overflow-hidden shadow-lg mb-4">
                         <img src={config.backgroundImage} className="w-full h-full object-cover" alt="Background Preview" />
                         <button 
-                          onClick={() => setConfig({ ...config, backgroundImage: '' })}
+                          onClick={handleRemoveImage}
                           className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full shadow-lg hover:scale-110 transition-transform z-10"
                         >
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -488,12 +536,22 @@ export default function SettingsPage() {
                         <p className="text-sm text-gray-400 mt-2">Format: JPG, PNG, WebP (Rasio 16:9 disarankan)</p>
                      </div>
                    )}
+                   {isUploadingImage && (
+                     <div className="absolute inset-0 bg-white/80 z-20 flex flex-col items-center justify-center rounded-2xl">
+                       <svg className="w-10 h-10 animate-spin text-blue-600 mb-3" fill="none" viewBox="0 0 24 24">
+                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                       </svg>
+                       <p className="text-sm font-bold text-gray-600">Mengupload gambar...</p>
+                     </div>
+                   )}
                    <input
                      type="file"
-                     accept="image/*"
+                     accept="image/jpeg,image/png,image/jpg,image/webp"
                      onChange={handleImageUpload}
                      className="absolute inset-0 opacity-0 cursor-pointer z-0"
                      title=""
+                     disabled={isUploadingImage}
                    />
                 </div>
 
@@ -508,12 +566,12 @@ export default function SettingsPage() {
                         placeholder="https://example.com/bg-undian.jpg"
                       />
                    </div>
-                   <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 flex items-start gap-3">
-                      <svg className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                   <div className="bg-green-50 p-4 rounded-xl border border-green-100 flex items-start gap-3">
+                      <svg className="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <p className="text-[11px] text-orange-700 font-medium leading-relaxed">
-                        Jika menggunakan file lokal (Base64), pastikan ukurannya di bawah 2MB agar aplikasi tetap lancar.
+                      <p className="text-[11px] text-green-700 font-medium leading-relaxed">
+                        Gambar akan diupload langsung ke server saat dipilih. Maks 5MB. Format: JPG, PNG, WebP.
                       </p>
                    </div>
                 </div>

@@ -31,42 +31,42 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
   return (
     <div className="w-full flex justify-center relative z-20 px-2 lg:px-0">
       {/* Outer Blue Box */}
-      <div className="relative w-full max-w-2xl bg-[#0f54a8] p-8 md:p-10 shadow-[0_25px_60px_-10px_rgba(0,0,0,0.6)] border-[4px] border-[#09356d] rounded-[36px] md:rounded-[48px] overflow-hidden">
-        
+      <div className="relative w-full max-w-sm bg-[#0f54a8] p-2 md:p-3 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.6)] border-[2px] border-[#09356d] rounded-[16px] md:rounded-[24px] overflow-hidden">
+
         {/* Lights Effect - Top */}
-        <div className="absolute top-3 md:top-4 left-6 md:left-8 right-6 md:right-8 flex justify-between pointer-events-none">
+        <div className="absolute top-1.5 md:top-2 left-6 md:left-8 right-6 md:right-8 flex justify-between pointer-events-none">
           {xLights.map((_, i) => (
-            <div key={`left-t-${i}`} className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-white shadow-[0_0_12px_4px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+            <div key={`left-t-${i}`} className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-white shadow-[0_0_4px_1px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
           ))}
         </div>
-        
+
         {/* Lights Effect - Bottom */}
-        <div className="absolute bottom-3 md:bottom-4 left-6 md:left-8 right-6 md:right-8 flex justify-between pointer-events-none">
+        <div className="absolute bottom-1.5 md:bottom-2 left-6 md:left-8 right-6 md:right-8 flex justify-between pointer-events-none">
           {xLights.map((_, i) => (
-            <div key={`left-b-${i}`} className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-white shadow-[0_0_12px_4px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+            <div key={`left-b-${i}`} className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-white shadow-[0_0_4px_1px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
           ))}
         </div>
 
         {/* Lights Effect - Left */}
-        <div className="absolute top-12 md:top-16 bottom-12 md:bottom-16 left-3 md:left-4 flex flex-col justify-between pointer-events-none">
+        <div className="absolute top-6 md:top-8 bottom-6 md:bottom-8 left-1.5 md:left-2 flex flex-col justify-between pointer-events-none">
           {yLights.map((_, i) => (
-            <div key={`left-l-${i}`} className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-white shadow-[0_0_12px_4px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${(i+2) * 0.15}s` }} />
+            <div key={`left-l-${i}`} className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-white shadow-[0_0_4px_1px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${(i + 2) * 0.15}s` }} />
           ))}
         </div>
 
         {/* Lights Effect - Right */}
-        <div className="absolute top-12 md:top-16 bottom-12 md:bottom-16 right-3 md:right-4 flex flex-col justify-between pointer-events-none">
+        <div className="absolute top-6 md:top-8 bottom-6 md:bottom-8 right-1.5 md:right-2 flex flex-col justify-between pointer-events-none">
           {yLights.map((_, i) => (
-            <div key={`left-r-${i}`} className="w-3 h-3 md:w-4 md:h-4 rounded-full bg-white shadow-[0_0_12px_4px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${(i+2) * 0.15}s` }} />
+            <div key={`left-r-${i}`} className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-white shadow-[0_0_4px_1px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${(i + 2) * 0.15}s` }} />
           ))}
         </div>
 
         {/* Yellow Inner Border (Thin & Clean) */}
-        <div className="relative z-10 w-full h-full bg-[#fca311] p-2 md:p-[10px] rounded-[24px] md:rounded-[32px] shadow-[inset_0_-6px_12px_rgba(0,0,0,0.15),0_8px_20px_rgba(0,0,0,0.4)] border border-[#e89000]/50 outline outline-2 outline-offset-[-2px] outline-[#fca311]">
-          
+        <div className="relative z-10 w-full h-full bg-[#fca311] p-1 rounded-[14px] md:rounded-[20px] shadow-[inset_0_-2px_6px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.4)] border border-[#e89000]/50 outline outline-1 outline-offset-[-1px] outline-[#fca311]">
+
           {/* Inner White Display Box */}
-          <div className="w-full h-full bg-white flex flex-col items-center justify-center p-8 md:p-12 shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] rounded-[18px] md:rounded-[24px]" style={{ minHeight: '220px' }}>
-            
+          <div className="w-full h-full bg-white flex flex-col items-center justify-center p-1.5 md:p-2.5 shadow-[inset_0_1px_6px_rgba(0,0,0,0.05)] rounded-[12px] md:rounded-[16px]" style={{ minHeight: '70px' }}>
+
             <AnimatePresence mode="wait">
               {/* Idle State */}
               {!isRolling && !winner && (
@@ -75,12 +75,12 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex flex-col items-center gap-3 w-full"
+                  className="flex flex-col items-center gap-0.5 w-full"
                 >
-                  <div className="w-full max-w-sm flex flex-col items-center justify-center mt-2">
-                    <span className="text-gray-400 font-bold uppercase tracking-[0.4em] text-sm hidden md:block">Menunggu undian</span>
-                    <span className="text-gray-400 font-bold uppercase tracking-[0.2em] text-sm md:hidden">Menunggu</span>
-                    <div className="w-12 h-1 bg-gray-200 mt-4 rounded-full" />
+                  <div className="w-full max-w-sm flex flex-col items-center justify-center">
+                    <span className="text-gray-400 font-bold uppercase tracking-[0.3em] text-[8px] hidden md:block">Menunggu undian</span>
+                    <span className="text-gray-400 font-bold uppercase tracking-[0.2em] text-[7px] md:hidden">Menunggu</span>
+                    <div className="w-5 h-0.5 bg-gray-100 mt-1 rounded-full" />
                   </div>
                 </motion.div>
               )}
@@ -98,7 +98,7 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
                   <motion.p
                     variants={nameVariants}
                     animate="rolling"
-                    className="text-4xl md:text-6xl font-black tracking-tighter text-center uppercase text-gray-800 drop-shadow-md"
+                    className="text-lg md:text-2xl font-black tracking-tighter text-center uppercase text-gray-800"
                   >
                     {currentDisplay}
                   </motion.p>
@@ -112,49 +112,49 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex flex-col items-center gap-2 w-full"
+                  className="flex flex-col items-center gap-0 w-full"
                 >
                   <motion.p
                     variants={nameVariants}
                     animate="winner"
-                    className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter text-center uppercase bg-clip-text text-transparent bg-gradient-to-b from-[#e32924] to-[#991512] drop-shadow-sm leading-tight"
+                    className="text-lg md:text-xl lg:text-2xl font-black tracking-tighter text-center uppercase bg-clip-text text-transparent bg-gradient-to-b from-[#e32924] to-[#991512] leading-tight"
                   >
                     {winner.name}
                   </motion.p>
-                  
+
                   {winner.shopName && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.4, duration: 0.5 }}
-                      className="flex items-center justify-center gap-2 w-full"
+                      className="flex items-center justify-center w-full"
                     >
-                      <span className="text-xl md:text-2xl font-bold text-gray-700 uppercase tracking-widest text-center">
+                      <span className="text-[10px] md:text-xs font-bold text-gray-700 uppercase tracking-widest text-center">
                         {winner.shopName}
                       </span>
                     </motion.div>
                   )}
 
-                  <div className="flex flex-wrap justify-center gap-3 mt-4">
+                  <div className="flex flex-wrap justify-center gap-1 mt-1">
                     {winner.department && (
                       <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.6, duration: 0.4 }}
                       >
-                        <span className="px-4 py-1.5 rounded-lg bg-gray-100 border border-gray-200 text-gray-600 text-xs md:text-sm font-bold uppercase tracking-wider">
+                        <span className="px-1.5 py-0.5 rounded bg-gray-50 border border-gray-100 text-gray-500 text-[7px] md:text-[8px] font-bold uppercase tracking-wider">
                           {winner.department}
                         </span>
                       </motion.div>
                     )}
-                    
+
                     {winner.ktpNumber && (
                       <motion.div
                         initial={{ opacity: 0, x: 10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.7, duration: 0.4 }}
                       >
-                        <span className="px-5 py-1.5 rounded-lg bg-[#fca311] text-white text-xs md:text-sm font-black uppercase shadow-md tracking-[0.2em]">
+                        <span className="px-2 py-0.5 rounded bg-[#fca311] text-white text-[7px] md:text-[8px] font-black uppercase tracking-[0.1em]">
                           {winner.ktpNumber}
                         </span>
                       </motion.div>
@@ -163,7 +163,7 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
                 </motion.div>
               )}
             </AnimatePresence>
-            
+
           </div>
         </div>
       </div>
