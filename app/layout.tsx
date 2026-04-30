@@ -8,7 +8,7 @@ const poppins = Poppins({ weight: ['400', '700', '900'], subsets: ['latin'], var
 const bebasNeue = Bebas_Neue({ weight: '400', subsets: ['latin'], variable: '--font-bebas' });
 
 export const metadata: Metadata = {
-  title: 'Aplikasi Undian',
+  title: 'Whoisthewinners',
   description: 'Aplikasi undian untuk acara Anda',
   icons: {
     icon: '/icon.png',

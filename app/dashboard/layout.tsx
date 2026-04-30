@@ -113,7 +113,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
           {(sidebarOpen || mobileMenuOpen) && (
             <div className="overflow-hidden">
-              <p className="font-bold text-sm leading-tight text-gray-800">Undian Admin</p>
+              <p className="font-bold text-sm leading-tight text-gray-800">Whoisthewinners</p>
               <p className="text-gray-500 text-xs">Control Panel</p>
             </div>
           )}
