@@ -31,7 +31,7 @@ export default function Home() {
   return (
     <main
       suppressHydrationWarning
-      className={`h-screen min-h-[600px] ${useImage ? '' : 'dynamic-bg'} flex flex-col items-center p-2 md:p-3 relative overflow-hidden font-sans bg-[#0a0a0a]`}
+      className={`min-h-screen ${useImage ? '' : 'dynamic-bg'} flex flex-col items-center p-2 md:p-3 relative overflow-y-auto overflow-x-hidden font-sans bg-[#0a0a0a]`}
       style={{
         '--bg-from': bgConfig.from,
         '--bg-via': bgConfig.via,
@@ -57,7 +57,7 @@ export default function Home() {
 
 
         {/* Center Content - Absolutely centered with zero extra padding */}
-        <div className="w-full flex-grow flex flex-col items-center justify-center overflow-hidden z-0">
+        <div className="w-full flex-grow flex flex-col items-center justify-center z-0">
           <div className="w-full flex flex-col items-center justify-center space-y-0">
             
             {/* Logo Placement Above Box */}

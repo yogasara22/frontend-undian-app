@@ -35,31 +35,31 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
   return (
     <div className="w-full flex justify-center relative z-20 px-2 lg:px-0">
       {/* Outer Blue Box */}
-      <div className="relative w-full max-w-[420px] md:max-w-[480px] bg-[#0f54a8] p-4 md:p-5 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.6)] border-[2px] border-[#09356d] rounded-[16px] md:rounded-[24px] overflow-hidden">
+      <div className="relative w-full max-w-[380px] md:max-w-[460px] bg-[#0f54a8] p-3 md:p-4 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.6)] border-[2px] border-[#09356d] rounded-[16px] md:rounded-[24px] overflow-hidden">
 
         {/* Lights Effect - Top */}
-        <div className="absolute top-1.5 md:top-2 left-6 md:left-8 right-6 md:right-8 flex justify-between pointer-events-none">
+        <div className="absolute top-1 md:top-1.5 left-5 md:left-6 right-5 md:right-6 flex justify-between pointer-events-none">
           {xLights.map((_, i) => (
             <div key={`left-t-${i}`} className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-white shadow-[0_0_4px_1px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
           ))}
         </div>
 
         {/* Lights Effect - Bottom */}
-        <div className="absolute bottom-1.5 md:bottom-2 left-6 md:left-8 right-6 md:right-8 flex justify-between pointer-events-none">
+        <div className="absolute bottom-1 md:bottom-1.5 left-5 md:left-6 right-5 md:right-6 flex justify-between pointer-events-none">
           {xLights.map((_, i) => (
             <div key={`left-b-${i}`} className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-white shadow-[0_0_4px_1px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
           ))}
         </div>
 
         {/* Lights Effect - Left */}
-        <div className="absolute top-6 md:top-8 bottom-6 md:bottom-8 left-1.5 md:left-2 flex flex-col justify-between pointer-events-none">
+        <div className="absolute top-5 md:top-6 bottom-5 md:bottom-6 left-1 md:left-1.5 flex flex-col justify-between pointer-events-none">
           {yLights.map((_, i) => (
             <div key={`left-l-${i}`} className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-white shadow-[0_0_4px_1px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${(i + 2) * 0.15}s` }} />
           ))}
         </div>
 
         {/* Lights Effect - Right */}
-        <div className="absolute top-6 md:top-8 bottom-6 md:bottom-8 right-1.5 md:right-2 flex flex-col justify-between pointer-events-none">
+        <div className="absolute top-5 md:top-6 bottom-5 md:bottom-6 right-1 md:right-1.5 flex flex-col justify-between pointer-events-none">
           {yLights.map((_, i) => (
             <div key={`left-r-${i}`} className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-white shadow-[0_0_4px_1px_rgba(255,255,255,0.8)] animate-pulse" style={{ animationDelay: `${(i + 2) * 0.15}s` }} />
           ))}
@@ -69,7 +69,7 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
         <div className="relative z-10 w-full h-full bg-[#fca311] p-1 rounded-[14px] md:rounded-[20px] shadow-[inset_0_-2px_6px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.4)] border border-[#e89000]/50 outline outline-1 outline-offset-[-1px] outline-[#fca311]">
 
           {/* Inner White Display Box */}
-          <div className="w-full h-full bg-white flex flex-col items-center justify-center p-4 md:p-6 shadow-[inset_0_1px_6px_rgba(0,0,0,0.05)] rounded-[12px] md:rounded-[16px] min-h-[120px] md:min-h-[160px]">
+          <div className="w-full h-full bg-white flex flex-col items-center justify-center p-2 md:p-4 shadow-[inset_0_1px_6px_rgba(0,0,0,0.05)] rounded-[12px] md:rounded-[16px] min-h-[90px] md:min-h-[120px]">
 
             <AnimatePresence mode="wait">
               {/* Idle State */}
@@ -99,7 +99,7 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
                   transition={{ duration: 0.2 }}
                   className="w-full flex items-center justify-center"
                 >
-                  <div className="w-[120px] h-[120px] md:w-[150px] md:h-[150px] flex items-center justify-center pointer-events-none overflow-hidden">
+                  <div className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] flex items-center justify-center pointer-events-none overflow-hidden">
                     <Lottie animationData={spinWheelData} loop={false} style={{ width: '100%', height: '100%' }} />
                   </div>
                 </motion.div>
