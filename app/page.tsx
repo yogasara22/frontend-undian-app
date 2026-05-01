@@ -14,11 +14,13 @@ import { useState, useEffect } from 'react';
 
 export default function Home() {
   const [hasMounted, setHasMounted] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { isRolling, isLoading, winner, prize, error, currentDisplay, startDraw, reset } = useLottery();
   const bgConfig = useDynamicBackground();
 
   useEffect(() => {
     setHasMounted(true);
+    setIsAdmin(!!localStorage.getItem('isAdminLoggedIn'));
   }, []);
 
   const useImage = bgConfig.useImageBackground;
@@ -52,25 +54,23 @@ export default function Home() {
 
       <div className="w-full max-w-2xl h-full flex flex-col relative z-10 py-1">
         
-        {/* Header - Compact */}
-        <div className="w-full flex items-center justify-between bg-white/10 backdrop-blur-md px-3 py-1 rounded-[10px] border border-white/20 shadow-sm shrink-0 z-50">
-          <div className="flex gap-2 items-center">
-            <div className="relative h-4 w-24 md:h-5 md:w-28 drop-shadow-sm">
-              <Image
-                src="/logo-clipan-finance.png"
-                alt="Clipan Finance Logo"
-                fill
-                className="object-contain object-left"
-                priority
-              />
-            </div>
-          </div>
-          <ModeIndicator />
-        </div>
+
 
         {/* Center Content - Absolutely centered with zero extra padding */}
         <div className="w-full flex-grow flex flex-col items-center justify-center overflow-hidden z-0">
           <div className="w-full flex flex-col items-center justify-center space-y-0">
+            
+            {/* Logo Placement Above Box */}
+            <div className="mb-6 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg">
+              <Image
+                src="/logo.png"
+                alt="Main Logo"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+
             <WinnerBox
               isRolling={isRolling}
               winner={winner}
@@ -92,13 +92,15 @@ export default function Home() {
           <div>
             <ParticipantCounter />
           </div>
-          <DrawButton
-            isRolling={isRolling}
-            isLoading={isLoading}
-            hasWinner={!!winner}
-            onDraw={startDraw}
-            onReset={reset}
-          />
+          {isAdmin && (
+            <DrawButton
+              isRolling={isRolling}
+              isLoading={isLoading}
+              hasWinner={!!winner}
+              onDraw={startDraw}
+              onReset={reset}
+            />
+          )}
         </div>
 
       </div>

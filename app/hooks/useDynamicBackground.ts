@@ -23,8 +23,8 @@ export function useDynamicBackground() {
           const newConfig: BackgroundConfig = {
             ...currentLocal,
             ...remoteConfig,
-            // Only overwrite with remote values if they are explicitly set or if we want to sync a 'false' state
-            useImageBackground: remoteConfig.useImageBackground !== undefined ? remoteConfig.useImageBackground : currentLocal.useImageBackground,
+            // Always use image background now since gradient feature is removed
+            useImageBackground: true,
             backgroundImage: isSet(remoteConfig.backgroundImage) ? remoteConfig.backgroundImage : currentLocal.backgroundImage,
             titleStyle: remoteConfig.titleStyle ? { ...currentLocal.titleStyle, ...remoteConfig.titleStyle } : currentLocal.titleStyle,
             prizeStyle: remoteConfig.prizeStyle ? { ...currentLocal.prizeStyle, ...remoteConfig.prizeStyle } : currentLocal.prizeStyle,

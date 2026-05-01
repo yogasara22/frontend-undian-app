@@ -68,8 +68,8 @@ const STORAGE_KEY = 'undian_bg_config';
 export const getBackgroundConfig = (): BackgroundConfig => {
   const defaults: BackgroundConfig = { 
     duration: 60000, 
-    gradients: DEFAULT_GRADIENTS,
-    useImageBackground: false,
+    gradients: [],
+    useImageBackground: true,
     backgroundImage: '',
     customTitle: 'UNDIAN BERHADIAH',
     titleStyle: DEFAULT_TITLE_STYLE,

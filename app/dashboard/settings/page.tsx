@@ -169,29 +169,7 @@ export default function SettingsPage() {
     }
   };
 
-  const handleDurationChange = (val: string) => {
-    const num = parseInt(val) || 0;
-    setConfig({ ...config, duration: num * 1000 });
-  };
 
-  const updateGradient = (index: number, field: keyof GradientEntry, value: string) => {
-    const newGradients = [...config.gradients];
-    newGradients[index] = { ...newGradients[index], [field]: value };
-    setConfig({ ...config, gradients: newGradients });
-  };
-
-  const addGradient = () => {
-    setConfig({
-      ...config,
-      gradients: [...config.gradients, { from: '#3b82f6', via: '#2563eb', to: '#1d4ed8' }]
-    });
-  };
-
-  const removeGradient = (index: number) => {
-    if (config.gradients.length <= 1) return;
-    const newGradients = config.gradients.filter((_, i) => i !== index);
-    setConfig({ ...config, gradients: newGradients });
-  };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -308,40 +286,16 @@ export default function SettingsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="space-y-8">
-          <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-            <h3 className="text-gray-900 font-bold mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </span>
-              Waktu Rotasi
-            </h3>
-            <div>
-              <div className="flex justify-between items-end mb-2">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Interval Transisi</label>
-                <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{config.duration / 1000} Detik</span>
-              </div>
-              <input
-                type="range"
-                min="5000"
-                max="300000"
-                step="5000"
-                value={config.duration}
-                onChange={(e) => setConfig({ ...config, duration: parseInt(e.target.value) })}
-                className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
-              />
-            </div>
-          </section>
+
 
           <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm overflow-hidden relative">
              <h3 className="text-gray-900 font-bold mb-4">Preview Atas</h3>
              <div 
                className="w-full h-48 md:h-56 rounded-xl shadow-inner flex items-center justify-center text-center p-4 relative overflow-hidden"
                style={{
-                 background: config.useImageBackground && config.backgroundImage
+                 background: config.backgroundImage
                    ? `url(${config.backgroundImage}) center/cover no-repeat`
-                   : `linear-gradient(135deg, ${config.gradients[0]?.from}, ${config.gradients[0]?.via}, ${config.gradients[0]?.to})`
+                   : `#1e293b`
                }}
              >
                 <div className="relative z-10 drop-shadow-lg">
@@ -383,24 +337,9 @@ export default function SettingsPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
                 </svg>
               </span>
-              Mode Tampilan
+              Tampilan
             </h3>
             <div className="space-y-4">
-              <div className="flex p-1 bg-gray-100 rounded-xl">
-                <button
-                  onClick={() => setConfig({ ...config, useImageBackground: false })}
-                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${!config.useImageBackground ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                >
-                  Warna Gradient
-                </button>
-                <button
-                  onClick={() => setConfig({ ...config, useImageBackground: true })}
-                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${config.useImageBackground ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                >
-                  Custom Image
-                </button>
-              </div>
-
               <div>
                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Isi Judul Hadiah</label>
                 <input
@@ -495,22 +434,10 @@ export default function SettingsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </span>
-                {config.useImageBackground ? 'Konfigurasi Background Gambar' : 'Koleksi Pallet Warna (Gradients)'}
+                Konfigurasi Background Gambar
               </h3>
-              {!config.useImageBackground && (
-                <button
-                  onClick={addGradient}
-                  className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                  </svg>
-                  Tambah Gradient
-                </button>
-              )}
             </div>
 
-            {config.useImageBackground ? (
               <div className="space-y-6">
                 <div className="p-6 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center bg-gray-50/50 hover:bg-white hover:border-blue-300 transition-all group min-h-[300px] relative">
                    {config.backgroundImage ? (
@@ -576,91 +503,6 @@ export default function SettingsPage() {
                    </div>
                 </div>
               </div>
-            ) : (
-              <>
-                <div className="space-y-4">
-              {config.gradients.map((grad, idx) => (
-                <div 
-                  key={idx} 
-                  className="group relative bg-gray-50 border border-gray-200 rounded-2xl p-4 md:p-5 flex flex-col md:flex-row items-center gap-4 md:gap-6 transition-all hover:bg-white hover:shadow-md hover:border-blue-200"
-                >
-                  <div className="flex-shrink-0 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[10px] font-black text-gray-400">
-                      #{idx + 1}
-                    </div>
-                    <div 
-                      className="w-16 h-16 md:w-20 md:h-20 rounded-xl shadow-md border-2 border-white ring-1 ring-gray-200"
-                      style={{ background: `linear-gradient(135deg, ${grad.from}, ${grad.via}, ${grad.to})` }}
-                    />
-                  </div>
-
-                  <div className="flex-1 grid grid-cols-3 gap-2 md:gap-4 w-full">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-black text-gray-400 uppercase ml-1">From</label>
-                      <div className="flex items-center gap-2">
-                         <input
-                          type="color"
-                          value={grad.from}
-                          onChange={(e) => updateGradient(idx, 'from', e.target.value)}
-                          className="w-8 h-8 rounded-md cursor-pointer border-0 bg-transparent"
-                        />
-                        <input
-                          type="text"
-                          value={grad.from}
-                          onChange={(e) => updateGradient(idx, 'from', e.target.value)}
-                          className="flex-1 min-w-0 px-2 py-1.5 bg-white border border-gray-200 rounded-lg text-[10px] font-bold text-gray-700 focus:ring-1 focus:ring-blue-500 uppercase"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-black text-gray-400 uppercase ml-1">Via</label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="color"
-                          value={grad.via}
-                          onChange={(e) => updateGradient(idx, 'via', e.target.value)}
-                          className="w-8 h-8 rounded-md cursor-pointer border-0 bg-transparent"
-                        />
-                        <input
-                          type="text"
-                          value={grad.via}
-                          onChange={(e) => updateGradient(idx, 'via', e.target.value)}
-                          className="flex-1 min-w-0 px-2 py-1.5 bg-white border border-gray-200 rounded-lg text-[10px] font-bold text-gray-700 focus:ring-1 focus:ring-blue-500 uppercase"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-black text-gray-400 uppercase ml-1">To</label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="color"
-                          value={grad.to}
-                          onChange={(e) => updateGradient(idx, 'to', e.target.value)}
-                          className="w-8 h-8 rounded-md cursor-pointer border-0 bg-transparent"
-                        />
-                        <input
-                          type="text"
-                          value={grad.to}
-                          onChange={(e) => updateGradient(idx, 'to', e.target.value)}
-                          className="flex-1 min-w-0 px-2 py-1.5 bg-white border border-gray-200 rounded-lg text-[10px] font-bold text-gray-700 focus:ring-1 focus:ring-blue-500 uppercase"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => removeGradient(idx)}
-                    className="p-2 text-gray-300 hover:text-red-500 transition-colors md:self-center"
-                    title="Hapus Gradient"
-                    disabled={config.gradients.length <= 1}
-                  >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </div>
-              ))}
-            </div>
 
             <div className="mt-8 p-4 bg-blue-50 rounded-2xl border border-blue-100 flex gap-3 italic">
               <span className="text-blue-500">
@@ -669,13 +511,9 @@ export default function SettingsPage() {
                 </svg>
               </span>
               <p className="text-xs text-blue-700 font-medium leading-relaxed">
-                {config.useImageBackground 
-                  ? "Mode gambar aktif. Gunakan gambar dengan resolusi tinggi (FHD) untuk hasil visual terbaik di layar panggung."
-                  : "Background akan berotasi secara berurutan sesuai daftar di atas. Gunakan kombinasi warna yang kontras dengan teks putih layar undian untuk keterbacaan maksimal."}
+                Gunakan gambar dengan resolusi tinggi (FHD) untuk hasil visual terbaik di layar panggung.
               </p>
             </div>
-          </>
-        )}
       </section>
 
           {/* NEW SECTION: Scheduled Winner Management */}

@@ -11,7 +11,7 @@ export function useLottery() {
     winner: null,
     prize: null,
     error: null,
-    currentDisplay: '???',
+    currentDisplay: '✧ ✧ ✧',
   });
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -41,6 +41,16 @@ export function useLottery() {
         currentDisplay: result.winner.name,
       }));
       
+      // Play premium doorprize sound
+      if (typeof window !== 'undefined') {
+        try {
+          const audio = new Audio('/doorprize.mp3');
+          audio.play().catch(e => console.log('Audio playback prevented by browser:', e));
+        } catch (e) {
+          console.error('Audio playback error', e);
+        }
+      }
+      
       // Notify admin dashboard that draw is complete
       localStorage.setItem('REMOTE_DRAW_SUCCESS', Date.now().toString());
     } catch (err) {
@@ -50,7 +60,7 @@ export function useLottery() {
         isRolling: false,
         isLoading: false,
         error: err instanceof Error ? err.message : 'Terjadi kesalahan tidak diketahui',
-        currentDisplay: '???',
+        currentDisplay: '✧ ✧ ✧',
       }));
     }
   }, []);
@@ -62,7 +72,7 @@ export function useLottery() {
       winner: null,
       prize: null,
       error: null,
-      currentDisplay: '???',
+      currentDisplay: '✧ ✧ ✧',
     });
   }, []);
 

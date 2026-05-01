@@ -2,6 +2,10 @@
 
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { Winner } from '../types';
+import dynamic from 'next/dynamic';
+import spinWheelData from '../../public/spin wheel.json';
+
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 interface WinnerBoxProps {
   isRolling: boolean;
@@ -95,13 +99,9 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
                   transition={{ duration: 0.2 }}
                   className="w-full flex items-center justify-center"
                 >
-                  <motion.p
-                    variants={nameVariants}
-                    animate="rolling"
-                    className="text-lg md:text-2xl font-black tracking-tighter text-center uppercase text-gray-800"
-                  >
-                    {currentDisplay}
-                  </motion.p>
+                  <div className="w-[60px] h-[60px] md:w-[80px] md:h-[80px] flex items-center justify-center pointer-events-none overflow-hidden">
+                    <Lottie animationData={spinWheelData} loop={true} style={{ width: '100%', height: '100%' }} />
+                  </div>
                 </motion.div>
               )}
 
