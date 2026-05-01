@@ -70,7 +70,7 @@ export const getBackgroundConfig = (): BackgroundConfig => {
     duration: 60000, 
     gradients: [],
     useImageBackground: true,
-    backgroundImage: '',
+    backgroundImage: '/bg-layar-undian.png',
     customTitle: 'UNDIAN BERHADIAH',
     titleStyle: DEFAULT_TITLE_STYLE,
     prizeStyle: DEFAULT_PRIZE_STYLE,
@@ -87,6 +87,7 @@ export const getBackgroundConfig = (): BackgroundConfig => {
       return {
         ...defaults,
         ...parsed,
+        backgroundImage: parsed.backgroundImage || '/bg-layar-undian.png',
         titleStyle: parsed.titleStyle ? { ...defaults.titleStyle, ...parsed.titleStyle } : defaults.titleStyle,
         prizeStyle: parsed.prizeStyle ? { ...defaults.prizeStyle, ...parsed.prizeStyle } : defaults.prizeStyle,
         scheduledWinners: parsed.scheduledWinners || []
