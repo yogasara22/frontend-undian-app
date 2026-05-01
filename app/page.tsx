@@ -72,7 +72,7 @@ export default function Home() {
             </div>
 
             {/* Title Text */}
-            <div className="mb-6 z-10 flex flex-col items-center justify-center font-black italic tracking-tighter text-white drop-shadow-2xl"
+            <div className="mb-8 md:mb-10 z-10 flex flex-col items-center justify-center font-black italic tracking-tighter text-white drop-shadow-2xl"
                  style={{ 
                    fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
                    lineHeight: '0.9', 
@@ -90,9 +90,9 @@ export default function Home() {
                    `,
                    WebkitTextStroke: '2px #102652'
                  }}>
-              <span className="text-4xl md:text-5xl lg:text-6xl -mb-1">Strength of</span>
-              <span className="text-5xl md:text-6xl lg:text-7xl -mb-1">Loyalty &</span>
-              <span className="text-5xl md:text-6xl lg:text-7xl">Relationships</span>
+              <span className="text-3xl md:text-4xl lg:text-5xl -mb-1">Strength of</span>
+              <span className="text-4xl md:text-5xl lg:text-6xl -mb-1">Loyalty &</span>
+              <span className="text-4xl md:text-5xl lg:text-6xl">Relationships</span>
             </div>
 
             <WinnerBox
