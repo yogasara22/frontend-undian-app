@@ -99,8 +99,8 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
                   transition={{ duration: 0.2 }}
                   className="w-full flex items-center justify-center"
                 >
-                  <div className="w-[70px] h-[70px] md:w-[90px] md:h-[90px] flex items-center justify-center pointer-events-none overflow-hidden">
-                    <Lottie animationData={spinWheelData} loop={true} style={{ width: '100%', height: '100%' }} />
+                  <div className="w-[120px] h-[120px] md:w-[150px] md:h-[150px] flex items-center justify-center pointer-events-none overflow-hidden">
+                    <Lottie animationData={spinWheelData} loop={false} style={{ width: '100%', height: '100%' }} />
                   </div>
                 </motion.div>
               )}

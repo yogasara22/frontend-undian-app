@@ -30,7 +30,7 @@ export function useLottery() {
       const result = await drawLottery();
       setState(prev => ({ ...prev, isLoading: false }));
 
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise(resolve => setTimeout(resolve, 5000));
 
       if (intervalRef.current) clearInterval(intervalRef.current);
       setState(prev => ({
