@@ -8,6 +8,11 @@ export function useDynamicBackground() {
   const [config, setConfig] = useState<BackgroundConfig>(getBackgroundConfig());
   const [index, setIndex] = useState(0);
 
+  // Fix SSR hydration mismatch by re-reading localStorage after mount
+  useEffect(() => {
+    setConfig(getBackgroundConfig());
+  }, []);
+
   // Sync with backend API and localStorage changes
   useEffect(() => {
     const fetchRemoteConfig = async () => {
