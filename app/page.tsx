@@ -61,7 +61,7 @@ export default function Home() {
           <div className="w-full flex flex-col items-center justify-center space-y-0">
             
             {/* Logo Placement Above Box */}
-            <div className="mb-6 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg">
+            <div className="mb-4 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg z-10">
               <Image
                 src="/logo.png"
                 alt="Main Logo"
@@ -69,6 +69,30 @@ export default function Home() {
                 className="object-contain"
                 priority
               />
+            </div>
+
+            {/* Title Text */}
+            <div className="mb-6 z-10 flex flex-col items-center justify-center font-black italic tracking-tighter text-white drop-shadow-2xl"
+                 style={{ 
+                   fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
+                   lineHeight: '0.9', 
+                   textShadow: `
+                     2px 2px 0 #2854a1,
+                     3px 3px 0 #2854a1,
+                     4px 4px 0 #2854a1,
+                     5px 5px 0 #2854a1,
+                     6px 6px 0 #2854a1,
+                     7px 7px 0 #2854a1,
+                     8px 8px 0 #2854a1,
+                     9px 9px 0 #2854a1,
+                     10px 10px 0 #1b3a73,
+                     15px 15px 25px rgba(0,0,0,0.7)
+                   `,
+                   WebkitTextStroke: '2px #102652'
+                 }}>
+              <span className="text-4xl md:text-5xl lg:text-6xl -mb-1">Strength of</span>
+              <span className="text-5xl md:text-6xl lg:text-7xl -mb-1">Loyalty &</span>
+              <span className="text-5xl md:text-6xl lg:text-7xl">Relationships</span>
             </div>
 
             <WinnerBox

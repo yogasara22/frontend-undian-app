@@ -66,11 +66,11 @@ const DEFAULT_GRADIENTS: GradientEntry[] = [
 const STORAGE_KEY = 'undian_bg_config';
 
 export const getBackgroundConfig = (): BackgroundConfig => {
-  const defaults: BackgroundConfig = { 
-    duration: 60000, 
+  const defaults: BackgroundConfig = {
+    duration: 60000,
     gradients: [],
     useImageBackground: true,
-    backgroundImage: '/bg-layar-undian.png',
+    backgroundImage: '/bg-layar-undian.webp',
     customTitle: 'UNDIAN BERHADIAH',
     titleStyle: DEFAULT_TITLE_STYLE,
     prizeStyle: DEFAULT_PRIZE_STYLE,
@@ -87,7 +87,7 @@ export const getBackgroundConfig = (): BackgroundConfig => {
       return {
         ...defaults,
         ...parsed,
-        backgroundImage: parsed.backgroundImage || '/bg-layar-undian.png',
+        backgroundImage: parsed.backgroundImage || '/bg-layar-undian.webp',
         titleStyle: parsed.titleStyle ? { ...defaults.titleStyle, ...parsed.titleStyle } : defaults.titleStyle,
         prizeStyle: parsed.prizeStyle ? { ...defaults.prizeStyle, ...parsed.prizeStyle } : defaults.prizeStyle,
         scheduledWinners: parsed.scheduledWinners || []

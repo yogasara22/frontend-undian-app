@@ -69,7 +69,7 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
         <div className="relative z-10 w-full h-full bg-[#fca311] p-1 rounded-[14px] md:rounded-[20px] shadow-[inset_0_-2px_6px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.4)] border border-[#e89000]/50 outline outline-1 outline-offset-[-1px] outline-[#fca311]">
 
           {/* Inner White Display Box */}
-          <div className="w-full h-full bg-white flex flex-col items-center justify-center p-2 md:p-3 shadow-[inset_0_1px_6px_rgba(0,0,0,0.05)] rounded-[12px] md:rounded-[16px]" style={{ minHeight: '85px' }}>
+          <div className="w-full h-full bg-white flex flex-col items-center justify-center p-4 md:p-6 shadow-[inset_0_1px_6px_rgba(0,0,0,0.05)] rounded-[12px] md:rounded-[16px] min-h-[120px] md:min-h-[160px]">
 
             <AnimatePresence mode="wait">
               {/* Idle State */}
