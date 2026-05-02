@@ -36,6 +36,17 @@ export function PrizeSection({
 }: PrizeSectionProps) {
   if (!prize) return null;
 
+  // Responsive sizing: larger when showcasing prize (no winner), smaller when winner is shown
+  const hasWinner = !!winner;
+  const imageSize = hasWinner ? 'min(30vh, 320px)' : 'min(50vh, 520px)';
+  const podiumHeight = hasWinner ? 'min(10vh, 100px)' : 'min(14vh, 140px)';
+  const podiumMaxW = hasWinner
+    ? 'max-w-[300px] md:max-w-[380px] lg:max-w-[420px]'
+    : 'max-w-[420px] md:max-w-[520px] lg:max-w-[600px]';
+  const overlapCalc = hasWinner
+    ? 'calc(min(10vh, 100px) * -0.85)'
+    : 'calc(min(14vh, 140px) * -0.85)';
+
   return (
     <AnimatePresence>
       <motion.div
@@ -106,7 +117,7 @@ export function PrizeSection({
         </div>
 
         {/* Podium & Prize Area */}
-        <div className="relative w-full max-w-[420px] md:max-w-[520px] lg:max-w-[600px] flex flex-col items-center mt-1 md:mt-2">
+        <div className={`relative w-full ${podiumMaxW} flex flex-col items-center mt-1 md:mt-2`}>
 
           {/* Light Beams from behind */}
           <div className="absolute -inset-4 z-0 flex justify-center pointer-events-none">
@@ -121,9 +132,9 @@ export function PrizeSection({
             transition={{ type: 'spring', stiffness: 100, delay: 0.4 }}
             className="z-30 relative flex items-end justify-center pointer-events-none group"
             style={{ 
-              width: 'min(50vh, 520px)', 
-              height: 'min(50vh, 520px)',
-              marginBottom: 'calc(min(14vh, 140px) * -0.85)'
+              width: imageSize, 
+              height: imageSize,
+              marginBottom: overlapCalc
             }}
           >
             {/* Real-time Contact Shadow */}
@@ -170,7 +181,7 @@ export function PrizeSection({
           </motion.div>
 
           {/* 3D CSS Podium Stage */}
-          <div className="relative w-[115%] z-10" style={{ height: 'min(14vh, 140px)' }}>
+          <div className="relative w-[115%] z-10" style={{ height: podiumHeight }}>
             {/* Bottom Level (White) */}
             <div className="absolute bottom-0 w-full h-[33%]">
               {/* White cylinder top */}
@@ -197,3 +208,4 @@ export function PrizeSection({
     </AnimatePresence>
   );
 }
+
