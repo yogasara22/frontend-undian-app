@@ -60,7 +60,7 @@ export default function Home() {
           <div className="w-full flex flex-col items-center justify-center space-y-0">
             
             {/* Logo Placement Above Box */}
-            <div className="mb-8 md:mb-10 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg z-10">
+            <div className="mb-2 md:mb-4 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg z-10">
               <Image
                 src="/logo.png"
                 alt="Main Logo"
@@ -72,7 +72,7 @@ export default function Home() {
 
             {/* Title Text */}
             {!winner && (
-              <div className="mb-12 md:mb-16 z-10 flex flex-col items-center justify-center font-black italic tracking-tighter text-white drop-shadow-2xl"
+              <div className="mb-20 md:mb-24 z-10 flex flex-col items-center justify-center font-black italic tracking-tighter text-white drop-shadow-2xl"
                    style={{ 
                      fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
                      lineHeight: '0.9', 
