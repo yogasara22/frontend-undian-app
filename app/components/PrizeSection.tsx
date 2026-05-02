@@ -123,7 +123,7 @@ export function PrizeSection({
             style={{ 
               width: 'min(50vh, 520px)', 
               height: 'min(50vh, 520px)',
-              marginBottom: 'calc(min(14vh, 140px) * -0.55)'
+              marginBottom: 'calc(min(14vh, 140px) * -0.85)'
             }}
           >
             {/* Real-time Contact Shadow */}

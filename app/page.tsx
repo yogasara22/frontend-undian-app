@@ -175,7 +175,7 @@ export default function Home() {
               isRolling={isRolling}
               isLoading={isLoading}
               hasWinner={!!winner}
-              onDraw={startDraw}
+              onDraw={() => startDraw(activePrize?.id ? Number(activePrize.id) : undefined)}
               onReset={reset}
             />
           </div>
