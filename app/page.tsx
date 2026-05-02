@@ -60,7 +60,7 @@ export default function Home() {
           <div className="w-full flex flex-col items-center justify-center space-y-0">
             
             {/* Logo Placement Above Box */}
-            <div className="mb-2 md:mb-4 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg z-10">
+            <div className="shrink-0 mb-4 md:mb-6 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg z-10">
               <Image
                 src="/logo.png"
                 alt="Main Logo"
@@ -72,10 +72,10 @@ export default function Home() {
 
             {/* Title Text */}
             {!winner && (
-              <div className="mb-20 md:mb-24 z-10 flex flex-col items-center justify-center font-black italic tracking-tighter text-white drop-shadow-2xl"
+              <div className="shrink-0 mb-8 md:mb-12 z-10 text-center font-black italic tracking-tighter text-white drop-shadow-2xl"
                    style={{ 
                      fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
-                     lineHeight: '0.9', 
+                     lineHeight: '1', 
                      textShadow: `
                        2px 2px 0 #2854a1,
                        3px 3px 0 #2854a1,
@@ -90,9 +90,9 @@ export default function Home() {
                      `,
                      WebkitTextStroke: '2px #102652'
                    }}>
-                <span className="text-3xl md:text-4xl lg:text-5xl -mb-1">Strength of</span>
-                <span className="text-4xl md:text-5xl lg:text-6xl -mb-1">Loyalty &</span>
-                <span className="text-4xl md:text-5xl lg:text-6xl">Relationships</span>
+                <div className="text-3xl md:text-4xl lg:text-5xl">Strength of</div>
+                <div className="text-4xl md:text-5xl lg:text-6xl">Loyalty &</div>
+                <div className="text-4xl md:text-5xl lg:text-6xl">Relationships</div>
               </div>
             )}
 

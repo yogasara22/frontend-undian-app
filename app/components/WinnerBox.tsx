@@ -33,7 +33,7 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
   const yLights = Array.from({ length: 5 });
 
   return (
-    <div className="w-full flex justify-center relative z-20 px-2 lg:px-0">
+    <div className="w-full flex justify-center relative z-20 px-2 lg:px-0 shrink-0">
       {/* Outer Blue Box */}
       <div className="relative w-full max-w-[360px] md:max-w-[420px] bg-[#0f54a8] p-2 md:p-3 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.6)] border-[2px] border-[#09356d] rounded-[16px] md:rounded-[24px] overflow-hidden">
 
