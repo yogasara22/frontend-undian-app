@@ -38,9 +38,9 @@ export function DrawButton({ isRolling, isLoading, hasWinner, onDraw, onReset }:
       onClick={onDraw}
       disabled={isDisabled}
       aria-label={isRolling ? 'Sedang mengundi...' : 'Mulai undian'}
-      whileHover={{ scale: isDisabled ? 1 : 1.03, y: isDisabled ? 0 : -2 }}
-      whileTap={{ scale: isDisabled ? 1 : 0.97 }}
-      className="relative px-6 py-3 rounded-xl font-bold text-sm text-white shadow-xl hover:shadow-2xl transition-all overflow-hidden flex items-center gap-2.5 cursor-pointer"
+      whileHover={{ scale: isDisabled ? 1 : 1.05, y: isDisabled ? 0 : -4 }}
+      whileTap={{ scale: isDisabled ? 1 : 0.95 }}
+      className="relative px-6 py-4 rounded-full font-bold text-sm text-white shadow-[0_10px_30px_rgba(37,99,235,0.5)] hover:shadow-[0_15px_40px_rgba(37,99,235,0.7)] transition-all duration-300 overflow-hidden flex items-center gap-3 cursor-pointer group"
       style={{
         background: isDisabled
           ? '#9ca3af' // gray-400
@@ -59,7 +59,7 @@ export function DrawButton({ isRolling, isLoading, hasWinner, onDraw, onReset }:
         />
       )}
       
-      <div className="relative z-10 flex items-center gap-2.5">
+      <div className="relative z-10 flex items-center gap-3">
         {isLoading ? (
           <>
             <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-hidden="true" />
@@ -67,12 +67,12 @@ export function DrawButton({ isRolling, isLoading, hasWinner, onDraw, onReset }:
           </>
         ) : (
           <>
-            <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm shadow-inner">
-              <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)] group-hover:scale-110 transition-transform duration-300">
+              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </div>
-            <span className="tracking-wide font-extrabold pr-1">Mulai Undian</span>
+            <span className="tracking-widest font-black uppercase text-sm md:text-base pr-1 drop-shadow-md">Mulai Undian</span>
           </>
         )}
       </div>

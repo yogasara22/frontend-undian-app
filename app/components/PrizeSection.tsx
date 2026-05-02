@@ -64,7 +64,7 @@ export function PrizeSection({
             <h3 className="uppercase relative z-10"
               style={{
                 fontFamily: titleStyle?.fontFamily || 'inherit',
-                fontSize: `${titleStyle?.fontSize ? titleStyle.fontSize * 0.4 : 16}px`,
+                fontSize: `clamp(12px, 2vh, ${titleStyle?.fontSize ? titleStyle.fontSize * 0.4 : 16}px)`,
                 color: titleStyle?.color || '#FFFFFF',
                 fontWeight: titleStyle?.fontWeight || '800',
                 letterSpacing: `${titleStyle?.letterSpacing || 1}px`,
@@ -85,7 +85,7 @@ export function PrizeSection({
           <h2 className="uppercase relative z-10 leading-tight md:leading-none px-4"
             style={{
               fontFamily: prizeStyle?.fontFamily || 'inherit',
-              fontSize: `${prizeStyle?.fontSize ? prizeStyle.fontSize * 0.6 : 42}px`,
+              fontSize: `clamp(24px, 4vh, ${prizeStyle?.fontSize ? prizeStyle.fontSize * 0.6 : 42}px)`,
               color: prizeStyle?.color || '#FFFFFF',
               fontWeight: prizeStyle?.fontWeight || '900',
               letterSpacing: `${prizeStyle?.letterSpacing || 0}px`,
@@ -106,12 +106,12 @@ export function PrizeSection({
         </div>
 
         {/* Podium & Prize Area */}
-        <div className="relative w-full max-w-[400px] md:max-w-[500px] lg:max-w-[600px] flex flex-col items-center mt-2 md:mt-4">
+        <div className="relative w-full max-w-[300px] md:max-w-[400px] lg:max-w-[450px] flex flex-col items-center mt-2 md:mt-4">
 
           {/* Light Beams from behind */}
           <div className="absolute -inset-2 z-0 flex justify-center pointer-events-none">
-            <div className="w-[80px] h-[150px] md:w-[120px] md:h-[200px] bg-white/10 blur-3xl rotate-45 transform origin-bottom -translate-x-16"></div>
-            <div className="w-[80px] h-[150px] md:w-[120px] md:h-[200px] bg-white/10 blur-3xl -rotate-45 transform origin-bottom translate-x-16"></div>
+            <div className="w-[10vw] max-w-[80px] h-[20vh] max-h-[150px] bg-white/10 blur-3xl rotate-45 transform origin-bottom -translate-x-12"></div>
+            <div className="w-[10vw] max-w-[80px] h-[20vh] max-h-[150px] bg-white/10 blur-3xl -rotate-45 transform origin-bottom translate-x-12"></div>
           </div>
 
           {/* Prize Image */}
@@ -119,14 +119,14 @@ export function PrizeSection({
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 100, delay: 0.4 }}
-            className="z-30 w-[200px] h-[200px] md:w-[280px] md:h-[280px] lg:w-[350px] lg:h-[350px] mb-[-40px] md:mb-[-60px] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
+            className="z-30 w-[20vh] h-[20vh] md:w-[32vh] md:h-[32vh] max-w-[320px] max-h-[320px] min-w-[150px] min-h-[150px] mb-[-3vh] md:mb-[-4.5vh] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
           >
             {/* Real-time Contact Shadow */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="absolute bottom-[2%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[12px] md:blur-[18px] rounded-[50%] z-10"
+              className="absolute bottom-[3%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[10px] md:blur-[14px] rounded-[50%] z-10"
             />
 
             {/* Subtle Reflection */}
@@ -165,7 +165,7 @@ export function PrizeSection({
           </motion.div>
 
           {/* 3D CSS Podium Stage */}
-          <div className="relative w-[130%] h-[60px] md:h-[80px] lg:h-[100px] z-10">
+          <div className="relative w-[130%] h-[6vh] md:h-[9vh] max-h-[90px] min-h-[50px] z-10">
             {/* Bottom Level (White) */}
             <div className="absolute bottom-0 w-full h-[33%]">
               {/* White cylinder top */}

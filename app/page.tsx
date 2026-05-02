@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <main
       suppressHydrationWarning
-      className={`min-h-screen ${useImage ? '' : 'dynamic-bg'} flex flex-col items-center p-2 md:p-3 relative overflow-y-auto overflow-x-hidden font-sans bg-[#0a0a0a]`}
+      className={`h-[100dvh] w-screen ${useImage ? '' : 'dynamic-bg'} flex flex-col items-center p-2 md:p-3 relative overflow-hidden font-sans bg-[#0a0a0a]`}
       style={{
         '--bg-from': bgConfig.from,
         '--bg-via': bgConfig.via,
@@ -129,21 +129,23 @@ export default function Home() {
           <ErrorDisplay error={error} />
         </div>
 
-        {/* Footer - Compact */}
+        {/* Floating Participant Counter - Bottom Left */}
         {!winner && (
-          <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-1.5 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-[10px] border border-white/20 shadow-sm shrink-0 z-50">
-            <div>
-              <ParticipantCounter />
-            </div>
-            {isAdmin && (
-              <DrawButton
-                isRolling={isRolling}
-                isLoading={isLoading}
-                hasWinner={!!winner}
-                onDraw={startDraw}
-                onReset={reset}
-              />
-            )}
+          <div className="fixed bottom-4 left-4 md:bottom-8 md:left-8 z-50 shadow-lg rounded-xl overflow-hidden border border-white/10">
+            <ParticipantCounter />
+          </div>
+        )}
+
+        {/* Floating Draw Button - Bottom Right */}
+        {!winner && isAdmin && (
+          <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50">
+            <DrawButton
+              isRolling={isRolling}
+              isLoading={isLoading}
+              hasWinner={!!winner}
+              onDraw={startDraw}
+              onReset={reset}
+            />
           </div>
         )}
 
