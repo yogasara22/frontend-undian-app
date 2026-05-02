@@ -19,12 +19,20 @@ export function useLottery() {
   const animationNamesRef = useRef<string[]>(['Peserta 1', 'Peserta 2', 'Peserta 3']);
 
   const startDraw = useCallback(async (prizeId?: number | null) => {
-    setState(prev => ({ ...prev, isRolling: true, isLoading: true, error: null }));
+    // Immediately show first name from the list
+    const names = animationNamesRef.current;
+    if (names.length > 0) {
+      setState(prev => ({ ...prev, isRolling: true, isLoading: true, error: null, currentDisplay: names[0] }));
+    } else {
+      setState(prev => ({ ...prev, isRolling: true, isLoading: true, error: null }));
+    }
 
     intervalRef.current = setInterval(() => {
-      const names = animationNamesRef.current;
-      const randomName = names[Math.floor(Math.random() * names.length)];
-      setState(prev => ({ ...prev, currentDisplay: randomName }));
+      const currentNames = animationNamesRef.current;
+      if (currentNames.length > 0) {
+        const randomName = currentNames[Math.floor(Math.random() * currentNames.length)];
+        setState(prev => ({ ...prev, currentDisplay: randomName }));
+      }
     }, 100);
 
     try {
@@ -83,9 +91,17 @@ export function useLottery() {
     // Fetch real names for the rolling animation
     const fetchNames = async () => {
       try {
-        const res = await fetchAPI('/api/participants?per_page=100');
-        if (res?.data && res.data.length > 0) {
-          animationNamesRef.current = res.data.map((p: any) => p.name);
+        const res = await fetchAPI('/api/participants?per_page=200');
+        // Handle different response formats
+        const participants = res?.data || res || [];
+        if (Array.isArray(participants) && participants.length > 0) {
+          const names = participants
+            .map((p: any) => p.name || p.participant_name || p.full_name || p.nama)
+            .filter((n: string) => n && n.trim().length > 0);
+          if (names.length > 0) {
+            animationNamesRef.current = names;
+            console.log(`Loaded ${names.length} participant names for animation`);
+          }
         }
       } catch (e) {
         console.error('Failed to fetch names for animation', e);
