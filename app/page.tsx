@@ -9,6 +9,7 @@ import { PrizeSection } from './components/PrizeSection';
 import { DrawButton } from './components/DrawButton';
 import { ErrorDisplay } from './components/ErrorDisplay';
 import { ParticipantCounter } from './components/ParticipantCounter';
+import { RollingBox } from './components/RollingBox';
 import { useDynamicBackground } from './hooks/useDynamicBackground';
 
 import { useState, useEffect } from 'react';
@@ -28,6 +29,14 @@ export default function Home() {
   const activeTitle = hasMounted ? (bgConfig.customTitle || 'UNDIAN BERHADIAH') : 'UNDIAN BERHADIAH';
   const activeTitleStyle = hasMounted ? bgConfig.titleStyle : undefined;
   const activePrizeStyle = hasMounted ? bgConfig.prizeStyle : undefined;
+
+  // Visibility logic:
+  // - Title: hidden when activePrize is selected OR winner is shown
+  // - WinnerBox: hidden when activePrize is selected (until winner is found)
+  // - PrizeSection: shown when activePrize OR winner+prize
+  const showTitle = !winner && !activePrize;
+  const showWinnerBox = !activePrize || !!winner; // Show in idle (no prize) or when winner found
+  const showPrize = !!(winner ? prize : activePrize);
 
   return (
     <main
@@ -85,40 +94,60 @@ export default function Home() {
             />
           </div>
 
-          {/* Title Text */}
-          {!winner && (
-            <div className="mb-4 md:mb-8 text-center font-black italic tracking-tighter text-white drop-shadow-2xl"
-                 style={{ 
-                   fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
-                   lineHeight: '1', 
-                   textShadow: `
-                     2px 2px 0 #2854a1,
-                     3px 3px 0 #2854a1,
-                     4px 4px 0 #2854a1,
-                     5px 5px 0 #2854a1,
-                     6px 6px 0 #2854a1,
-                     7px 7px 0 #2854a1,
-                     8px 8px 0 #2854a1,
-                     9px 9px 0 #2854a1,
-                     10px 10px 0 #1b3a73,
-                     15px 15px 25px rgba(0,0,0,0.7)
-                   `,
-                   WebkitTextStroke: '2px #102652'
-                 }}>
-              <div className="text-3xl md:text-4xl lg:text-5xl">Strength of</div>
-              <div className="text-4xl md:text-5xl lg:text-6xl">Loyalty &</div>
-              <div className="text-4xl md:text-5xl lg:text-6xl">Relationships</div>
-            </div>
-          )}
+          {/* Title Text - Hidden when activePrize is selected */}
+          <AnimatePresence>
+            {showTitle && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10, transition: { duration: 0.3 } }}
+                className="mb-4 md:mb-8 text-center font-black italic tracking-tighter text-white drop-shadow-2xl"
+                style={{ 
+                  fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
+                  lineHeight: '1', 
+                  textShadow: `
+                    2px 2px 0 #2854a1,
+                    3px 3px 0 #2854a1,
+                    4px 4px 0 #2854a1,
+                    5px 5px 0 #2854a1,
+                    6px 6px 0 #2854a1,
+                    7px 7px 0 #2854a1,
+                    8px 8px 0 #2854a1,
+                    9px 9px 0 #2854a1,
+                    10px 10px 0 #1b3a73,
+                    15px 15px 25px rgba(0,0,0,0.7)
+                  `,
+                  WebkitTextStroke: '2px #102652'
+                }}>
+                <div className="text-3xl md:text-4xl lg:text-5xl">Strength of</div>
+                <div className="text-4xl md:text-5xl lg:text-6xl">Loyalty &</div>
+                <div className="text-4xl md:text-5xl lg:text-6xl">Relationships</div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Center Content - WinnerBox and Prize */}
         <div className="w-full flex-1 flex flex-col items-center justify-center z-10 min-h-0">
-          <WinnerBox
-            isRolling={isRolling}
-            winner={winner}
-            currentDisplay={currentDisplay}
-          />
+          {/* WinnerBox - Hidden when activePrize is selected (until winner found) */}
+          <AnimatePresence>
+            {showWinnerBox && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.3 } }}
+                className="w-full"
+              >
+                <WinnerBox
+                  isRolling={isRolling}
+                  winner={winner}
+                  currentDisplay={currentDisplay}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* PrizeSection - Shown when activePrize or winner+prize */}
           <PrizeSection
             winner={winner}
             prize={winner ? prize : activePrize}
@@ -128,6 +157,9 @@ export default function Home() {
           />
           <ErrorDisplay error={error} />
         </div>
+
+        {/* Floating RollingBox - Bottom Left, above ParticipantCounter */}
+        <RollingBox isRolling={isRolling} currentDisplay={currentDisplay} />
 
         {/* Floating Participant Counter - Bottom Left */}
         {!winner && (
@@ -153,3 +185,4 @@ export default function Home() {
     </main>
   );
 }
+

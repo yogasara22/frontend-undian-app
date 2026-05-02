@@ -2,10 +2,6 @@
 
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { Winner } from '../types';
-import dynamic from 'next/dynamic';
-import spinWheelData from '../../public/spin wheel.json';
-
-const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 interface WinnerBoxProps {
   isRolling: boolean;
@@ -14,12 +10,6 @@ interface WinnerBoxProps {
 }
 
 const nameVariants: Variants = {
-  rolling: {
-    opacity: [1, 0.4, 1],
-    scale: [1, 0.98, 1],
-    filter: ['blur(0px)', 'blur(2px)', 'blur(0px)'],
-    transition: { duration: 0.15, repeat: Infinity },
-  },
   winner: {
     opacity: 1,
     scale: [0.95, 1.05, 1],
@@ -89,22 +79,6 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
                 </motion.div>
               )}
 
-              {/* Rolling State */}
-              {isRolling && (
-                <motion.div
-                  key="rolling"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="w-full flex items-center justify-center"
-                >
-                  <div className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] flex items-center justify-center pointer-events-none overflow-hidden">
-                    <Lottie animationData={spinWheelData} loop={false} style={{ width: '100%', height: '100%' }} />
-                  </div>
-                </motion.div>
-              )}
-
               {/* Winner State */}
               {!isRolling && winner && (
                 <motion.div
@@ -170,3 +144,4 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
     </div>
   );
 }
+

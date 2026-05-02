@@ -106,6 +106,12 @@ body {
   z-index: -1;
 }
 
+/* Shimmer animation for RollingBox */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
