@@ -64,7 +64,7 @@ export function PrizeSection({
             <h3 className="uppercase relative z-10"
               style={{
                 fontFamily: titleStyle?.fontFamily || 'inherit',
-                fontSize: `${titleStyle?.fontSize ? titleStyle.fontSize * 0.25 : 9}px`, // Scaled down
+                fontSize: `${titleStyle?.fontSize ? titleStyle.fontSize * 0.35 : 12}px`, // Scaled up
                 color: titleStyle?.color || '#FFFFFF',
                 fontWeight: titleStyle?.fontWeight || '800',
                 letterSpacing: `${titleStyle?.letterSpacing || 1}px`,
@@ -85,7 +85,7 @@ export function PrizeSection({
           <h2 className="uppercase relative z-10 leading-tight md:leading-none px-4"
             style={{
               fontFamily: prizeStyle?.fontFamily || 'inherit',
-              fontSize: `${prizeStyle?.fontSize ? prizeStyle.fontSize * 0.3 : 22}px`, // Scaled down
+              fontSize: `${prizeStyle?.fontSize ? prizeStyle.fontSize * 0.45 : 32}px`, // Scaled up
               color: prizeStyle?.color || '#FFFFFF',
               fontWeight: prizeStyle?.fontWeight || '900',
               letterSpacing: `${prizeStyle?.letterSpacing || 0}px`,
@@ -106,12 +106,12 @@ export function PrizeSection({
         </div>
 
         {/* Podium & Prize Area */}
-        <div className="relative w-full max-w-[160px] md:max-w-[200px] flex flex-col items-center">
+        <div className="relative w-full max-w-[260px] md:max-w-[320px] flex flex-col items-center mt-2">
 
           {/* Light Beams from behind */}
           <div className="absolute -inset-2 z-0 flex justify-center pointer-events-none">
-            <div className="w-[30px] h-[70px] bg-white/10 blur-3xl rotate-45 transform origin-bottom -translate-x-6"></div>
-            <div className="w-[30px] h-[70px] bg-white/10 blur-3xl -rotate-45 transform origin-bottom translate-x-6"></div>
+            <div className="w-[50px] h-[100px] bg-white/10 blur-3xl rotate-45 transform origin-bottom -translate-x-10"></div>
+            <div className="w-[50px] h-[100px] bg-white/10 blur-3xl -rotate-45 transform origin-bottom translate-x-10"></div>
           </div>
 
           {/* Prize Image */}
@@ -119,14 +119,14 @@ export function PrizeSection({
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 100, delay: 0.4 }}
-            className="z-30 w-28 h-28 md:w-[150px] md:h-[150px] mb-[-24px] md:mb-[-30px] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
+            className="z-30 w-40 h-40 md:w-[220px] md:h-[220px] mb-[-35px] md:mb-[-45px] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
           >
             {/* Real-time Contact Shadow */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="absolute bottom-[2%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[8px] md:blur-[10px] rounded-[50%] z-10"
+              className="absolute bottom-[2%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[8px] md:blur-[14px] rounded-[50%] z-10"
             />
 
             {/* Subtle Reflection */}
@@ -165,25 +165,25 @@ export function PrizeSection({
           </motion.div>
 
           {/* 3D CSS Podium Stage */}
-          <div className="relative w-[130%] h-[30px] md:h-[40px] z-10">
+          <div className="relative w-[130%] h-[45px] md:h-[60px] z-10">
             {/* Bottom Level (White) */}
-            <div className="absolute bottom-0 w-full h-[10px] md:h-[14px]">
+            <div className="absolute bottom-0 w-full h-[15px] md:h-[20px]">
               {/* White cylinder top */}
-              <div className="absolute top-0 w-full h-[5px] md:h-[7px] bg-[#f8f9fa] rounded-[50%] z-10"></div>
+              <div className="absolute top-0 w-full h-[7px] md:h-[10px] bg-[#f8f9fa] rounded-[50%] z-10"></div>
               {/* White cylinder body */}
-              <div className="absolute top-[2.5px] md:top-[3.5px] w-full h-[5px] md:h-[7px] bg-[#e9ecef]"></div>
+              <div className="absolute top-[3.5px] md:top-[5px] w-full h-[7px] md:h-[10px] bg-[#e9ecef]"></div>
               {/* White cylinder bottom */}
-              <div className="absolute bottom-0 w-full h-[6px] md:h-[9px] bg-[#e9ecef] rounded-[50%] shadow-[0_5px_8px_rgba(0,0,0,0.4)]"></div>
+              <div className="absolute bottom-0 w-full h-[9px] md:h-[13px] bg-[#e9ecef] rounded-[50%] shadow-[0_5px_8px_rgba(0,0,0,0.4)]"></div>
             </div>
 
             {/* Top Level (Blue) */}
-            <div className="absolute bottom-[10px] md:bottom-[14px] w-[86%] left-[7%] h-[10px] md:h-[12px] z-20">
+            <div className="absolute bottom-[15px] md:bottom-[20px] w-[86%] left-[7%] h-[15px] md:h-[18px] z-20">
               {/* Blue cylinder top */}
-              <div className="absolute top-0 w-full h-[5px] md:h-[6px] bg-[#0f62d1] rounded-[50%] z-10 border border-blue-400 shadow-[inset_0_-1px_2px_rgba(0,0,0,0.2)]"></div>
+              <div className="absolute top-0 w-full h-[7px] md:h-[9px] bg-[#0f62d1] rounded-[50%] z-10 border border-blue-400 shadow-[inset_0_-1px_2px_rgba(0,0,0,0.2)]"></div>
               {/* Blue cylinder body */}
-              <div className="absolute top-[2.5px] md:top-[3px] w-full h-[5px] md:h-[6px] bg-[#0c4bb0]"></div>
+              <div className="absolute top-[3.5px] md:top-[4.5px] w-full h-[7px] md:h-[9px] bg-[#0c4bb0]"></div>
               {/* Blue cylinder bottom */}
-              <div className="absolute bottom-0 w-full h-[5px] md:h-[6px] bg-[#093582] rounded-[50%] shadow-[0_3px_5px_rgba(0,0,0,0.25)]"></div>
+              <div className="absolute bottom-0 w-full h-[7px] md:h-[9px] bg-[#093582] rounded-[50%] shadow-[0_3px_5px_rgba(0,0,0,0.25)]"></div>
             </div>
           </div>
         </div>
