@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLottery } from './hooks/useLottery';
 import { ModeIndicator } from './components/ModeIndicator';
 import WinnerBox from './components/WinnerBox';
@@ -44,6 +45,23 @@ export default function Home() {
         } : {})
       } as React.CSSProperties}
     >
+      {/* Floating Back Button - Only visible when winner is shown */}
+      <AnimatePresence>
+        {isAdmin && winner && (
+          <motion.button
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            onClick={reset}
+            className="fixed top-4 left-4 md:top-6 md:left-6 z-50 flex items-center gap-2 px-4 py-2 bg-[#0f54a8]/80 hover:bg-[#0f54a8] backdrop-blur-md border border-white/30 rounded-full text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-105 group"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transform transition-transform group-hover:-translate-x-1">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span className="font-bold text-sm md:text-base tracking-wide">Undian Lagi</span>
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* Dynamic Background elements */}
       <div suppressHydrationWarning className={`absolute inset-0 overflow-hidden pointer-events-none z-0 ${useImage ? 'opacity-30' : ''}`}>
@@ -112,20 +130,22 @@ export default function Home() {
         </div>
 
         {/* Footer - Compact */}
-        <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-1.5 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-[10px] border border-white/20 shadow-sm shrink-0 z-50">
-          <div>
-            <ParticipantCounter />
+        {!winner && (
+          <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-1.5 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-[10px] border border-white/20 shadow-sm shrink-0 z-50">
+            <div>
+              <ParticipantCounter />
+            </div>
+            {isAdmin && (
+              <DrawButton
+                isRolling={isRolling}
+                isLoading={isLoading}
+                hasWinner={!!winner}
+                onDraw={startDraw}
+                onReset={reset}
+              />
+            )}
           </div>
-          {isAdmin && (
-            <DrawButton
-              isRolling={isRolling}
-              isLoading={isLoading}
-              hasWinner={!!winner}
-              onDraw={startDraw}
-              onReset={reset}
-            />
-          )}
-        </div>
+        )}
 
       </div>
     </main>
