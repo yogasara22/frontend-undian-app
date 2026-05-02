@@ -52,64 +52,63 @@ export default function Home() {
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
       </div>
 
-      <div className="w-full max-w-2xl flex-1 flex flex-col relative z-10 py-1">
+      <div className="w-full max-w-2xl flex-1 flex flex-col relative z-10 py-2 md:py-4">
         
-
-        {/* Center Content - Absolutely centered with zero extra padding */}
-        <div className="w-full flex-grow flex flex-col items-center justify-center z-0">
-          <div className="w-full flex flex-col items-center justify-center space-y-0">
-            
-            {/* Logo Placement Above Box */}
-            <div className="shrink-0 mb-4 md:mb-6 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg z-10">
-              <Image
-                src="/logo.png"
-                alt="Main Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-
-            {/* Title Text */}
-            {!winner && (
-              <div className="shrink-0 mb-8 md:mb-12 z-10 text-center font-black italic tracking-tighter text-white drop-shadow-2xl"
-                   style={{ 
-                     fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
-                     lineHeight: '1', 
-                     textShadow: `
-                       2px 2px 0 #2854a1,
-                       3px 3px 0 #2854a1,
-                       4px 4px 0 #2854a1,
-                       5px 5px 0 #2854a1,
-                       6px 6px 0 #2854a1,
-                       7px 7px 0 #2854a1,
-                       8px 8px 0 #2854a1,
-                       9px 9px 0 #2854a1,
-                       10px 10px 0 #1b3a73,
-                       15px 15px 25px rgba(0,0,0,0.7)
-                     `,
-                     WebkitTextStroke: '2px #102652'
-                   }}>
-                <div className="text-3xl md:text-4xl lg:text-5xl">Strength of</div>
-                <div className="text-4xl md:text-5xl lg:text-6xl">Loyalty &</div>
-                <div className="text-4xl md:text-5xl lg:text-6xl">Relationships</div>
-              </div>
-            )}
-
-            <WinnerBox
-              isRolling={isRolling}
-              winner={winner}
-              currentDisplay={currentDisplay}
+        {/* Top Header - Logo and Title */}
+        <div className="w-full flex flex-col items-center shrink-0 z-20">
+          {/* Logo Placement Above Box */}
+          <div className="mb-2 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg">
+            <Image
+              src="/logo.png"
+              alt="Main Logo"
+              fill
+              className="object-contain"
+              priority
             />
-            <PrizeSection
-              winner={winner}
-              prize={prize}
-              customTitle={activeTitle}
-              titleStyle={activeTitleStyle}
-              prizeStyle={activePrizeStyle}
-            />
-            <ErrorDisplay error={error} />
           </div>
+
+          {/* Title Text */}
+          {!winner && (
+            <div className="mb-4 md:mb-8 text-center font-black italic tracking-tighter text-white drop-shadow-2xl"
+                 style={{ 
+                   fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
+                   lineHeight: '1', 
+                   textShadow: `
+                     2px 2px 0 #2854a1,
+                     3px 3px 0 #2854a1,
+                     4px 4px 0 #2854a1,
+                     5px 5px 0 #2854a1,
+                     6px 6px 0 #2854a1,
+                     7px 7px 0 #2854a1,
+                     8px 8px 0 #2854a1,
+                     9px 9px 0 #2854a1,
+                     10px 10px 0 #1b3a73,
+                     15px 15px 25px rgba(0,0,0,0.7)
+                   `,
+                   WebkitTextStroke: '2px #102652'
+                 }}>
+              <div className="text-3xl md:text-4xl lg:text-5xl">Strength of</div>
+              <div className="text-4xl md:text-5xl lg:text-6xl">Loyalty &</div>
+              <div className="text-4xl md:text-5xl lg:text-6xl">Relationships</div>
+            </div>
+          )}
+        </div>
+
+        {/* Center Content - WinnerBox and Prize */}
+        <div className="w-full flex-1 flex flex-col items-center justify-center z-10 min-h-0">
+          <WinnerBox
+            isRolling={isRolling}
+            winner={winner}
+            currentDisplay={currentDisplay}
+          />
+          <PrizeSection
+            winner={winner}
+            prize={prize}
+            customTitle={activeTitle}
+            titleStyle={activeTitleStyle}
+            prizeStyle={activePrizeStyle}
+          />
+          <ErrorDisplay error={error} />
         </div>
 
         {/* Footer - Compact */}
