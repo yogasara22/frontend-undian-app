@@ -119,7 +119,12 @@ export function PrizeSection({
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 100, delay: 0.4 }}
-            className="z-30 w-[180px] h-[180px] md:w-[260px] md:h-[260px] mb-[-27px] md:mb-[-40px] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
+            className="z-30 relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
+            style={{ 
+              width: 'min(25vh, 260px)', 
+              height: 'min(25vh, 260px)',
+              marginBottom: 'calc(min(8vh, 90px) * -0.45)'
+            }}
           >
             {/* Real-time Contact Shadow */}
             <motion.div 
@@ -165,7 +170,7 @@ export function PrizeSection({
           </motion.div>
 
           {/* 3D CSS Podium Stage */}
-          <div className="relative w-[130%] h-[60px] md:h-[90px] z-10">
+          <div className="relative w-[130%] z-10" style={{ height: 'min(8vh, 90px)' }}>
             {/* Bottom Level (White) */}
             <div className="absolute bottom-0 w-full h-[33%]">
               {/* White cylinder top */}
