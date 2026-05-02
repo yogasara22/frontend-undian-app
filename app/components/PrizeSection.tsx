@@ -123,7 +123,7 @@ export function PrizeSection({
             style={{ 
               width: 'min(35vh, 380px)', 
               height: 'min(35vh, 380px)',
-              marginBottom: 'calc(min(12vh, 120px) * -0.45)'
+              marginBottom: 'calc(min(12vh, 120px) * -0.65)'
             }}
           >
             {/* Real-time Contact Shadow */}
@@ -131,7 +131,7 @@ export function PrizeSection({
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="absolute bottom-[3%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[8px] md:blur-[12px] rounded-[50%] z-10"
+              className="absolute bottom-[-2%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[8px] md:blur-[12px] rounded-[50%] z-10"
             />
 
             {/* Subtle Reflection */}
