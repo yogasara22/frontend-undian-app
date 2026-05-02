@@ -64,7 +64,7 @@ export function PrizeSection({
             <h3 className="uppercase relative z-10"
               style={{
                 fontFamily: titleStyle?.fontFamily || 'inherit',
-                fontSize: `clamp(12px, 2vh, ${titleStyle?.fontSize ? titleStyle.fontSize * 0.4 : 16}px)`,
+                fontSize: `clamp(10px, 1.8vh, ${titleStyle?.fontSize ? titleStyle.fontSize * 0.35 : 14}px)`,
                 color: titleStyle?.color || '#FFFFFF',
                 fontWeight: titleStyle?.fontWeight || '800',
                 letterSpacing: `${titleStyle?.letterSpacing || 1}px`,
@@ -85,7 +85,7 @@ export function PrizeSection({
           <h2 className="uppercase relative z-10 leading-tight md:leading-none px-4"
             style={{
               fontFamily: prizeStyle?.fontFamily || 'inherit',
-              fontSize: `clamp(24px, 4vh, ${prizeStyle?.fontSize ? prizeStyle.fontSize * 0.6 : 42}px)`,
+              fontSize: `clamp(20px, 3.5vh, ${prizeStyle?.fontSize ? prizeStyle.fontSize * 0.45 : 32}px)`,
               color: prizeStyle?.color || '#FFFFFF',
               fontWeight: prizeStyle?.fontWeight || '900',
               letterSpacing: `${prizeStyle?.letterSpacing || 0}px`,
@@ -119,14 +119,14 @@ export function PrizeSection({
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 100, delay: 0.4 }}
-            className="z-30 w-[20vh] h-[20vh] md:w-[32vh] md:h-[32vh] max-w-[320px] max-h-[320px] min-w-[150px] min-h-[150px] mb-[-3vh] md:mb-[-4.5vh] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
+            className="z-30 w-[18vh] h-[18vh] md:w-[26vh] md:h-[26vh] max-w-[280px] max-h-[280px] min-w-[120px] min-h-[120px] mb-[-2.5vh] md:mb-[-3.5vh] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
           >
             {/* Real-time Contact Shadow */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="absolute bottom-[3%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[10px] md:blur-[14px] rounded-[50%] z-10"
+              className="absolute bottom-[3%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[8px] md:blur-[12px] rounded-[50%] z-10"
             />
 
             {/* Subtle Reflection */}
@@ -165,7 +165,7 @@ export function PrizeSection({
           </motion.div>
 
           {/* 3D CSS Podium Stage */}
-          <div className="relative w-[130%] h-[6vh] md:h-[9vh] max-h-[90px] min-h-[50px] z-10">
+          <div className="relative w-[130%] h-[5vh] md:h-[7vh] max-h-[70px] min-h-[40px] z-10">
             {/* Bottom Level (White) */}
             <div className="absolute bottom-0 w-full h-[33%]">
               {/* White cylinder top */}
