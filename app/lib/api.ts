@@ -41,10 +41,11 @@ export function getAppMode(): AppMode {
   return API_URL ? 'live' : 'demo';
 }
 
-export async function drawLottery(): Promise<DrawResult> {
+export async function drawLottery(prizeId?: number | null): Promise<DrawResult> {
   // Always use Live Mode with the new backend integration
   const data = await fetchAPI('/api/lottery/draw', {
     method: 'POST',
+    body: prizeId ? JSON.stringify({ prize_id: prizeId }) : undefined,
   });
   return data.data;
 }

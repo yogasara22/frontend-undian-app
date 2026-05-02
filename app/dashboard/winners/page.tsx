@@ -13,6 +13,8 @@ export default function WinnersPage() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [drawMsg, setDrawMsg] = useState('');
   const [isLoadingWinners, setIsLoadingWinners] = useState(true);
+  const [availablePrizes, setAvailablePrizes] = useState<any[]>([]);
+  const [selectedPrizeId, setSelectedPrizeId] = useState<string>('');
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -80,18 +82,31 @@ export default function WinnersPage() {
     }
   };
 
+  const fetchAvailablePrizes = async () => {
+    try {
+      const res = await fetchAPI('/api/prizes?available=1');
+      if (res?.data) {
+        setAvailablePrizes(res.data);
+      }
+    } catch (e) {
+      console.error('Failed to fetch prizes', e);
+    }
+  };
+
   useEffect(() => {
     fetchWinners();
   }, [currentPage, debouncedSearch, filterCategory]);
 
   useEffect(() => {
     fetchCategories();
+    fetchAvailablePrizes();
 
     const handleStorage = (e: StorageEvent) => {
       if (e.key === 'REMOTE_DRAW_SUCCESS' && e.newValue) {
         setIsDrawing(false);
         setDrawMsg('✅ Undian berhasil! Pemenang telah direkam.');
         fetchWinners();
+        fetchAvailablePrizes(); // Refresh stock
         setTimeout(() => setDrawMsg(''), 5000);
       }
     };
@@ -100,12 +115,39 @@ export default function WinnersPage() {
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
+  useEffect(() => {
+    if (selectedPrizeId) {
+      const prize = availablePrizes.find(p => p.id.toString() === selectedPrizeId);
+      if (prize) {
+        localStorage.setItem('ACTIVE_PRIZE_TRIGGER', JSON.stringify({
+          timestamp: Date.now(),
+          prize: {
+            id: prize.id,
+            name: prize.name,
+            imageUrl: prize.imageUrl,
+            value: prize.value
+          }
+        }));
+      }
+    } else {
+      localStorage.setItem('ACTIVE_PRIZE_TRIGGER', JSON.stringify({ timestamp: Date.now(), prize: null }));
+    }
+  }, [selectedPrizeId, availablePrizes]);
+
   const handleDraw = async () => {
+    if (!selectedPrizeId) {
+      alert('Silakan pilih hadiah yang akan diundi terlebih dahulu!');
+      return;
+    }
+
     setIsDrawing(true);
     setDrawMsg('Meminta layar undian untuk mengundi...');
     
     // Trigger Layar Undian via cross-tab communication
-    localStorage.setItem('REMOTE_DRAW_TRIGGER', Date.now().toString());
+    localStorage.setItem('REMOTE_DRAW_TRIGGER', JSON.stringify({
+      timestamp: Date.now(),
+      prizeId: parseInt(selectedPrizeId)
+    }));
     
     // Fallback if no Layar Undian is open
     setTimeout(() => {
@@ -133,6 +175,18 @@ export default function WinnersPage() {
           <p className="text-gray-500 text-sm mt-0.5">{winners.length} pemenang tercatat</p>
         </div>
         <div className="flex gap-3">
+          <select
+            value={selectedPrizeId}
+            onChange={e => setSelectedPrizeId(e.target.value)}
+            className="px-4 py-2.5 rounded-lg border border-orange-200 bg-orange-50 text-orange-800 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-orange-500 shadow-sm max-w-xs"
+          >
+            <option value="">-- Pilih Hadiah Dulu --</option>
+            {availablePrizes.map(p => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
           <Link
             href="/"
             className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-all text-sm font-semibold shadow-sm"

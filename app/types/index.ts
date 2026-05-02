@@ -42,6 +42,7 @@ export interface LotteryState {
   isLoading: boolean;
   winner: Winner | null;
   prize: Prize | null;
+  activePrize: Prize | null;
   error: string | null;
   currentDisplay: string;
 }

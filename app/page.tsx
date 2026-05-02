@@ -16,7 +16,7 @@ import { useState, useEffect } from 'react';
 export default function Home() {
   const [hasMounted, setHasMounted] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const { isRolling, isLoading, winner, prize, error, currentDisplay, startDraw, reset } = useLottery();
+  const { isRolling, isLoading, winner, prize, activePrize, error, currentDisplay, startDraw, reset } = useLottery();
   const bgConfig = useDynamicBackground();
 
   useEffect(() => {
@@ -121,8 +121,8 @@ export default function Home() {
           />
           <PrizeSection
             winner={winner}
-            prize={prize}
-            customTitle={activeTitle}
+            prize={winner ? prize : activePrize}
+            customTitle={winner ? activeTitle : (activePrize ? "SIAPAKAH YANG BERUNTUNG MENDAPATKAN:" : activeTitle)}
             titleStyle={activeTitleStyle}
             prizeStyle={activePrizeStyle}
           />

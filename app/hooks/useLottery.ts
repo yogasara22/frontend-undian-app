@@ -10,6 +10,7 @@ export function useLottery() {
     isLoading: false,
     winner: null,
     prize: null,
+    activePrize: null,
     error: null,
     currentDisplay: '✧ ✧ ✧',
   });
@@ -17,7 +18,7 @@ export function useLottery() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const animationNamesRef = useRef<string[]>(['Mengacak...', 'Mencari Pemenang...', 'Memutar...']);
 
-  const startDraw = useCallback(async () => {
+  const startDraw = useCallback(async (prizeId?: number | null) => {
     setState(prev => ({ ...prev, isRolling: true, isLoading: true, error: null }));
 
     intervalRef.current = setInterval(() => {
@@ -27,7 +28,7 @@ export function useLottery() {
     }, 100);
 
     try {
-      const result = await drawLottery();
+      const result = await drawLottery(prizeId);
       setState(prev => ({ ...prev, isLoading: false }));
 
       await new Promise(resolve => setTimeout(resolve, 5000));
@@ -66,14 +67,15 @@ export function useLottery() {
   }, []);
 
   const reset = useCallback(() => {
-    setState({
+    setState(prev => ({
       isRolling: false,
       isLoading: false,
       winner: null,
       prize: null,
+      activePrize: prev.activePrize, // Keep active prize if still selected
       error: null,
       currentDisplay: '✧ ✧ ✧',
-    });
+    }));
   }, []);
 
   // Cleanup on unmount and listen to remote triggers
@@ -95,7 +97,23 @@ export function useLottery() {
       if (e.key === 'REMOTE_DRAW_TRIGGER' && e.newValue) {
         // Trigger draw when Admin clicks the button in another tab
         if (!state.isRolling) {
-          startDraw();
+          try {
+            const data = JSON.parse(e.newValue);
+            if (data.prizeId) {
+               startDraw(data.prizeId);
+            } else {
+               startDraw();
+            }
+          } catch {
+            startDraw(); // Fallback for old trigger format
+          }
+        }
+      } else if (e.key === 'ACTIVE_PRIZE_TRIGGER' && e.newValue) {
+        try {
+          const data = JSON.parse(e.newValue);
+          setState(prev => ({ ...prev, activePrize: data.prize || null }));
+        } catch {
+          setState(prev => ({ ...prev, activePrize: null }));
         }
       }
     };
