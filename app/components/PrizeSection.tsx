@@ -45,7 +45,7 @@ export function PrizeSection({
         transition={{ duration: 0.5, delay: 0.2 }}
         className="w-full relative mt-0.5 flex flex-col items-center z-10"
       >
-        {/* Text Area */}
+          {/* Text Area */}
         <div className="flex flex-col items-center mb-0.5 relative z-20 text-center w-full">
           {/* Decorative Thunderbolt Left */}
           <div className="absolute left-[5%] md:left-[20%] top-[-1px] hidden sm:block">
@@ -64,10 +64,10 @@ export function PrizeSection({
             <h3 className="uppercase relative z-10"
               style={{
                 fontFamily: titleStyle?.fontFamily || 'inherit',
-                fontSize: `${titleStyle?.fontSize ? titleStyle.fontSize * 0.3 : 10}px`, // Scaled down further
+                fontSize: `${titleStyle?.fontSize ? titleStyle.fontSize * 0.25 : 9}px`, // Scaled down
                 color: titleStyle?.color || '#FFFFFF',
                 fontWeight: titleStyle?.fontWeight || '800',
-                letterSpacing: `${titleStyle?.letterSpacing || 1.5}px`,
+                letterSpacing: `${titleStyle?.letterSpacing || 1}px`,
                 fontVariant: 'all-small-caps',
                 textShadow: titleStyle?.textShadow
                   ? `
@@ -85,7 +85,7 @@ export function PrizeSection({
           <h2 className="uppercase relative z-10 leading-tight md:leading-none px-4"
             style={{
               fontFamily: prizeStyle?.fontFamily || 'inherit',
-              fontSize: `${prizeStyle?.fontSize ? prizeStyle.fontSize * 0.4 : 28}px`, // Scaled down further
+              fontSize: `${prizeStyle?.fontSize ? prizeStyle.fontSize * 0.3 : 22}px`, // Scaled down
               color: prizeStyle?.color || '#FFFFFF',
               fontWeight: prizeStyle?.fontWeight || '900',
               letterSpacing: `${prizeStyle?.letterSpacing || 0}px`,
@@ -106,12 +106,12 @@ export function PrizeSection({
         </div>
 
         {/* Podium & Prize Area */}
-        <div className="relative w-full max-w-[180px] md:max-w-[240px] flex flex-col items-center">
+        <div className="relative w-full max-w-[160px] md:max-w-[200px] flex flex-col items-center">
 
           {/* Light Beams from behind */}
           <div className="absolute -inset-2 z-0 flex justify-center pointer-events-none">
-            <div className="w-[30px] h-[80px] bg-white/10 blur-3xl rotate-45 transform origin-bottom -translate-x-6"></div>
-            <div className="w-[30px] h-[80px] bg-white/10 blur-3xl -rotate-45 transform origin-bottom translate-x-6"></div>
+            <div className="w-[30px] h-[70px] bg-white/10 blur-3xl rotate-45 transform origin-bottom -translate-x-6"></div>
+            <div className="w-[30px] h-[70px] bg-white/10 blur-3xl -rotate-45 transform origin-bottom translate-x-6"></div>
           </div>
 
           {/* Prize Image */}
@@ -119,14 +119,14 @@ export function PrizeSection({
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 100, delay: 0.4 }}
-            className="z-30 w-32 h-32 md:w-[200px] md:h-[200px] mb-[-28px] md:mb-[-35px] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
+            className="z-30 w-28 h-28 md:w-[150px] md:h-[150px] mb-[-24px] md:mb-[-30px] relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
           >
             {/* Real-time Contact Shadow */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="absolute bottom-[2%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[8px] md:blur-[12px] rounded-[50%] z-10"
+              className="absolute bottom-[2%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[8px] md:blur-[10px] rounded-[50%] z-10"
             />
 
             {/* Subtle Reflection */}
@@ -152,7 +152,7 @@ export function PrizeSection({
                 />
               </div>
             ) : (
-              <span className="text-[35px] md:text-[50px] leading-none mb-1 md:mb-2 z-20 drop-shadow-lg">{getPrizeIcon(prize.name)}</span>
+              <span className="text-[30px] md:text-[40px] leading-none mb-1 md:mb-2 z-20 drop-shadow-lg">{getPrizeIcon(prize.name)}</span>
             )}
 
             {/* Remaining Quantity Badge */}
@@ -165,25 +165,25 @@ export function PrizeSection({
           </motion.div>
 
           {/* 3D CSS Podium Stage */}
-          <div className="relative w-[130%] h-[40px] md:h-[50px] z-10">
+          <div className="relative w-[130%] h-[30px] md:h-[40px] z-10">
             {/* Bottom Level (White) */}
-            <div className="absolute bottom-0 w-full h-[12px] md:h-[18px]">
+            <div className="absolute bottom-0 w-full h-[10px] md:h-[14px]">
               {/* White cylinder top */}
-              <div className="absolute top-0 w-full h-[6px] md:h-[9px] bg-[#f8f9fa] rounded-[50%] z-10"></div>
+              <div className="absolute top-0 w-full h-[5px] md:h-[7px] bg-[#f8f9fa] rounded-[50%] z-10"></div>
               {/* White cylinder body */}
-              <div className="absolute top-[3px] md:top-[4.5px] w-full h-[6px] md:h-[9px] bg-[#e9ecef]"></div>
+              <div className="absolute top-[2.5px] md:top-[3.5px] w-full h-[5px] md:h-[7px] bg-[#e9ecef]"></div>
               {/* White cylinder bottom */}
-              <div className="absolute bottom-0 w-full h-[8px] md:h-[11px] bg-[#e9ecef] rounded-[50%] shadow-[0_5px_8px_rgba(0,0,0,0.4)]"></div>
+              <div className="absolute bottom-0 w-full h-[6px] md:h-[9px] bg-[#e9ecef] rounded-[50%] shadow-[0_5px_8px_rgba(0,0,0,0.4)]"></div>
             </div>
 
             {/* Top Level (Blue) */}
-            <div className="absolute bottom-[12px] md:bottom-[15px] w-[86%] left-[7%] h-[12px] md:h-[15px] z-20">
+            <div className="absolute bottom-[10px] md:bottom-[14px] w-[86%] left-[7%] h-[10px] md:h-[12px] z-20">
               {/* Blue cylinder top */}
-              <div className="absolute top-0 w-full h-[6px] md:h-[8px] bg-[#0f62d1] rounded-[50%] z-10 border border-blue-400 shadow-[inset_0_-1px_2px_rgba(0,0,0,0.2)]"></div>
+              <div className="absolute top-0 w-full h-[5px] md:h-[6px] bg-[#0f62d1] rounded-[50%] z-10 border border-blue-400 shadow-[inset_0_-1px_2px_rgba(0,0,0,0.2)]"></div>
               {/* Blue cylinder body */}
-              <div className="absolute top-[3px] md:top-[4px] w-full h-[6px] md:h-[8px] bg-[#0c4bb0]"></div>
+              <div className="absolute top-[2.5px] md:top-[3px] w-full h-[5px] md:h-[6px] bg-[#0c4bb0]"></div>
               {/* Blue cylinder bottom */}
-              <div className="absolute bottom-0 w-full h-[6px] md:h-[8px] bg-[#093582] rounded-[50%] shadow-[0_3px_5px_rgba(0,0,0,0.25)]"></div>
+              <div className="absolute bottom-0 w-full h-[5px] md:h-[6px] bg-[#093582] rounded-[50%] shadow-[0_3px_5px_rgba(0,0,0,0.25)]"></div>
             </div>
           </div>
         </div>
