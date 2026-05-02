@@ -52,16 +52,15 @@ export default function Home() {
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
       </div>
 
-      <div className="w-full max-w-2xl h-full flex flex-col relative z-10 py-1">
+      <div className="w-full max-w-2xl flex-1 flex flex-col relative z-10 py-1">
         
-
 
         {/* Center Content - Absolutely centered with zero extra padding */}
         <div className="w-full flex-grow flex flex-col items-center justify-center z-0">
           <div className="w-full flex flex-col items-center justify-center space-y-0">
             
             {/* Logo Placement Above Box */}
-            <div className="mb-4 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg z-10">
+            <div className="mb-8 md:mb-10 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg z-10">
               <Image
                 src="/logo.png"
                 alt="Main Logo"
@@ -73,7 +72,7 @@ export default function Home() {
 
             {/* Title Text */}
             {!winner && (
-              <div className="mb-8 md:mb-10 z-10 flex flex-col items-center justify-center font-black italic tracking-tighter text-white drop-shadow-2xl"
+              <div className="mb-12 md:mb-16 z-10 flex flex-col items-center justify-center font-black italic tracking-tighter text-white drop-shadow-2xl"
                    style={{ 
                      fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
                      lineHeight: '0.9', 
