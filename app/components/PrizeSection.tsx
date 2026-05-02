@@ -106,12 +106,12 @@ export function PrizeSection({
         </div>
 
         {/* Podium & Prize Area */}
-        <div className="relative w-full max-w-[300px] md:max-w-[400px] lg:max-w-[450px] flex flex-col items-center mt-2 md:mt-4">
+        <div className="relative w-full max-w-[420px] md:max-w-[520px] lg:max-w-[600px] flex flex-col items-center mt-1 md:mt-2">
 
           {/* Light Beams from behind */}
-          <div className="absolute -inset-2 z-0 flex justify-center pointer-events-none">
-            <div className="w-[10vw] max-w-[80px] h-[20vh] max-h-[150px] bg-white/10 blur-3xl rotate-45 transform origin-bottom -translate-x-12"></div>
-            <div className="w-[10vw] max-w-[80px] h-[20vh] max-h-[150px] bg-white/10 blur-3xl -rotate-45 transform origin-bottom translate-x-12"></div>
+          <div className="absolute -inset-4 z-0 flex justify-center pointer-events-none">
+            <div className="w-[14vw] max-w-[120px] h-[25vh] max-h-[200px] bg-white/10 blur-3xl rotate-45 transform origin-bottom -translate-x-16"></div>
+            <div className="w-[14vw] max-w-[120px] h-[25vh] max-h-[200px] bg-white/10 blur-3xl -rotate-45 transform origin-bottom translate-x-16"></div>
           </div>
 
           {/* Prize Image */}
@@ -119,11 +119,11 @@ export function PrizeSection({
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 100, delay: 0.4 }}
-            className="z-30 relative flex items-end justify-center transform hover:scale-105 transition-transform duration-500 hover:rotate-2 pointer-events-none group"
+            className="z-30 relative flex items-end justify-center pointer-events-none group"
             style={{ 
-              width: 'min(35vh, 380px)', 
-              height: 'min(35vh, 380px)',
-              marginBottom: 'calc(min(12vh, 120px) * -0.65)'
+              width: 'min(50vh, 520px)', 
+              height: 'min(50vh, 520px)',
+              marginBottom: 'calc(min(14vh, 140px) * -0.55)'
             }}
           >
             {/* Real-time Contact Shadow */}
@@ -170,7 +170,7 @@ export function PrizeSection({
           </motion.div>
 
           {/* 3D CSS Podium Stage */}
-          <div className="relative w-[110%] z-10" style={{ height: 'min(12vh, 120px)' }}>
+          <div className="relative w-[115%] z-10" style={{ height: 'min(14vh, 140px)' }}>
             {/* Bottom Level (White) */}
             <div className="absolute bottom-0 w-full h-[33%]">
               {/* White cylinder top */}
