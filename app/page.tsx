@@ -37,6 +37,7 @@ export default function Home() {
   const showTitle = !winner && !activePrize;
   const showWinnerBox = !activePrize || !!winner; // Show in idle (no prize) or when winner found
   const showPrize = !!(winner ? prize : activePrize);
+  const isCompactTitle = !!activePrize || !!winner; // Shrink title when prize visual or winner is shown
 
   return (
     <main
@@ -94,18 +95,22 @@ export default function Home() {
             />
           </div>
 
-          {/* Title Text - Hidden when activePrize is selected */}
-          <AnimatePresence>
-            {showTitle && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10, transition: { duration: 0.3 } }}
-                className="mb-4 md:mb-8 text-center font-black italic tracking-tighter text-white drop-shadow-2xl"
-                style={{ 
-                  fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
-                  lineHeight: '1', 
-                  textShadow: `
+          {/* Title Text - Always visible, shrinks when prize/winner is shown */}
+          <motion.div
+            layout
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            className={`${isCompactTitle ? 'mb-1 md:mb-2' : 'mb-4 md:mb-8'} text-center font-black italic tracking-tighter text-white drop-shadow-2xl`}
+            style={{ 
+              fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
+              lineHeight: '1', 
+              textShadow: isCompactTitle
+                ? `
+                    1px 1px 0 #2854a1,
+                    2px 2px 0 #2854a1,
+                    3px 3px 0 #1b3a73,
+                    5px 5px 10px rgba(0,0,0,0.5)
+                  `
+                : `
                     2px 2px 0 #2854a1,
                     3px 3px 0 #2854a1,
                     4px 4px 0 #2854a1,
@@ -117,14 +122,12 @@ export default function Home() {
                     10px 10px 0 #1b3a73,
                     15px 15px 25px rgba(0,0,0,0.7)
                   `,
-                  WebkitTextStroke: '2px #102652'
-                }}>
-                <div className="text-3xl md:text-4xl lg:text-5xl">Strength of</div>
-                <div className="text-4xl md:text-5xl lg:text-6xl">Loyalty &</div>
-                <div className="text-4xl md:text-5xl lg:text-6xl">Relationships</div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              WebkitTextStroke: isCompactTitle ? '1px #102652' : '2px #102652'
+            }}>
+            <div className={isCompactTitle ? 'text-lg md:text-xl lg:text-2xl' : 'text-3xl md:text-4xl lg:text-5xl'}>Strength of</div>
+            <div className={isCompactTitle ? 'text-xl md:text-2xl lg:text-3xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Loyalty &</div>
+            <div className={isCompactTitle ? 'text-xl md:text-2xl lg:text-3xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Relationships</div>
+          </motion.div>
         </div>
 
         {/* Center Content - WinnerBox and Prize */}

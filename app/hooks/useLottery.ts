@@ -12,11 +12,11 @@ export function useLottery() {
     prize: null,
     activePrize: null,
     error: null,
-    currentDisplay: '✧ ✧ ✧',
+    currentDisplay: '—',
   });
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const animationNamesRef = useRef<string[]>(['Mengacak...', 'Mencari Pemenang...', 'Memutar...']);
+  const animationNamesRef = useRef<string[]>(['Peserta 1', 'Peserta 2', 'Peserta 3']);
 
   const startDraw = useCallback(async (prizeId?: number | null) => {
     setState(prev => ({ ...prev, isRolling: true, isLoading: true, error: null }));
@@ -61,7 +61,7 @@ export function useLottery() {
         isRolling: false,
         isLoading: false,
         error: err instanceof Error ? err.message : 'Terjadi kesalahan tidak diketahui',
-        currentDisplay: '✧ ✧ ✧',
+        currentDisplay: '—',
       }));
     }
   }, []);
@@ -74,7 +74,7 @@ export function useLottery() {
       prize: null,
       activePrize: prev.activePrize, // Keep active prize if still selected
       error: null,
-      currentDisplay: '✧ ✧ ✧',
+      currentDisplay: '—',
     }));
   }, []);
 
