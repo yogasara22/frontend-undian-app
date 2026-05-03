@@ -17,6 +17,13 @@ export function useLottery() {
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const animationNamesRef = useRef<string[]>(['Peserta 1', 'Peserta 2', 'Peserta 3']);
+  // Ref to track isRolling without causing stale closure in event handlers
+  const isRollingRef = useRef(false);
+
+  // Keep isRollingRef in sync with state
+  useEffect(() => {
+    isRollingRef.current = state.isRolling;
+  }, [state.isRolling]);
 
   const startDraw = useCallback(async (prizeId?: number | null) => {
     // Immediately show first name from the list
@@ -26,6 +33,9 @@ export function useLottery() {
     } else {
       setState(prev => ({ ...prev, isRolling: true, isLoading: true, error: null }));
     }
+
+    // Clear any existing interval before starting a new one
+    if (intervalRef.current) clearInterval(intervalRef.current);
 
     intervalRef.current = setInterval(() => {
       const currentNames = animationNamesRef.current;
@@ -86,13 +96,14 @@ export function useLottery() {
     }));
   }, []);
 
-  // Cleanup on unmount and listen to remote triggers
+  // Fetch participant names and listen to remote draw triggers.
+  // NOTE: state.isRolling is intentionally NOT in the dependency array — putting it
+  // there caused the cleanup to fire clearInterval every time rolling started,
+  // which immediately killed the animation interval. We use isRollingRef instead.
   useEffect(() => {
-    // Fetch real names for the rolling animation
     const fetchNames = async () => {
       try {
         const res = await fetchAPI('/api/participants?per_page=200');
-        // Handle different response formats
         const participants = res?.data || res || [];
         if (Array.isArray(participants) && participants.length > 0) {
           const names = participants
@@ -111,8 +122,8 @@ export function useLottery() {
 
     const handleStorage = (e: StorageEvent) => {
       if (e.key === 'REMOTE_DRAW_TRIGGER' && e.newValue) {
-        // Trigger draw when Admin clicks the button in another tab
-        if (!state.isRolling) {
+        // Use isRollingRef instead of state to avoid stale closure
+        if (!isRollingRef.current) {
           try {
             const data = JSON.parse(e.newValue);
             if (data.prizeId) {
@@ -140,7 +151,8 @@ export function useLottery() {
       if (intervalRef.current) clearInterval(intervalRef.current);
       window.removeEventListener('storage', handleStorage);
     };
-  }, [startDraw, state.isRolling]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startDraw]); // state.isRolling intentionally omitted — see comment above
 
   return { ...state, startDraw, reset };
 }
