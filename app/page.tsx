@@ -125,9 +125,9 @@ export default function Home() {
                   `,
               WebkitTextStroke: isCompactTitle ? '0.5px #102652' : '2px #102652'
             }}>
-            <div className={isCompactTitle ? 'text-sm md:text-base lg:text-lg' : 'text-3xl md:text-4xl lg:text-5xl'}>Strength of</div>
-            <div className={isCompactTitle ? 'text-base md:text-lg lg:text-xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Loyalty &</div>
-            <div className={isCompactTitle ? 'text-base md:text-lg lg:text-xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Relationships</div>
+            <div className={isCompactTitle ? 'text-xl md:text-2xl lg:text-3xl' : 'text-3xl md:text-4xl lg:text-5xl'}>Strength of</div>
+            <div className={isCompactTitle ? 'text-2xl md:text-3xl lg:text-4xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Loyalty &</div>
+            <div className={isCompactTitle ? 'text-2xl md:text-3xl lg:text-4xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Relationships</div>
           </motion.div>
         </div>
 

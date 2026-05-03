@@ -38,13 +38,13 @@ export function PrizeSection({
 
   // Responsive sizing: larger when showcasing prize (no winner), smaller when winner is shown
   const hasWinner = !!winner;
-  const imageSize = hasWinner ? 'min(20vh, 200px)' : 'min(50vh, 520px)';
-  const podiumHeight = hasWinner ? 'min(7vh, 70px)' : 'min(14vh, 140px)';
+  const imageSize = hasWinner ? 'min(28vh, 280px)' : 'min(50vh, 520px)';
+  const podiumHeight = hasWinner ? 'min(9vh, 90px)' : 'min(14vh, 140px)';
   const podiumMaxW = hasWinner
-    ? 'max-w-[260px] md:max-w-[320px] lg:max-w-[360px]'
+    ? 'max-w-[280px] md:max-w-[340px] lg:max-w-[380px]'
     : 'max-w-[420px] md:max-w-[520px] lg:max-w-[600px]';
   const overlapCalc = hasWinner
-    ? 'calc(min(7vh, 70px) * -0.85)'
+    ? 'calc(min(9vh, 90px) * -0.85)'
     : 'calc(min(14vh, 140px) * -0.85)';
 
   return (
@@ -56,65 +56,55 @@ export function PrizeSection({
         transition={{ duration: 0.5, delay: 0.2 }}
         className="w-full relative mt-0.5 flex flex-col items-center z-10"
       >
-          {/* Text Area */}
-        <div className="flex flex-col items-center mb-0.5 relative z-20 text-center w-full">
-          {customTitle && (
-            <div className="flex items-center justify-center gap-1.5 relative z-10">
-              {/* Decorative Thunderbolt Left */}
-              <svg width="14" height="18" viewBox="0 0 24 24" fill="white" className="hidden sm:block flex-shrink-0 drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] -rotate-12 opacity-90">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-              </svg>
-              <h3 className="uppercase"
-                style={{
-                  fontFamily: titleStyle?.fontFamily || 'inherit',
-                  fontSize: `clamp(14px, 2.5vh, ${titleStyle?.fontSize ? titleStyle.fontSize * 0.45 : 18}px)`,
-                  color: titleStyle?.color || '#FFFFFF',
-                  fontWeight: titleStyle?.fontWeight || '800',
-                  letterSpacing: `${titleStyle?.letterSpacing || 1}px`,
-                  fontVariant: 'all-small-caps',
-                  textShadow: titleStyle?.textShadow
-                    ? `
-                        -1px -1px 0 #0f54a8,  
-                         1px -1px 0 #0f54a8,
-                        -1px  1px 0 #0f54a8,
-                         1px  1px 0 #0f54a8,
-                         0px  1px 2px rgba(0,0,0,0.5)
-                      `
-                    : 'none'
-                }}>
-                {customTitle}
-              </h3>
-              {/* Decorative Thunderbolt Right */}
-              <svg width="12" height="16" viewBox="0 0 24 24" fill="white" className="hidden sm:block flex-shrink-0 drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] rotate-12 opacity-90">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-              </svg>
-            </div>
-          )}
-          <h2 className="uppercase relative z-10 leading-tight md:leading-none px-4"
-            style={{
-              fontFamily: prizeStyle?.fontFamily || 'inherit',
-              fontSize: `clamp(28px, 4.5vh, ${prizeStyle?.fontSize ? prizeStyle.fontSize * 0.7 : 48}px)`,
-              color: prizeStyle?.color || '#FFFFFF',
-              fontWeight: prizeStyle?.fontWeight || '900',
-              letterSpacing: `${prizeStyle?.letterSpacing || 0}px`,
-              textShadow: prizeStyle?.textShadow
-                ? `
-                    -1.5px -1.5px 0 #0f54a8,  
-                     1.5px -1.5px 0 #0f54a8,
-                    -1.5px  1.5px 0 #0f54a8,
-                     1.5px  1.5px 0 #0f54a8,
-                     0px  2px 0px #0c4bb0,
-                     0px  4px 0px #093582,
-                     0px 8px 12px rgba(0,0,0,0.4)
-                  `
-                : 'none'
-            }}>
-            {prize.name}
-          </h2>
-        </div>
 
-        {/* Podium & Prize Area */}
-        <div className={`relative w-full ${podiumMaxW} flex flex-col items-center mt-1 md:mt-2`}>
+        {/* Podium & Prize Area (now includes text above image) */}
+        <div className="w-full flex flex-col items-center mt-1 md:mt-2">
+
+          {/* Text Area - sits directly above car image */}
+          <div className="flex flex-col items-center mb-1 relative z-30 text-center w-full">
+            {customTitle && (
+              <div className="flex items-center justify-center gap-1.5 relative z-10">
+                {/* Decorative Thunderbolt Left */}
+                <svg width="14" height="18" viewBox="0 0 24 24" fill="white" className="hidden sm:block flex-shrink-0 drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] -rotate-12 opacity-90">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+                <h3 className="uppercase"
+                  style={{
+                    fontFamily: titleStyle?.fontFamily || 'inherit',
+                    fontSize: `clamp(14px, 2.5vh, ${titleStyle?.fontSize ? titleStyle.fontSize * 0.45 : 18}px)`,
+                    color: titleStyle?.color || '#FFFFFF',
+                    fontWeight: titleStyle?.fontWeight || '800',
+                    letterSpacing: `${titleStyle?.letterSpacing || 1}px`,
+                    fontVariant: 'all-small-caps',
+                    textShadow: titleStyle?.textShadow
+                      ? `-1px -1px 0 #0f54a8, 1px -1px 0 #0f54a8, -1px 1px 0 #0f54a8, 1px 1px 0 #0f54a8, 0px 1px 2px rgba(0,0,0,0.5)`
+                      : 'none'
+                  }}>
+                  {customTitle}
+                </h3>
+                {/* Decorative Thunderbolt Right */}
+                <svg width="12" height="16" viewBox="0 0 24 24" fill="white" className="hidden sm:block flex-shrink-0 drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] rotate-12 opacity-90">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+              </div>
+            )}
+            <h2 className="uppercase relative z-10 leading-tight md:leading-none px-4"
+              style={{
+                fontFamily: prizeStyle?.fontFamily || 'inherit',
+                fontSize: `clamp(28px, 4.5vh, ${prizeStyle?.fontSize ? prizeStyle.fontSize * 0.7 : 48}px)`,
+                color: prizeStyle?.color || '#FFFFFF',
+                fontWeight: prizeStyle?.fontWeight || '900',
+                letterSpacing: `${prizeStyle?.letterSpacing || 0}px`,
+                textShadow: prizeStyle?.textShadow
+                  ? `-1.5px -1.5px 0 #0f54a8, 1.5px -1.5px 0 #0f54a8, -1.5px 1.5px 0 #0f54a8, 1.5px 1.5px 0 #0f54a8, 0px 2px 0px #0c4bb0, 0px 4px 0px #093582, 0px 8px 12px rgba(0,0,0,0.4)`
+                  : 'none'
+              }}>
+              {prize.name}
+            </h2>
+          </div>
+
+          {/* Image + Podium */}
+          <div className={`relative w-full ${podiumMaxW} flex flex-col items-center`}>
 
           {/* Light Beams from behind */}
           <div className="absolute -inset-4 z-0 flex justify-center pointer-events-none">
@@ -198,6 +188,7 @@ export function PrizeSection({
               {/* Blue cylinder bottom */}
               <div className="absolute bottom-0 w-full h-[50%] bg-[#093582] rounded-[50%] shadow-[0_3px_5px_rgba(0,0,0,0.25)]"></div>
             </div>
+          </div>
           </div>
         </div>
 
