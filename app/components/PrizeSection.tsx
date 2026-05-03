@@ -38,14 +38,14 @@ export function PrizeSection({
 
   // Responsive sizing: larger when showcasing prize (no winner), smaller when winner is shown
   const hasWinner = !!winner;
-  const imageSize = hasWinner ? 'min(28vh, 280px)' : 'min(50vh, 520px)';
-  const podiumHeight = hasWinner ? 'min(9vh, 90px)' : 'min(14vh, 140px)';
+  const imageSize = hasWinner ? 'min(28vh, 280px)' : 'min(40vh, 420px)';
+  const podiumHeight = hasWinner ? 'min(9vh, 90px)' : 'min(11vh, 110px)';
   const podiumMaxW = hasWinner
     ? 'max-w-[280px] md:max-w-[340px] lg:max-w-[380px]'
     : 'max-w-[420px] md:max-w-[520px] lg:max-w-[600px]';
   const overlapCalc = hasWinner
     ? 'calc(min(9vh, 90px) * -0.85)'
-    : 'calc(min(14vh, 140px) * -0.85)';
+    : 'calc(min(11vh, 110px) * -0.85)';
 
   return (
     <AnimatePresence>

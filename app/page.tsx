@@ -125,15 +125,19 @@ export default function Home() {
                   `,
               WebkitTextStroke: isCompactTitle ? '0.5px #102652' : '2px #102652'
             }}>
-            <div className={isCompactTitle ? 'text-xl md:text-2xl lg:text-3xl' : 'text-3xl md:text-4xl lg:text-5xl'}>Strength of</div>
-            <div className={isCompactTitle ? 'text-2xl md:text-3xl lg:text-4xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Loyalty &</div>
-            <div className={isCompactTitle ? 'text-2xl md:text-3xl lg:text-4xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Relationships</div>
+            <div className={isCompactTitle ? 'text-lg md:text-xl lg:text-2xl' : 'text-3xl md:text-4xl lg:text-5xl'}>Strength of</div>
+            <div className={isCompactTitle ? 'text-xl md:text-2xl lg:text-3xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Loyalty &</div>
+            <div className={isCompactTitle ? 'text-xl md:text-2xl lg:text-3xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Relationships</div>
           </motion.div>
         </div>
 
 
         {/* Center Content - WinnerBox and Prize */}
-        <div className="w-full flex-1 flex flex-col items-center justify-center z-10 min-h-0">
+        <div className={`w-full flex-1 flex flex-col items-center z-10 min-h-0 ${
+          activePrize && !winner
+            ? 'justify-end pb-16 md:pb-20'
+            : 'justify-center'
+        }`}>
           {/* WinnerBox - Hidden when activePrize is selected (until winner found) */}
           <AnimatePresence>
             {showWinnerBox && (
