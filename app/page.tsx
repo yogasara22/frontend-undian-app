@@ -133,9 +133,11 @@ export default function Home() {
 
 
         {/* Center Content - WinnerBox and Prize */}
-        <div className={`w-full flex-1 flex flex-col items-center z-10 min-h-0 ${
+        <div className={`w-full flex-1 flex flex-col items-center z-10 min-h-0 overflow-hidden ${
           activePrize && !winner
             ? 'justify-end pb-16 md:pb-20'
+            : winner
+            ? 'justify-start pt-1'
             : 'justify-center'
         }`}>
           {/* WinnerBox - Hidden when activePrize is selected (until winner found) */}
