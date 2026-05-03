@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { ScrambledText } from './ScrambledText';
 
 interface RollingBoxProps {
   isRolling: boolean;
@@ -35,16 +36,9 @@ export function RollingBox({ isRolling, currentDisplay }: RollingBoxProps) {
                 </svg>
               </div>
 
-              {/* Cycling name */}
-              <motion.span
-                key={currentDisplay}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.05 }}
-                className="text-sm md:text-base font-black text-white uppercase tracking-wide truncate"
-              >
-                {currentDisplay}
-              </motion.span>
+              <div className="text-sm md:text-base font-black text-white uppercase tracking-wide truncate">
+                <ScrambledText text={currentDisplay} isRolling={isRolling} />
+              </div>
             </div>
           </div>
         </motion.div>
