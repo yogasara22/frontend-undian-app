@@ -58,40 +58,37 @@ export function PrizeSection({
       >
           {/* Text Area */}
         <div className="flex flex-col items-center mb-0.5 relative z-20 text-center w-full">
-          {/* Decorative Thunderbolt Left */}
-          <div className="absolute left-[5%] md:left-[20%] top-[-1px] hidden sm:block">
-            <svg width="18" height="24" viewBox="0 0 24 24" fill="white" className="drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] pb-1 -rotate-12">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-            </svg>
-          </div>
-          {/* Decorative Thunderbolt Right */}
-          <div className="absolute right-[5%] md:right-[20%] bottom-[-1px] hidden sm:block">
-            <svg width="16" height="22" viewBox="0 0 24 24" fill="white" className="drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] rotate-12">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-            </svg>
-          </div>
-
           {customTitle && (
-            <h3 className="uppercase relative z-10"
-              style={{
-                fontFamily: titleStyle?.fontFamily || 'inherit',
-                fontSize: `clamp(14px, 2.5vh, ${titleStyle?.fontSize ? titleStyle.fontSize * 0.45 : 18}px)`,
-                color: titleStyle?.color || '#FFFFFF',
-                fontWeight: titleStyle?.fontWeight || '800',
-                letterSpacing: `${titleStyle?.letterSpacing || 1}px`,
-                fontVariant: 'all-small-caps',
-                textShadow: titleStyle?.textShadow
-                  ? `
-                      -1px -1px 0 #0f54a8,  
-                       1px -1px 0 #0f54a8,
-                      -1px  1px 0 #0f54a8,
-                       1px  1px 0 #0f54a8,
-                       0px  1px 2px rgba(0,0,0,0.5)
-                    `
-                  : 'none'
-              }}>
-              {customTitle}
-            </h3>
+            <div className="flex items-center justify-center gap-1.5 relative z-10">
+              {/* Decorative Thunderbolt Left */}
+              <svg width="14" height="18" viewBox="0 0 24 24" fill="white" className="hidden sm:block flex-shrink-0 drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] -rotate-12 opacity-90">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+              <h3 className="uppercase"
+                style={{
+                  fontFamily: titleStyle?.fontFamily || 'inherit',
+                  fontSize: `clamp(14px, 2.5vh, ${titleStyle?.fontSize ? titleStyle.fontSize * 0.45 : 18}px)`,
+                  color: titleStyle?.color || '#FFFFFF',
+                  fontWeight: titleStyle?.fontWeight || '800',
+                  letterSpacing: `${titleStyle?.letterSpacing || 1}px`,
+                  fontVariant: 'all-small-caps',
+                  textShadow: titleStyle?.textShadow
+                    ? `
+                        -1px -1px 0 #0f54a8,  
+                         1px -1px 0 #0f54a8,
+                        -1px  1px 0 #0f54a8,
+                         1px  1px 0 #0f54a8,
+                         0px  1px 2px rgba(0,0,0,0.5)
+                      `
+                    : 'none'
+                }}>
+                {customTitle}
+              </h3>
+              {/* Decorative Thunderbolt Right */}
+              <svg width="12" height="16" viewBox="0 0 24 24" fill="white" className="hidden sm:block flex-shrink-0 drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] rotate-12 opacity-90">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+            </div>
           )}
           <h2 className="uppercase relative z-10 leading-tight md:leading-none px-4"
             style={{
