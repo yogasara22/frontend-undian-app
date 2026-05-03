@@ -38,13 +38,13 @@ export function PrizeSection({
 
   // Responsive sizing: larger when showcasing prize (no winner), smaller when winner is shown
   const hasWinner = !!winner;
-  const imageSize = hasWinner ? 'min(30vh, 320px)' : 'min(50vh, 520px)';
-  const podiumHeight = hasWinner ? 'min(10vh, 100px)' : 'min(14vh, 140px)';
+  const imageSize = hasWinner ? 'min(20vh, 200px)' : 'min(50vh, 520px)';
+  const podiumHeight = hasWinner ? 'min(7vh, 70px)' : 'min(14vh, 140px)';
   const podiumMaxW = hasWinner
-    ? 'max-w-[300px] md:max-w-[380px] lg:max-w-[420px]'
+    ? 'max-w-[260px] md:max-w-[320px] lg:max-w-[360px]'
     : 'max-w-[420px] md:max-w-[520px] lg:max-w-[600px]';
   const overlapCalc = hasWinner
-    ? 'calc(min(10vh, 100px) * -0.85)'
+    ? 'calc(min(7vh, 70px) * -0.85)'
     : 'calc(min(14vh, 140px) * -0.85)';
 
   return (

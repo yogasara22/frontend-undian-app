@@ -85,7 +85,7 @@ export default function Home() {
         {/* Top Header - Logo and Title */}
         <div className="w-full flex flex-col items-center shrink-0 z-20">
           {/* Logo Placement Above Box */}
-          <div className="mb-2 relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg">
+          <div className={`${isCompactTitle ? 'mb-1' : 'mb-2'} relative h-16 w-56 md:h-20 md:w-64 drop-shadow-lg`}>
             <Image
               src="/logo.png"
               alt="Main Logo"
@@ -95,16 +95,23 @@ export default function Home() {
             />
           </div>
 
-          {/* Title Text - Centered (Only in initial idle mode) */}
-          {!winner && !activePrize && (
-            <motion.div
-              layout
-              transition={{ duration: 0.4, ease: 'easeInOut' }}
-              className="mb-4 md:mb-8 text-center font-black italic tracking-tighter text-white drop-shadow-2xl"
-              style={{ 
-                fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
-                lineHeight: '1', 
-                textShadow: `
+          {/* Title Text - Always centered, scales down when prize is shown */}
+          <motion.div
+            layout
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            className="text-center font-black italic tracking-tighter text-white drop-shadow-2xl"
+            style={{
+              fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
+              lineHeight: '1',
+              marginBottom: isCompactTitle ? '4px' : undefined,
+              textShadow: isCompactTitle
+                ? `
+                    1px 1px 0 #2854a1,
+                    2px 2px 0 #2854a1,
+                    3px 3px 0 #1b3a73,
+                    4px 4px 8px rgba(0,0,0,0.5)
+                  `
+                : `
                     2px 2px 0 #2854a1,
                     3px 3px 0 #2854a1,
                     4px 4px 0 #2854a1,
@@ -116,40 +123,14 @@ export default function Home() {
                     10px 10px 0 #1b3a73,
                     15px 15px 25px rgba(0,0,0,0.7)
                   `,
-                WebkitTextStroke: '2px #102652'
-              }}>
-              <div className="text-3xl md:text-4xl lg:text-5xl">Strength of</div>
-              <div className="text-4xl md:text-5xl lg:text-6xl">Loyalty &</div>
-              <div className="text-4xl md:text-5xl lg:text-6xl">Relationships</div>
-            </motion.div>
-          )}
+              WebkitTextStroke: isCompactTitle ? '0.5px #102652' : '2px #102652'
+            }}>
+            <div className={isCompactTitle ? 'text-sm md:text-base lg:text-lg' : 'text-3xl md:text-4xl lg:text-5xl'}>Strength of</div>
+            <div className={isCompactTitle ? 'text-base md:text-lg lg:text-xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Loyalty &</div>
+            <div className={isCompactTitle ? 'text-base md:text-lg lg:text-xl' : 'text-4xl md:text-5xl lg:text-6xl'}>Relationships</div>
+          </motion.div>
         </div>
 
-        {/* Title Text - Fixed Top Right (Showcase Prize or Winner mode) */}
-        <AnimatePresence>
-          {(winner || activePrize) && (
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 30 }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
-              className="fixed top-4 right-4 md:top-6 md:right-6 z-40 text-right font-black italic tracking-tight text-white/90"
-              style={{ 
-                fontFamily: '"Arial Black", "Impact", system-ui, sans-serif',
-                lineHeight: '1.1', 
-                textShadow: `
-                  1px 1px 0 #2854a1,
-                  2px 2px 0 #1b3a73,
-                  3px 3px 8px rgba(0,0,0,0.5)
-                `,
-                WebkitTextStroke: '0.5px #102652'
-              }}
-            >
-              <span className="text-xs md:text-sm lg:text-base">Strength of </span>
-              <span className="text-sm md:text-base lg:text-lg">Loyalty & Relationships</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Center Content - WinnerBox and Prize */}
         <div className="w-full flex-1 flex flex-col items-center justify-center z-10 min-h-0">
