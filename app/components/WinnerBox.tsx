@@ -72,6 +72,33 @@ export default function WinnerBox({ isRolling, winner, currentDisplay }: WinnerB
           }`}>
 
             <AnimatePresence mode="wait">
+              {/* Rolling State */}
+              {isRolling && (
+                <motion.div
+                  key="rolling"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex flex-col items-center gap-0 w-full"
+                >
+                  <motion.p
+                    key={currentDisplay}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.05 }}
+                    className="text-base md:text-xl lg:text-2xl font-black tracking-tighter text-center uppercase text-gray-800 leading-tight px-2"
+                  >
+                    {currentDisplay}
+                  </motion.p>
+                  <div className="flex items-center gap-1.5 mt-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+                    <span className="text-[8px] md:text-[10px] font-bold text-orange-400/80 uppercase tracking-[0.2em]">
+                      MENGACAK...
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+
               {/* Idle State */}
               {!isRolling && !winner && (
                 <motion.div

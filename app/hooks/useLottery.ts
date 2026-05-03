@@ -16,6 +16,7 @@ export function useLottery() {
   });
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const rollingAudioRef = useRef<HTMLAudioElement | null>(null);
   const animationNamesRef = useRef<string[]>(['Peserta 1', 'Peserta 2', 'Peserta 3']);
   // Ref to track isRolling without causing stale closure in event handlers
   const isRollingRef = useRef(false);
@@ -45,6 +46,22 @@ export function useLottery() {
       }
     }, 100);
 
+    // Play rolling audio
+    if (typeof window !== 'undefined') {
+      try {
+        if (rollingAudioRef.current) {
+          rollingAudioRef.current.pause();
+          rollingAudioRef.current = null;
+        }
+        const audio = new Audio('/mixkit-slot-machine-payout-alarm.wav');
+        audio.loop = true;
+        audio.play().catch(e => console.log('Audio playback prevented by browser:', e));
+        rollingAudioRef.current = audio;
+      } catch (e) {
+        console.error('Audio playback error', e);
+      }
+    }
+
     try {
       const result = await drawLottery(prizeId);
       setState(prev => ({ ...prev, isLoading: false }));
@@ -52,12 +69,21 @@ export function useLottery() {
       await new Promise(resolve => setTimeout(resolve, 5000));
 
       if (intervalRef.current) clearInterval(intervalRef.current);
+      
+      // Force display winner name in rolling box first
+      setState(prev => ({ ...prev, currentDisplay: result.winner.name }));
+      
+      // Stop rolling audio
+      if (rollingAudioRef.current) {
+        rollingAudioRef.current.pause();
+        rollingAudioRef.current = null;
+      }
+
       setState(prev => ({
         ...prev,
         isRolling: false,
         winner: result.winner,
         prize: result.prize,
-        currentDisplay: result.winner.name,
       }));
       
       // Play premium doorprize sound
@@ -74,6 +100,10 @@ export function useLottery() {
       localStorage.setItem('REMOTE_DRAW_SUCCESS', Date.now().toString());
     } catch (err) {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      if (rollingAudioRef.current) {
+        rollingAudioRef.current.pause();
+        rollingAudioRef.current = null;
+      }
       setState(prev => ({
         ...prev,
         isRolling: false,
@@ -94,6 +124,11 @@ export function useLottery() {
       error: null,
       currentDisplay: '—',
     }));
+
+    if (rollingAudioRef.current) {
+      rollingAudioRef.current.pause();
+      rollingAudioRef.current = null;
+    }
   }, []);
 
   // Fetch participant names and listen to remote draw triggers.
@@ -149,6 +184,10 @@ export function useLottery() {
     
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      if (rollingAudioRef.current) {
+        rollingAudioRef.current.pause();
+        rollingAudioRef.current = null;
+      }
       window.removeEventListener('storage', handleStorage);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
