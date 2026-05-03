@@ -36,19 +36,16 @@ export function PrizeSection({
 }: PrizeSectionProps) {
   if (!prize) return null;
 
-  // Responsive sizing: larger when showcasing prize (no winner), smaller when winner is shown
   const hasWinner = !!winner;
-  // Winner state: larger image + proportionally deeper overlap keeps podium Y position stable
-  const imageSize = hasWinner ? 'min(38vh, 400px)' : 'min(40vh, 420px)';
+
+  // Podium dimensions
   const podiumHeight = hasWinner ? 'min(9vh, 90px)' : 'min(11vh, 110px)';
   const podiumMaxW = hasWinner
     ? 'max-w-[320px] md:max-w-[400px] lg:max-w-[460px]'
     : 'max-w-[420px] md:max-w-[520px] lg:max-w-[600px]';
-  // overlap = 40% of imageSize → podium bites ~40% into image bottom
-  // total visual height change vs old = only ~1vh, podium stays in place
-  const overlapCalc = hasWinner
-    ? 'calc(min(38vh, 400px) * -0.42)'
-    : 'calc(min(11vh, 110px) * -0.85)';
+
+  // Image area height — the image fills this area and bottom-anchors to the podium
+  const imageAreaHeight = hasWinner ? 'min(36vh, 380px)' : 'min(38vh, 400px)';
 
   return (
     <AnimatePresence>
@@ -60,10 +57,10 @@ export function PrizeSection({
         className="w-full relative mt-0.5 flex flex-col items-center z-10"
       >
 
-        {/* Podium & Prize Area (now includes text above image) */}
+        {/* Podium & Prize Area */}
         <div className="w-full flex flex-col items-center mt-1 md:mt-2">
 
-          {/* Text Area - sits directly above car image */}
+          {/* Text Area - above image */}
           <div className="flex flex-col items-center mb-1 relative z-30 text-center w-full">
             {customTitle && (
               <div className="flex items-center justify-center gap-1.5 relative z-10">
@@ -106,92 +103,90 @@ export function PrizeSection({
             </h2>
           </div>
 
-          {/* Image + Podium */}
+          {/* Image + Podium — single contained column, NO negative margin */}
           <div className={`relative w-full ${podiumMaxW} flex flex-col items-center`}>
 
-          {/* Light Beams from behind */}
-          <div className="absolute -inset-4 z-0 flex justify-center pointer-events-none">
-            <div className="w-[14vw] max-w-[120px] h-[25vh] max-h-[200px] bg-white/10 blur-3xl rotate-45 transform origin-bottom -translate-x-16"></div>
-            <div className="w-[14vw] max-w-[120px] h-[25vh] max-h-[200px] bg-white/10 blur-3xl -rotate-45 transform origin-bottom translate-x-16"></div>
-          </div>
-
-          {/* Prize Image */}
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 100, delay: 0.4 }}
-            className="z-30 relative flex items-end justify-center pointer-events-none group"
-            style={{ 
-              width: imageSize, 
-              height: imageSize,
-              marginBottom: overlapCalc
-            }}
-          >
-            {/* Real-time Contact Shadow */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="absolute bottom-[-2%] left-1/2 -translate-x-1/2 w-[60%] h-[8%] bg-black/60 blur-[8px] md:blur-[12px] rounded-[50%] z-10"
-            />
-
-            {/* Subtle Reflection */}
-            {prize.imageUrl && (
-              <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[30%] opacity-[0.1] blur-[2px] z-0 scale-y-[-0.5] pointer-events-none overflow-hidden">
-                <Image
-                  src={prize.imageUrl}
-                  alt=""
-                  fill
-                  className="object-contain object-top"
-                />
-              </div>
-            )}
-
-            {prize.imageUrl ? (
-              <div className="relative z-20 w-full h-full flex items-end justify-center drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
-                <Image
-                  src={prize.imageUrl}
-                  alt={prize.name}
-                  fill
-                  className="object-contain object-bottom"
-                  priority
-                />
-              </div>
-            ) : (
-              <span className="text-[30px] md:text-[40px] leading-none mb-1 md:mb-2 z-20 drop-shadow-lg">{getPrizeIcon(prize.name)}</span>
-            )}
-
-            {/* Remaining Quantity Badge */}
-            {prize.remainingQty !== undefined && (
-              <div className="absolute top-0 right-0 md:top-1 md:right-1 bg-black/70 backdrop-blur-md text-white font-bold px-1 py-0.5 rounded-full text-[6px] border border-white/20 shadow-lg flex items-center gap-0.5 z-40">
-                <span className={`w-1 h-1 rounded-full ${prize.remainingQty > 0 ? 'bg-green-400 animate-pulse' : 'bg-red-500'}`}></span>
-                {prize.remainingQty}
-              </div>
-            )}
-          </motion.div>
-
-          {/* 3D CSS Podium Stage */}
-          <div className="relative w-[115%] z-10" style={{ height: podiumHeight }}>
-            {/* Bottom Level (White) */}
-            <div className="absolute bottom-0 w-full h-[33%]">
-              {/* White cylinder top */}
-              <div className="absolute top-0 w-full h-[50%] bg-[#f8f9fa] rounded-[50%] z-10"></div>
-              {/* White cylinder body */}
-              <div className="absolute top-[25%] w-full h-[50%] bg-[#e9ecef]"></div>
-              {/* White cylinder bottom */}
-              <div className="absolute bottom-0 w-full h-[60%] bg-[#e9ecef] rounded-[50%] shadow-[0_5px_8px_rgba(0,0,0,0.4)]"></div>
+            {/* Light Beams from behind */}
+            <div className="absolute -inset-4 z-0 flex justify-center pointer-events-none">
+              <div className="w-[14vw] max-w-[120px] h-[25vh] max-h-[200px] bg-white/10 blur-3xl rotate-45 transform origin-bottom -translate-x-16"></div>
+              <div className="w-[14vw] max-w-[120px] h-[25vh] max-h-[200px] bg-white/10 blur-3xl -rotate-45 transform origin-bottom translate-x-16"></div>
             </div>
 
-            {/* Top Level (Blue) */}
-            <div className="absolute bottom-[25%] w-[86%] left-[7%] h-[30%] z-20">
-              {/* Blue cylinder top */}
-              <div className="absolute top-0 w-full h-[50%] bg-[#0f62d1] rounded-[50%] z-10 border border-blue-400 shadow-[inset_0_-1px_2px_rgba(0,0,0,0.2)]"></div>
-              {/* Blue cylinder body */}
-              <div className="absolute top-[25%] w-full h-[50%] bg-[#0c4bb0]"></div>
-              {/* Blue cylinder bottom */}
-              <div className="absolute bottom-0 w-full h-[50%] bg-[#093582] rounded-[50%] shadow-[0_3px_5px_rgba(0,0,0,0.25)]"></div>
+            {/* Prize Image area — fills down to the podium top edge */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 100, delay: 0.4 }}
+              className="relative z-30 w-full pointer-events-none"
+              style={{ height: imageAreaHeight }}
+            >
+              {/* Remaining Quantity Badge */}
+              {prize.remainingQty !== undefined && (
+                <div className="absolute top-0 right-0 md:top-1 md:right-1 bg-black/70 backdrop-blur-md text-white font-bold px-1 py-0.5 rounded-full text-[6px] border border-white/20 shadow-lg flex items-center gap-0.5 z-40">
+                  <span className={`w-1 h-1 rounded-full ${prize.remainingQty > 0 ? 'bg-green-400 animate-pulse' : 'bg-red-500'}`}></span>
+                  {prize.remainingQty}
+                </div>
+              )}
+
+              {/* Real-time Contact Shadow — anchored to the image bottom (= podium top) */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[55%] h-[4px] bg-black/50 blur-[6px] rounded-[50%] z-10"
+              />
+
+              {prize.imageUrl ? (
+                <>
+                  {/* Subtle Reflection */}
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[30%] opacity-[0.08] blur-[2px] z-0 scale-y-[-0.5] pointer-events-none overflow-hidden">
+                    <Image
+                      src={prize.imageUrl}
+                      alt=""
+                      fill
+                      className="object-contain object-top"
+                    />
+                  </div>
+                  <div className="relative z-20 w-full h-full drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                    <Image
+                      src={prize.imageUrl}
+                      alt={prize.name}
+                      fill
+                      className="object-contain object-bottom"
+                      priority
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="w-full h-full flex items-end justify-center">
+                  <span className="text-[30px] md:text-[40px] leading-none mb-1 md:mb-2 z-20 drop-shadow-lg">{getPrizeIcon(prize.name)}</span>
+                </div>
+              )}
+            </motion.div>
+
+            {/* 3D CSS Podium Stage — sits immediately below the image */}
+            <div className="relative w-[115%] z-20 shrink-0" style={{ height: podiumHeight }}>
+              {/* Bottom Level (White) */}
+              <div className="absolute bottom-0 w-full h-[33%]">
+                {/* White cylinder top */}
+                <div className="absolute top-0 w-full h-[50%] bg-[#f8f9fa] rounded-[50%] z-10"></div>
+                {/* White cylinder body */}
+                <div className="absolute top-[25%] w-full h-[50%] bg-[#e9ecef]"></div>
+                {/* White cylinder bottom */}
+                <div className="absolute bottom-0 w-full h-[60%] bg-[#e9ecef] rounded-[50%] shadow-[0_5px_8px_rgba(0,0,0,0.4)]"></div>
+              </div>
+
+              {/* Top Level (Blue) */}
+              <div className="absolute bottom-[25%] w-[86%] left-[7%] h-[30%] z-20">
+                {/* Blue cylinder top */}
+                <div className="absolute top-0 w-full h-[50%] bg-[#0f62d1] rounded-[50%] z-10 border border-blue-400 shadow-[inset_0_-1px_2px_rgba(0,0,0,0.2)]"></div>
+                {/* Blue cylinder body */}
+                <div className="absolute top-[25%] w-full h-[50%] bg-[#0c4bb0]"></div>
+                {/* Blue cylinder bottom */}
+                <div className="absolute bottom-0 w-full h-[50%] bg-[#093582] rounded-[50%] shadow-[0_3px_5px_rgba(0,0,0,0.25)]"></div>
+              </div>
             </div>
-          </div>
+
           </div>
         </div>
 
